@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getNPSHistorico } from '@/lib/data'
 
 export default async function NpsPage() {

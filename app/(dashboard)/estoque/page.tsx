@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getEstoqueCompleto } from '@/lib/data'
 import { AlertTriangle, CheckCircle, XCircle, Package } from 'lucide-react'
 

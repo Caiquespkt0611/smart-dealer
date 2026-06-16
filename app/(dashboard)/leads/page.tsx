@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import { getLeadsHistorico } from '@/lib/data'
 import { Clock, CheckCircle, Users } from 'lucide-react'
 
