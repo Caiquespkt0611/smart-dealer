@@ -14,7 +14,7 @@ import {
 import { clsx } from 'clsx'
 
 const navItems = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
   { href: '/varejo', label: 'Varejo', icon: ShoppingCart, roles: ['TITULAR', 'GERENTE'] },
   { href: '/estoque', label: 'Estoque', icon: Package, roles: ['TITULAR', 'GERENTE'] },
   { href: '/leads', label: 'Leads', icon: Users, roles: ['TITULAR', 'GERENTE'] },
