@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model VendaMensal {
+  id         String @id @default(cuid())
+  grupo      String
+  loja       String
+  modelo     String
+  mes        Int
+  ano        Int
+  quantidade Int
+}
+
+model Meta {
+  id    String @id @default(cuid())
+  grupo String @unique
+  carta Float
+}
+
+model Estoque {
+  id       String @id @default(cuid())
+  grupo    String
+  loja     String
+  modelo   String
+  chao     Int    @default(0)
+  transito Int    @default(0)
+}
+
+model LeadMensal {
+  id            String @id @default(cuid())
+  referencia    String @unique
+  leads         Int
+  leadsUnicos   Int
+  tempoAtendMin Float
+  tcaPct        Float
+  lcrGrupoPct   Float
+  diasConversao Float
+}
+
+model NPSMensal {
+  id              String @id @default(cuid())
+  referencia      String
+  tipo            String
+  scoreMensal     Float
+  scoreTrimestral Float
+  promotores      Float
+  neutros         Float
+  detratores      Float
+}

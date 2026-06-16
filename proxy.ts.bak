@@ -1,0 +1,4 @@
+// This file is intentionally left as a placeholder.
+// Authentication proxy logic is in middleware.ts, which exports the "proxy" function.
+// This file should not be used directly.
+export {}
