@@ -2,50 +2,84 @@
 @import "./theme-overrides.css";
 
 /* ═══════════════════════════════════════════════════════════════
-   SMART DEALER — Design System (Tema Escuro Executivo Premium)
-   Paleta única, vívida, alto contraste. Pensada para apresentação.
+   SMART DEALER — Design System
+   Dois temas (escuro/claro). Fonte única de variáveis.
+   Tudo (incluindo SVGs e gráficos) lê estas variáveis.
    ═══════════════════════════════════════════════════════════════ */
 
-:root {
-  /* Brand */
-  --yamaha-blue: #1E5FE8;        /* azul vívido para escuro */
-  --yamaha-blue-deep: #003087;   /* azul institucional */
+:root,
+[data-theme="dark"] {
+  --yamaha-blue: #1E5FE8;
   --yamaha-red: #E40521;
 
-  /* Backgrounds — profundidade em camadas */
-  --bg-main: #080B12;            /* fundo da aplicação (deep) */
-  --bg-elevated: #121826;        /* cards */
-  --bg-elevated-2: #1A2233;      /* cards aninhados / hover */
-  --bg-inset: #0C111B;           /* fundos rebaixados (trilhas, inputs) */
+  --bg-main: #080B12;
+  --bg-elevated: #121826;
+  --bg-elevated-2: #1A2233;
+  --bg-inset: #0C111B;
 
-  /* Bordas — VISÍVEIS */
   --border: #283145;
   --border-strong: #38435C;
 
-  /* Texto — VÍVIDO (a chave contra o "apagado") */
   --text-primary: #FFFFFF;
-  --text-secondary: #C7CFE0;     /* labels e sub-headers — bem legível */
-  --text-tertiary: #94A0B8;      /* metadados — ainda nítido */
+  --text-secondary: #C7CFE0;
+  --text-tertiary: #94A0B8;
 
-  /* Status — saturados */
-  --ok: #2DD4A7;
-  --ok-bg: rgba(45, 212, 167, 0.14);
-  --ok-border: rgba(45, 212, 167, 0.40);
+  --ok: #2DD4A7;     --ok-bg: rgba(45,212,167,.14);     --ok-border: rgba(45,212,167,.40);
+  --warn: #FBBF24;   --warn-bg: rgba(251,191,36,.14);   --warn-border: rgba(251,191,36,.40);
+  --danger: #FB6B7E; --danger-bg: rgba(251,107,126,.14);--danger-border: rgba(251,107,126,.42);
+  --accent: #5B9DFF; --accent-bg: rgba(91,157,255,.14);
 
-  --warn: #FBBF24;
-  --warn-bg: rgba(251, 191, 36, 0.14);
-  --warn-border: rgba(251, 191, 36, 0.40);
+  --chart-track: #1C2433;
+  --chart-grid: #1C2433;
+  --chart-axis: #94A0B8;
 
-  --danger: #FB6B7E;
-  --danger-bg: rgba(251, 107, 126, 0.14);
-  --danger-border: rgba(251, 107, 126, 0.42);
+  --sidebar-bg: #0B0F18;
+  --sidebar-item: #9AA0B0;
+  --sidebar-icon: #6B748A;
+  --sidebar-muted: #5B677E;
+  --topbar-bg: rgba(11,15,24,.85);
 
-  --accent: #5B9DFF;
-  --accent-bg: rgba(91, 157, 255, 0.14);
-
-  /* Sombras e brilho */
   --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0,0,0,0.45);
-  --ring-accent: 0 0 0 1px rgba(91,157,255,0.35);
+  --app-glow-1: rgba(30,95,232,0.10);
+  --app-glow-2: rgba(30,95,232,0.06);
+  --logo-filter: brightness(0) invert(1);
+}
+
+[data-theme="light"] {
+  --yamaha-blue: #003087;
+  --yamaha-red: #E40521;
+
+  --bg-main: #EEF2F8;
+  --bg-elevated: #FFFFFF;
+  --bg-elevated-2: #F1F5F9;
+  --bg-inset: #F8FAFC;
+
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-tertiary: #64748B;
+
+  --ok: #059669;     --ok-bg: rgba(5,150,105,.10);   --ok-border: rgba(5,150,105,.32);
+  --warn: #D97706;   --warn-bg: rgba(217,119,6,.10); --warn-border: rgba(217,119,6,.32);
+  --danger: #DC2626; --danger-bg: rgba(220,38,38,.10);--danger-border: rgba(220,38,38,.32);
+  --accent: #2563EB; --accent-bg: rgba(37,99,235,.10);
+
+  --chart-track: #E5EAF1;
+  --chart-grid: #EEF2F7;
+  --chart-axis: #94A3B8;
+
+  --sidebar-bg: #FFFFFF;
+  --sidebar-item: #64748B;
+  --sidebar-icon: #94A3B8;
+  --sidebar-muted: #94A3B8;
+  --topbar-bg: rgba(255,255,255,.85);
+
+  --shadow-card: 0 1px 2px rgba(15,23,42,0.05), 0 8px 24px rgba(15,23,42,0.07);
+  --app-glow-1: rgba(0,48,135,0.05);
+  --app-glow-2: rgba(0,48,135,0.03);
+  --logo-filter: none;
 }
 
 body {
@@ -54,43 +88,32 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(900px 500px at 85% -10%, rgba(30, 95, 232, 0.10), transparent 60%),
-    radial-gradient(700px 400px at -5% 110%, rgba(30, 95, 232, 0.06), transparent 55%);
+    radial-gradient(900px 500px at 85% -10%, var(--app-glow-1), transparent 60%),
+    radial-gradient(700px 400px at -5% 110%, var(--app-glow-2), transparent 55%);
   background-attachment: fixed;
+  transition: background-color .3s ease, color .3s ease;
 }
 
 * { box-sizing: border-box; }
 
-/* Scrollbar discreta premium */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #2A3346; border-radius: 8px; border: 2px solid var(--bg-main); }
-::-webkit-scrollbar-thumb:hover { background: #3A4459; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; border: 2px solid var(--bg-main); }
 
-/* ── Componentes reutilizáveis ──────────────────────────────────── */
-
+/* ── Componentes ────────────────────────────────────────────── */
 .card {
   background-color: var(--bg-elevated);
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow-card);
 }
-
 .card-pad { padding: 1.25rem; }
 
-/* Título de seção (uppercase tracking) */
 .section-label {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text-tertiary);
 }
-
-/* Número grande (KPI) */
 .kpi-value {
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  color: var(--text-primary); letter-spacing: -0.02em;
 }

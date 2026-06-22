@@ -104,12 +104,12 @@ export default async function LeadsPage() {
                 <tr
                   key={row.referencia}
                   className={`border-b border-slate-200 last:border-0 ${
-                    i === 0 ? 'bg-[#003087]/10' : i % 2 === 0 ? 'bg-transparent' : 'bg-slate-50'
+                    i === 0 ? 'bg-blue-50' : i % 2 === 0 ? 'bg-transparent' : 'bg-slate-50'
                   }`}
                 >
                   <td className="px-4 py-2.5 text-slate-900 font-medium">
                     {row.referencia}
-                    {i === 0 && <span className="ml-2 text-[10px] text-[#60A5FA] uppercase">atual</span>}
+                    {i === 0 && <span className="ml-2 text-[10px] text-blue-500 uppercase">atual</span>}
                   </td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-slate-600">{row.leads}</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-slate-600">{row.leadsUnicos}</td>

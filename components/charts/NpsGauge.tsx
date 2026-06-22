@@ -61,7 +61,7 @@ export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugePr
       <div className="flex justify-center">
         <svg viewBox="0 0 200 118" className="w-full" style={{ maxWidth: 240 }}>
           {/* Trilha */}
-          <path d={arcPath} fill="none" stroke="#1C2433" strokeWidth={14} strokeLinecap="round" />
+          <path d={arcPath} fill="none" stroke="var(--chart-track)" strokeWidth={14} strokeLinecap="round" />
           {/* Preenchimento */}
           <path
             d={arcPath}
@@ -76,10 +76,10 @@ export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugePr
           {/* Marcador da meta */}
           <line x1={metaOut.x} y1={metaOut.y} x2={metaIn.x} y2={metaIn.y} stroke="#FBBF24" strokeWidth={2.5} strokeLinecap="round" />
           {/* Marcador nacional */}
-          <circle cx={nacPt.x} cy={nacPt.y} r={3} fill="#94A0B8" stroke="#080B12" strokeWidth={1.5} />
+          <circle cx={nacPt.x} cy={nacPt.y} r={3} fill="var(--chart-axis)" stroke="var(--bg-main)" strokeWidth={1.5} />
 
           {/* Score central */}
-          <text x={cx} y={cy - 8} textAnchor="middle" fill="#FFFFFF" fontSize={34} fontWeight="800" fontFamily="ui-monospace,monospace">
+          <text x={cx} y={cy - 8} textAnchor="middle" fill="var(--text-primary)" fontSize={34} fontWeight="800" fontFamily="ui-monospace,monospace">
             {score}
           </text>
           <text x={cx} y={cy + 10} textAnchor="middle" fill={accent} fontSize={10} fontWeight="700" letterSpacing="0.05em">
@@ -87,8 +87,8 @@ export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugePr
           </text>
 
           {/* Extremos */}
-          <text x={cx - r} y={cy + 18} textAnchor="middle" fill="#5B677E" fontSize={9}>0</text>
-          <text x={cx + r} y={cy + 18} textAnchor="middle" fill="#5B677E" fontSize={9}>100</text>
+          <text x={cx - r} y={cy + 18} textAnchor="middle" fill="var(--text-tertiary)" fontSize={9}>0</text>
+          <text x={cx + r} y={cy + 18} textAnchor="middle" fill="var(--text-tertiary)" fontSize={9}>100</text>
         </svg>
       </div>
 

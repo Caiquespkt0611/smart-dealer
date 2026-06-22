@@ -25,7 +25,7 @@ export function MetaRing({ pct, projecao, meta, junhoEmDobro, premioPotencial }:
       <div className="relative">
         <svg viewBox="0 0 180 180" className="w-40 h-40">
           {/* Trilha */}
-          <circle cx={cx} cy={cy} r={r} fill="none" stroke="#1C2433" strokeWidth={14} />
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="var(--chart-track)" strokeWidth={14} />
           {/* Progresso */}
           <circle
             cx={cx} cy={cy} r={r}
@@ -37,10 +37,10 @@ export function MetaRing({ pct, projecao, meta, junhoEmDobro, premioPotencial }:
             transform={`rotate(-90 ${cx} ${cy})`}
             style={{ filter: `drop-shadow(0 0 8px ${color}55)`, transition: 'stroke-dasharray .6s ease' }}
           />
-          <text x={cx} y={cy - 6} textAnchor="middle" fill="#FFFFFF" fontSize={32} fontWeight="800" fontFamily="ui-monospace,monospace">
+          <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--text-primary)" fontSize={32} fontWeight="800" fontFamily="ui-monospace,monospace">
             {pct}%
           </text>
-          <text x={cx} y={cy + 13} textAnchor="middle" fill="#94A0B8" fontSize={11}>da meta</text>
+          <text x={cx} y={cy + 13} textAnchor="middle" fill="var(--chart-axis)" fontSize={11}>da meta</text>
           <text x={cx} y={cy + 30} textAnchor="middle" fill={color} fontSize={10} fontWeight="700">
             {pct >= 80 ? 'NO RITMO' : pct >= 60 ? 'ATENÇÃO' : 'CRÍTICO'}
           </text>

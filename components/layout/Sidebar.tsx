@@ -29,20 +29,21 @@ export function Sidebar() {
   return (
     <aside
       className="w-60 shrink-0 flex flex-col h-full border-r"
-      style={{ backgroundColor: '#0B0F18', borderColor: 'var(--border)' }}
+      style={{ backgroundColor: 'var(--sidebar-bg)', borderColor: 'var(--border)' }}
     >
       {/* Logo */}
-      <div className="px-5 py-5 flex items-center justify-center border-b" style={{ borderColor: 'var(--border)' }}>
+      <div className="px-5 py-6 flex items-center justify-center border-b" style={{ borderColor: 'var(--border)' }}>
         <img
           src="/logo-smart-dealer.png"
           alt="Smart Dealer"
-          className="h-14 w-auto object-contain"
+          className="h-12 w-auto object-contain"
+          style={{ filter: 'var(--logo-filter)' }}
         />
       </div>
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-5 space-y-1">
-        <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: '#5B677E' }}>
+        <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--sidebar-muted)' }}>
           Menu
         </p>
         {visibleItems.map(item => {
@@ -54,8 +55,8 @@ export function Sidebar() {
               href={item.href}
               className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
               style={{
-                backgroundColor: active ? 'rgba(91,157,255,0.12)' : 'transparent',
-                color: active ? '#FFFFFF' : '#9AA0B0',
+                backgroundColor: active ? 'var(--accent-bg)' : 'transparent',
+                color: active ? 'var(--text-primary)' : 'var(--sidebar-item)',
               }}
             >
               {active && (
@@ -64,7 +65,7 @@ export function Sidebar() {
                   style={{ backgroundColor: 'var(--yamaha-blue)' }}
                 />
               )}
-              <Icon size={17} style={{ color: active ? 'var(--accent)' : '#6B748A' }} />
+              <Icon size={17} style={{ color: active ? 'var(--accent)' : 'var(--sidebar-icon)' }} />
               {item.label}
             </Link>
           )
@@ -75,7 +76,7 @@ export function Sidebar() {
       <div className="px-5 py-4 border-t" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center gap-2">
           <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: 'var(--ok)' }} />
-          <span className="text-[10px] uppercase tracking-[0.14em]" style={{ color: '#5B677E' }}>
+          <span className="text-[10px] uppercase tracking-[0.14em]" style={{ color: 'var(--sidebar-muted)' }}>
             Yamahaway 2026
           </span>
         </div>

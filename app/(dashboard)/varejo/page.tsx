@@ -33,8 +33,8 @@ export default async function VarejoPage({
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
-            { label: 'Vendas até dia 14', val: data.vendasMes, unit: 'motos', color: '#F9FAFB' },
-            { label: 'Projeção de fechamento', val: data.projecao, unit: 'motos', color: '#60A5FA' },
+            { label: 'Vendas até dia 14', val: data.vendasMes, unit: 'motos', color: 'var(--text-primary)' },
+            { label: 'Projeção de fechamento', val: data.projecao, unit: 'motos', color: 'var(--accent)' },
             { label: 'Meta do mês', val: data.meta, unit: 'motos', color: '#9CA3AF' },
             { label: '% Atingimento', val: `${data.pctAtingimento}%`, unit: '', color: data.pctAtingimento >= 80 ? '#10B981' : data.pctAtingimento >= 60 ? '#F59E0B' : '#EF4444' },
           ].map(item => (
@@ -157,42 +157,42 @@ export default async function VarejoPage({
                   if (meta >= 61) return 10000
                   return 5000
                 }
+                const medalha = ['🥇', '🥈', '🥉'][i]
+                const maxPct = Math.max(...data.ranking.map(x => x.pct))
                 return (
                   <tr
                     key={r.grupo}
-                    className={`border-b border-slate-200 last:border-0 ${isNippon ? 'bg-[#003087]/10' : i % 2 === 0 ? 'bg-transparent' : 'bg-slate-50'}`}
+                    className="border-b border-slate-200 last:border-0"
+                    style={isNippon ? { backgroundColor: 'var(--accent-bg)' } : undefined}
                   >
                     <td className="px-4 py-3">
-                      <span className={`text-lg font-bold tabular-nums ${i === 0 ? 'text-[#F59E0B]' : 'text-slate-600'}`}>
-                        {r.pos}º
+                      <span className="text-base font-bold tabular-nums" style={{ color: i === 0 ? 'var(--warn)' : 'var(--text-tertiary)' }}>
+                        {medalha ?? `${r.pos}º`}
                       </span>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`font-medium ${isNippon ? 'text-[#60A5FA]' : 'text-slate-900'}`}>
+                      <span className="font-semibold" style={{ color: isNippon ? 'var(--accent)' : 'var(--text-primary)' }}>
                         {isNippon ? '▶ ' : ''}{r.grupo}
-                        {isNippon && <span className="text-slate-600 text-xs ml-2">(você)</span>}
+                        {isNippon && <span className="text-xs ml-2" style={{ color: 'var(--text-tertiary)' }}>(você)</span>}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-3">
-                        <div className="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden hidden sm:block">
+                        <div className="w-28 h-2 rounded-full overflow-hidden hidden sm:block" style={{ backgroundColor: 'var(--bg-inset)' }}>
                           <div
                             className="h-full rounded-full"
                             style={{
-                              width: `${Math.min(pct, 100)}%`,
-                              backgroundColor: pct >= 80 ? '#10B981' : pct >= 60 ? '#F59E0B' : '#EF4444',
+                              width: `${(r.pct / maxPct) * 100}%`,
+                              backgroundColor: isNippon ? 'var(--accent)' : 'var(--border-strong)',
                             }}
                           />
                         </div>
-                        <span
-                          className="tabular-nums font-bold text-sm"
-                          style={{ color: pct >= 80 ? '#10B981' : pct >= 60 ? '#F59E0B' : '#EF4444' }}
-                        >
+                        <span className="tabular-nums font-bold text-sm w-12 text-right" style={{ color: isNippon ? 'var(--accent)' : 'var(--text-secondary)' }}>
                           {pct}%
                         </span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right text-slate-600 tabular-nums hidden md:table-cell">
+                    <td className="px-4 py-3 text-right tabular-nums hidden md:table-cell" style={{ color: isNippon ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
                       {fmtBRL(faixaFn(r.meta))}
                     </td>
                   </tr>
