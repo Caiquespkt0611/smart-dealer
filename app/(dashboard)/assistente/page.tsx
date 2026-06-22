@@ -3,11 +3,15 @@ import { useState, useRef, useEffect } from 'react'
 import { Wrench, Send } from 'lucide-react'
 
 const CHIPS = [
-  'Folga da válvula Fazer 250',
-  'Troca de óleo Fazer 250',
-  'Pressão dos pneus',
+  'Folga da válvula',
+  'Troca de óleo',
+  'Vela de ignição',
+  'Marcha lenta',
   'Ajuste da corrente',
+  'Pressão dos pneus',
   'Sangria do freio ABS',
+  'Folga da embreagem',
+  'Tabela de manutenção',
 ]
 
 interface Message {
@@ -121,8 +125,24 @@ export default function AssistentePage() {
           <div ref={bottomRef} />
         </div>
 
+        {/* Perguntas prontas — sempre visíveis (clicar economiza tokens) */}
+        <div className="px-4 pt-3 shrink-0">
+          <div className="flex gap-2 overflow-x-auto pb-1">
+            {CHIPS.map(chip => (
+              <button
+                key={chip}
+                onClick={() => sendMessage(chip)}
+                disabled={loading}
+                className="text-xs bg-slate-100 text-slate-600 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors border border-slate-200 whitespace-nowrap disabled:opacity-50"
+              >
+                {chip}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Input */}
-        <div className="p-4 border-t border-slate-200 shrink-0">
+        <div className="p-4 border-t-0 shrink-0">
           <div className="flex gap-2">
             <input
               value={input}
