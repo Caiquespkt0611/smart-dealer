@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, Copy, Check, Camera, Image as ImageIcon, Loader2 } from 'lucide-react'
+import { Sparkles, Copy, Check, Camera, Image as ImageIcon, Loader2, Download, BadgeCheck } from 'lucide-react'
+import { getArteCampanha, comModelosComArte } from '@/lib/artes-campanha'
 
 interface Encalhado {
   modelo: string
@@ -19,14 +20,16 @@ interface Campanha {
 }
 
 export function GeradorCampanha({ produtos }: { produtos: Encalhado[] }) {
-  const [sel, setSel] = useState(produtos[0]?.modelo ?? '')
+  const lista = comModelosComArte(produtos)
+  const [sel, setSel] = useState(lista[0]?.modelo ?? '')
   const [objetivo, setObjetivo] = useState('Girar estoque parado e atrair leads')
   const [loading, setLoading] = useState(false)
   const [campanha, setCampanha] = useState<Campanha | null>(null)
   const [erro, setErro] = useState('')
   const [copiado, setCopiado] = useState(false)
 
-  const produto = produtos.find(p => p.modelo === sel)
+  const produto = lista.find(p => p.modelo === sel)
+  const arte = getArteCampanha(sel)
 
   async function gerar() {
     setLoading(true); setErro(''); setCampanha(null)
@@ -75,10 +78,15 @@ export function GeradorCampanha({ produtos }: { produtos: Encalhado[] }) {
             className="w-full mt-1.5 rounded-lg px-3 py-2 text-sm"
             style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-primary)', border: '1px solid var(--border)' }}
           >
-            {produtos.map(p => (
+            {lista.map(p => (
               <option key={p.modelo} value={p.modelo}>{p.modelo} — {p.cobertura}d cobertura · {p.estoqueTotal} un</option>
             ))}
           </select>
+          {arte && (
+            <p className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold" style={{ color: 'var(--ok)' }}>
+              <BadgeCheck size={12} /> Arte oficial disponível para este modelo
+            </p>
+          )}
         </div>
 
         <div>
@@ -118,6 +126,33 @@ export function GeradorCampanha({ produtos }: { produtos: Encalhado[] }) {
         )}
         {campanha && (
           <div className="space-y-3">
+            {arte && (
+              <figure className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold" style={{ color: 'var(--ok)' }}>
+                    <ImageIcon size={12} /> Arte pronta para publicar
+                  </span>
+                  <a
+                    href={arte.src}
+                    download
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg"
+                    style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}
+                  >
+                    <Download size={12} /> Baixar arte
+                  </a>
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={arte.src}
+                  alt={`Arte da campanha ${sel}`}
+                  className="w-full rounded-xl border"
+                  style={{ borderColor: 'var(--border)' }}
+                />
+                <figcaption className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+                  Entrada {arte.entrada} · parcelas {arte.parcela} · campanha Seleção Yamaha
+                </figcaption>
+              </figure>
+            )}
             <div className="flex items-start justify-between gap-2">
               <p className="text-base font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>{campanha.headline}</p>
               <button onClick={copiarTudo} className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1.5 rounded-lg" style={{ backgroundColor: copiado ? 'var(--ok-bg)' : 'var(--accent-bg)', color: copiado ? 'var(--ok)' : 'var(--accent)' }}>
