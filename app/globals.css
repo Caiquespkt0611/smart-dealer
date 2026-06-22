@@ -3,20 +3,43 @@
 :root {
   --yamaha-blue: #003087;
   --yamaha-red: #E40521;
-  --dark-bg: #0A0E1A;
-  --card-bg: #111827;
-  --card-border: #1F2937;
-  --text-primary: #F9FAFB;
-  --text-secondary: #9CA3AF;
   --success: #10B981;
   --warning: #F59E0B;
   --danger: #EF4444;
 }
 
+/* Tema Escuro (padrão) */
+:root,
+html[data-theme="dark"] {
+  --bg-main: #0A0E1A;
+  --bg-secondary: #111827;
+  --bg-tertiary: #0F1724;
+  --border-color: #1F2937;
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+  --header-bg: #003087;
+  --shadow: rgba(0, 0, 0, 0.3);
+}
+
+/* Tema Claro */
+html[data-theme="light"] {
+  --bg-main: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F1F5F9;
+  --border-color: #E2E8F0;
+  --text-primary: #0F172A;
+  --text-secondary: #64748B;
+  --text-tertiary: #94A3B8;
+  --header-bg: #FFFFFF;
+  --shadow: rgba(0, 0, 0, 0.08);
+}
+
 body {
-  background-color: var(--dark-bg);
+  background-color: var(--bg-main);
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 * {

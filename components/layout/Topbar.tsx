@@ -1,8 +1,8 @@
 'use client'
 import { signOut, useSession } from 'next-auth/react'
-import { LogOut, ChevronDown, Building2 } from 'lucide-react'
+import { LogOut, ChevronDown, Building2, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
-import { clsx } from 'clsx'
+import { useTheme } from '@/components/providers/ThemeProvider'
 
 const LOJAS = ['Grupo Nippon', 'Bragança Paulista', 'Extrema']
 
@@ -13,32 +13,59 @@ interface TopbarProps {
 
 export function Topbar({ loja, onLojaChange }: TopbarProps) {
   const { data: session } = useSession()
+  const { theme, toggleTheme } = useTheme()
   const [open, setOpen] = useState(false)
 
+  const isDark = theme === 'dark'
+
   return (
-    <header className="h-14 border-b border-slate-200 bg-white flex items-center justify-between px-6 shrink-0">
+    <header
+      className="h-14 border-b flex items-center justify-between px-6 shrink-0"
+      style={{
+        backgroundColor: isDark ? '#111827' : '#FFFFFF',
+        borderColor: isDark ? '#1F2937' : '#E2E8F0',
+      }}
+    >
       {/* Seletor de loja */}
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 text-sm text-slate-700 font-medium transition-colors"
+          className="flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+          style={{
+            backgroundColor: isDark ? '#1F2937' : '#F1F5F9',
+            border: `1px solid ${isDark ? '#374151' : '#E2E8F0'}`,
+            color: isDark ? '#F9FAFB' : '#0F172A',
+          }}
         >
-          <Building2 size={13} className="text-slate-400" />
+          <Building2 size={13} style={{ color: isDark ? '#9CA3AF' : '#64748B' }} />
           <span>{loja}</span>
-          <ChevronDown size={13} className={clsx('text-slate-400 transition-transform', open && 'rotate-180')} />
+          <ChevronDown
+            size={13}
+            style={{
+              color: isDark ? '#9CA3AF' : '#64748B',
+              transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s',
+            }}
+          />
         </button>
         {open && (
-          <div className="absolute top-full left-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50 w-48">
+          <div
+            className="absolute top-full left-0 mt-1 rounded-xl shadow-lg overflow-hidden z-50 w-48 border"
+            style={{
+              backgroundColor: isDark ? '#1F2937' : '#FFFFFF',
+              borderColor: isDark ? '#374151' : '#E2E8F0',
+            }}
+          >
             {LOJAS.map(l => (
               <button
                 key={l}
                 onClick={() => { onLojaChange(l); setOpen(false) }}
-                className={clsx(
-                  'w-full text-left px-4 py-2.5 text-sm transition-colors',
-                  l === loja
-                    ? 'bg-blue-50 text-[#003087] font-semibold'
-                    : 'text-slate-600 hover:bg-slate-50'
-                )}
+                className="w-full text-left px-4 py-2.5 text-sm transition-colors"
+                style={{
+                  backgroundColor: l === loja ? (isDark ? '#003087' : '#EFF6FF') : 'transparent',
+                  color: l === loja ? (isDark ? '#60A5FA' : '#003087') : isDark ? '#9CA3AF' : '#475569',
+                  fontWeight: l === loja ? '600' : '400',
+                }}
               >
                 {l}
               </button>
@@ -47,17 +74,41 @@ export function Topbar({ loja, onLojaChange }: TopbarProps) {
         )}
       </div>
 
-      {/* User info */}
-      <div className="flex items-center gap-4">
+      {/* Center - User info + Theme toggle */}
+      <div className="flex items-center gap-6">
         <div className="text-right">
-          <div className="text-sm font-semibold text-slate-900">{session?.user?.name}</div>
-          <div className="text-xs text-slate-400 capitalize">
+          <div
+            className="text-sm font-semibold"
+            style={{ color: isDark ? '#F9FAFB' : '#0F172A' }}
+          >
+            {session?.user?.name}
+          </div>
+          <div
+            className="text-xs capitalize"
+            style={{ color: isDark ? '#9CA3AF' : '#64748B' }}
+          >
             {((session?.user as { role?: string })?.role ?? '').toLowerCase()}
           </div>
         </div>
+
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          className="p-1.5 rounded-lg transition-colors"
+          style={{
+            backgroundColor: isDark ? '#1F2937' : '#F1F5F9',
+            color: isDark ? '#F59E0B' : '#003087',
+          }}
+          title={`Mudar para tema ${isDark ? 'claro' : 'escuro'}`}
+        >
+          {isDark ? <Sun size={16} /> : <Moon size={16} />}
+        </button>
+
+        {/* Logout */}
         <button
           onClick={() => signOut({ callbackUrl: '/login' })}
-          className="text-slate-400 hover:text-slate-700 transition-colors p-1.5 hover:bg-slate-100 rounded-lg"
+          className="transition-colors"
+          style={{ color: isDark ? '#9CA3AF' : '#64748B' }}
           title="Sair"
         >
           <LogOut size={15} />
