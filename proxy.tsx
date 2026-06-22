@@ -3,11 +3,12 @@ import type { NextRequest } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
 const PUBLIC_PATHS = ['/login', '/api/auth']
+const STATIC_EXT = /\.(png|jpg|jpeg|gif|svg|ico|webp|woff|woff2|ttf|eot|otf|mp4|pdf)$/i
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  if (PUBLIC_PATHS.some(path => pathname.startsWith(path))) {
+  if (PUBLIC_PATHS.some(path => pathname.startsWith(path)) || STATIC_EXT.test(pathname)) {
     return NextResponse.next()
   }
 

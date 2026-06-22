@@ -6,150 +6,125 @@ interface NpsGaugeProps {
   nacional: number
   label: string
   kaizenPts: number
-  tipo: 'vendas' | 'pos-vendas'
 }
 
-function angleToPoint(angleDeg: number, cx: number, cy: number, r: number) {
+function ptOnArc(angleDeg: number, cx: number, cy: number, r: number) {
   const rad = (angleDeg * Math.PI) / 180
   return { x: cx + r * Math.cos(rad), y: cy - r * Math.sin(rad) }
 }
 
 export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugeProps) {
-  const cx = 110, cy = 108, r = 88, rInner = 68
+  const cx = 110, cy = 108, r = 86
   const isOk = score >= meta
-  const color = isOk ? '#10B981' : score >= meta - 3 ? '#F59E0B' : '#EF4444'
+  const color     = isOk ? '#059669' : score >= meta - 3 ? '#D97706' : '#DC2626'
+  const trackOk   = isOk ? '#D1FAE5' : '#FEF3C7'
+  const trackFail = isOk ? '#FEF3C7' : '#FEE2E2'
 
-  // angles: 180° = esquerda (score 0), 0° = direita (score 100)
-  const scoreAngle = (1 - score / 100) * 180
-  const metaAngle = (1 - meta / 100) * 180
+  const scoreAngle   = (1 - score   / 100) * 180
+  const metaAngle    = (1 - meta    / 100) * 180
   const nacionalAngle = (1 - nacional / 100) * 180
 
-  const metaPtOuter = angleToPoint(metaAngle, cx, cy, r + 4)
-  const metaPtInner = angleToPoint(metaAngle, cx, cy, rInner)
-  const nacPt = angleToPoint(nacionalAngle, cx, cy, r + 8)
-
-  // Para a barra de progresso: pathLength normalizado
-  const totalPathLen = 1000
-  const fillLen = (score / 100) * totalPathLen
-  const metaFillLen = (meta / 100) * totalPathLen
+  const metaPtOuter  = ptOnArc(metaAngle, cx, cy, r + 4)
+  const metaPtInner  = ptOnArc(metaAngle, cx, cy, r - 16)
+  const metaPtLabel  = ptOnArc(metaAngle, cx, cy, r - 32)
+  const nacPt        = ptOnArc(nacionalAngle, cx, cy, r + 14)
 
   const arcPath = `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`
+  const totalLen = 1000
+  const fillLen  = (score / 100) * totalLen
+  const metaFillLen = (meta / 100) * totalLen
 
-  // Zonas de cor no fundo
-  const dangerEnd = metaAngle
-  const safeStart = dangerEnd
-  const scorePoint = angleToPoint(scoreAngle, cx, cy, r)
-  const largeArcScore = (score / 100) > 0.5 ? 1 : 0
-  const largeArcMeta = (meta / 100) > 0.5 ? 1 : 0
+  const metaPt = ptOnArc(metaAngle, cx, cy, r)
+
+  // zona abaixo da meta (vermelho/amarelo claro)
+  const metaX = metaPt.x, metaY = metaPt.y
+  const largeArcMeta = meta > 50 ? 1 : 0
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+      {/* Header */}
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280]">{label}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">{label}</p>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-4xl font-bold tabular-nums" style={{ color }}>{score}</span>
-            <span className="text-sm text-[#6B7280]">/ meta {meta}</span>
+            <span className="text-sm text-slate-400">/ meta {meta}</span>
           </div>
         </div>
-        <div className={`flex flex-col items-center px-3 py-2 rounded-xl ${isOk ? 'bg-[#10B98115] border border-[#10B98130]' : 'bg-[#1F293780] border border-[#374151]'}`}>
-          <span className={`text-2xl font-bold tabular-nums ${isOk ? 'text-[#10B981]' : 'text-[#4B5563]'}`}>
+        <div className={`flex flex-col items-center px-3 py-2 rounded-xl border ${
+          isOk ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-100 border-slate-200'
+        }`}>
+          <span className={`text-2xl font-bold tabular-nums ${isOk ? 'text-emerald-600' : 'text-slate-400'}`}>
             {isOk ? `+${kaizenPts}` : '0'}
           </span>
-          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isOk ? 'text-[#10B98180]' : 'text-[#4B5563]'}`}>
+          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isOk ? 'text-emerald-500' : 'text-slate-400'}`}>
             pts Kaizen
           </span>
         </div>
       </div>
 
-      <svg viewBox="0 0 220 125" className="w-full">
-        {/* Fundo zona perigo */}
+      {/* Gauge SVG */}
+      <svg viewBox="0 0 220 128" className="w-full">
+        {/* Zona de perigo (abaixo da meta) */}
         <path
-          d={`M ${cx - r} ${cy} A ${r} ${r} 0 ${largeArcMeta} 1 ${angleToPoint(dangerEnd, cx, cy, r).x} ${angleToPoint(dangerEnd, cx, cy, r).y}`}
-          fill="none" stroke="#EF444418" strokeWidth={18}
+          d={`M ${cx - r} ${cy} A ${r} ${r} 0 ${largeArcMeta} 1 ${metaX} ${metaY}`}
+          fill="none" stroke={trackFail} strokeWidth={20}
         />
-        {/* Fundo zona segura */}
+        {/* Zona segura (acima da meta) */}
         <path
-          d={`M ${angleToPoint(safeStart, cx, cy, r).x} ${angleToPoint(safeStart, cx, cy, r).y} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
-          fill="none" stroke="#10B98118" strokeWidth={18}
+          d={`M ${metaX} ${metaY} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
+          fill="none" stroke={trackOk} strokeWidth={20}
         />
-        {/* Background arc (contorno) */}
-        <path d={arcPath} fill="none" stroke="#1F2937" strokeWidth={20} strokeLinecap="butt" />
+        {/* Background neutro */}
+        <path d={arcPath} fill="none" stroke="#F1F5F9" strokeWidth={20} strokeLinecap="butt" />
 
-        {/* Score arc fill */}
+        {/* Fill do score */}
         <path
           d={arcPath}
           fill="none"
           stroke={color}
           strokeWidth={20}
           strokeLinecap="butt"
-          pathLength={totalPathLen}
-          strokeDasharray={`${fillLen} ${totalPathLen}`}
-          style={{ filter: isOk ? `drop-shadow(0 0 6px ${color}60)` : undefined }}
+          pathLength={totalLen}
+          strokeDasharray={`${fillLen} ${totalLen}`}
+          style={{ filter: isOk ? `drop-shadow(0 0 4px ${color}40)` : undefined }}
         />
 
         {/* Marcador Nacional */}
-        <circle
-          cx={angleToPoint(nacionalAngle, cx, cy, r).x}
-          cy={angleToPoint(nacionalAngle, cx, cy, r).y}
-          r={3}
-          fill="#6B7280"
-        />
-        <text
-          x={nacPt.x}
-          y={nacPt.y - 6}
-          textAnchor="middle"
-          fill="#6B7280"
-          fontSize={9}
-          fontFamily="monospace"
-        >
+        <circle cx={ptOnArc(nacionalAngle, cx, cy, r).x} cy={ptOnArc(nacionalAngle, cx, cy, r).y} r={3.5} fill="#94A3B8" />
+        <text x={nacPt.x} y={nacPt.y - 4} textAnchor="middle" fill="#94A3B8" fontSize={8.5} fontFamily="monospace">
           {nacional}
         </text>
 
         {/* Marcador Meta */}
-        <line
-          x1={metaPtOuter.x} y1={metaPtOuter.y}
-          x2={metaPtInner.x} y2={metaPtInner.y}
-          stroke="#F59E0B" strokeWidth={2.5}
-        />
-        <circle
-          cx={angleToPoint(metaAngle, cx, cy, r).x}
-          cy={angleToPoint(metaAngle, cx, cy, r).y}
-          r={3}
-          fill="#F59E0B"
-        />
+        <line x1={metaPtOuter.x} y1={metaPtOuter.y} x2={metaPtInner.x} y2={metaPtInner.y} stroke="#D97706" strokeWidth={2.5} />
+        <circle cx={metaPt.x} cy={metaPt.y} r={3} fill="#D97706" />
+        <text x={metaPtLabel.x} y={metaPtLabel.y + 4} textAnchor="middle" fill="#D97706" fontSize={9} fontWeight="bold">
+          {meta}
+        </text>
 
-        {/* Texto central */}
-        <text x={cx} y={cy - 18} textAnchor="middle" fill="white" fontSize={38} fontWeight="bold" fontFamily="ui-monospace, monospace">
+        {/* Score central */}
+        <text x={cx} y={cy - 16} textAnchor="middle" fill="#0F172A" fontSize={36} fontWeight="bold" fontFamily="ui-monospace,monospace">
           {score}
         </text>
-        <text x={cx} y={cy + 2} textAnchor="middle" fill="#4B5563" fontSize={11} fontFamily="sans-serif">
+        <text x={cx} y={cy + 4} textAnchor="middle" fill="#94A3B8" fontSize={11}>
           Nacional: {nacional}
         </text>
 
-        {/* Labels dos extremos */}
-        <text x={cx - r - 2} y={cy + 16} textAnchor="end" fill="#374151" fontSize={9}>0</text>
-        <text x={cx + r + 2} y={cy + 16} textAnchor="start" fill="#374151" fontSize={9}>100</text>
-
-        {/* Label meta no arco */}
-        <text
-          x={angleToPoint(metaAngle, cx, cy, r - 32).x}
-          y={angleToPoint(metaAngle, cx, cy, r - 32).y + 4}
-          textAnchor="middle"
-          fill="#F59E0B"
-          fontSize={9}
-          fontWeight="bold"
-        >
-          {meta}
-        </text>
+        {/* Extremos */}
+        <text x={cx - r - 4} y={cy + 16} textAnchor="end"   fill="#CBD5E1" fontSize={9}>0</text>
+        <text x={cx + r + 4} y={cy + 16} textAnchor="start" fill="#CBD5E1" fontSize={9}>100</text>
       </svg>
 
-      <div className={`flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-semibold ${
+      {/* Status badge */}
+      <div className={`flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold ${
         isOk
-          ? 'bg-[#10B98115] text-[#10B981] border border-[#10B98130]'
-          : 'bg-[#EF444415] text-[#EF4444] border border-[#EF444430]'
+          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+          : 'bg-amber-50 text-amber-700 border border-amber-200'
       }`}>
-        {isOk ? '✓ Acima da meta — Kaizen garantido' : '✕ Abaixo da meta'}
+        {isOk
+          ? `✓ Acima da meta — +${kaizenPts} pts Kaizen garantidos`
+          : `⚠ Abaixo da meta — ${kaizenPts} pts Kaizen em risco`}
       </div>
     </div>
   )

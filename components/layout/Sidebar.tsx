@@ -14,38 +14,33 @@ import {
 import { clsx } from 'clsx'
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
-  { href: '/varejo', label: 'Varejo', icon: ShoppingCart, roles: ['TITULAR', 'GERENTE'] },
-  { href: '/estoque', label: 'Estoque', icon: Package, roles: ['TITULAR', 'GERENTE'] },
-  { href: '/leads', label: 'Leads', icon: Users, roles: ['TITULAR', 'GERENTE'] },
-  { href: '/nps', label: 'NPS', icon: Star, roles: ['TITULAR', 'GERENTE'] },
-  { href: '/assistente', label: 'Assistente Técnico', icon: Wrench, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
+  { href: '/dashboard', label: 'Dashboard',         icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
+  { href: '/varejo',    label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE'] },
+  { href: '/estoque',   label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'] },
+  { href: '/leads',     label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'] },
+  { href: '/nps',       label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE'] },
+  { href: '/assistente',label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
 ]
 
 export function Sidebar() {
   const pathname = usePathname()
   const { data: session } = useSession()
   const role = (session?.user as { role?: string })?.role ?? ''
-
   const visibleItems = navItems.filter(item => item.roles.includes(role))
 
   return (
-    <aside className="w-60 shrink-0 bg-[#111827] border-r border-[#1F2937] flex flex-col h-full">
+    <aside className="w-60 shrink-0 flex flex-col h-full" style={{ background: 'linear-gradient(180deg, #002070 0%, #003087 100%)' }}>
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-[#1F2937]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-[#003087] flex items-center justify-center">
-            <span className="text-white font-bold text-sm">Y</span>
-          </div>
-          <div>
-            <div className="text-sm font-bold text-white leading-tight">Smart Dealer</div>
-            <div className="text-[10px] text-[#9CA3AF] uppercase tracking-widest">Nippon Motos</div>
-          </div>
-        </div>
+      <div className="px-4 py-5 border-b border-white/10 flex items-center justify-center">
+        <img
+          src="/logo-smart-dealer.png"
+          alt="Smart Dealer"
+          className="h-16 w-auto object-contain brightness-0 invert"
+        />
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-1">
+      <nav className="flex-1 px-3 py-4 space-y-0.5">
         {visibleItems.map(item => {
           const Icon = item.icon
           const active = pathname === item.href
@@ -54,13 +49,13 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors',
+                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
                 active
-                  ? 'bg-[#003087]/20 text-[#60A5FA] font-medium'
-                  : 'text-[#9CA3AF] hover:text-white hover:bg-[#1F2937]'
+                  ? 'bg-white/15 text-white shadow-sm'
+                  : 'text-white/60 hover:text-white hover:bg-white/8'
               )}
             >
-              <Icon size={16} />
+              <Icon size={16} className={active ? 'text-white' : 'text-white/50'} />
               {item.label}
             </Link>
           )
@@ -68,10 +63,10 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t border-[#1F2937]">
+      <div className="px-5 py-4 border-t border-white/10">
         <div className="flex items-center gap-2">
-          <TrendingUp size={14} className="text-[#003087]" />
-          <span className="text-[10px] text-[#4B5563] uppercase tracking-widest">Yamahaway 2026</span>
+          <TrendingUp size={12} className="text-white/30" />
+          <span className="text-[10px] text-white/30 uppercase tracking-widest">Yamahaway 2026</span>
         </div>
       </div>
     </aside>
