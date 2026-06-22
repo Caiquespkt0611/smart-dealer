@@ -1,106 +1,96 @@
 @import "tailwindcss";
 @import "./theme-overrides.css";
-@import "./card-styles.css";
+
+/* ═══════════════════════════════════════════════════════════════
+   SMART DEALER — Design System (Tema Escuro Executivo Premium)
+   Paleta única, vívida, alto contraste. Pensada para apresentação.
+   ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Brand Colors (fixos, não mudam com tema) */
-  --yamaha-blue: #003087;
-  --yamaha-blue-light: #00308720;
+  /* Brand */
+  --yamaha-blue: #1E5FE8;        /* azul vívido para escuro */
+  --yamaha-blue-deep: #003087;   /* azul institucional */
   --yamaha-red: #E40521;
-  --success: #10B981;
-  --success-light: #D1FAE5;
-  --warning: #F59E0B;
-  --warning-light: #FEF3C7;
-  --danger: #EF4444;
-  --danger-light: #FEE2E2;
+
+  /* Backgrounds — profundidade em camadas */
+  --bg-main: #080B12;            /* fundo da aplicação (deep) */
+  --bg-elevated: #121826;        /* cards */
+  --bg-elevated-2: #1A2233;      /* cards aninhados / hover */
+  --bg-inset: #0C111B;           /* fundos rebaixados (trilhas, inputs) */
+
+  /* Bordas — VISÍVEIS */
+  --border: #283145;
+  --border-strong: #38435C;
+
+  /* Texto — VÍVIDO (a chave contra o "apagado") */
+  --text-primary: #FFFFFF;
+  --text-secondary: #C7CFE0;     /* labels e sub-headers — bem legível */
+  --text-tertiary: #94A0B8;      /* metadados — ainda nítido */
+
+  /* Status — saturados */
+  --ok: #2DD4A7;
+  --ok-bg: rgba(45, 212, 167, 0.14);
+  --ok-border: rgba(45, 212, 167, 0.40);
+
+  --warn: #FBBF24;
+  --warn-bg: rgba(251, 191, 36, 0.14);
+  --warn-border: rgba(251, 191, 36, 0.40);
+
+  --danger: #FB6B7E;
+  --danger-bg: rgba(251, 107, 126, 0.14);
+  --danger-border: rgba(251, 107, 126, 0.42);
+
+  --accent: #5B9DFF;
+  --accent-bg: rgba(91, 157, 255, 0.14);
+
+  /* Sombras e brilho */
+  --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0,0,0,0.45);
+  --ring-accent: 0 0 0 1px rgba(91,157,255,0.35);
 }
-
-/* ═══════════════════════════════════════════════════════════════
-   TEMA ESCURO (padrão)
-   ═══════════════════════════════════════════════════════════════ */
-
-:root,
-html[data-theme="dark"] {
-  /* Backgrounds */
-  --bg-main: #0A0E1A;
-  --bg-secondary: #111827;
-  --bg-tertiary: #0F1724;
-
-  /* Cards e Componentes */
-  --card-bg: #111827;
-  --card-border: #1F2937;
-  --card-hover: #1F2937;
-
-  /* Texto */
-  --text-primary: #F9FAFB;
-  --text-secondary: #9CA3AF;
-  --text-tertiary: #6B7280;
-  --text-inverse: #0A0E1A;
-
-  /* Componentes */
-  --input-bg: #1F2937;
-  --input-border: #374151;
-  --divider: #1F2937;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
-
-  /* Status com fundo */
-  --status-ok-bg: rgba(16, 185, 129, 0.1);
-  --status-ok-text: #10B981;
-  --status-warning-bg: rgba(245, 158, 11, 0.1);
-  --status-warning-text: #F59E0B;
-  --status-danger-bg: rgba(239, 68, 68, 0.1);
-  --status-danger-text: #EF4444;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   TEMA CLARO
-   ═══════════════════════════════════════════════════════════════ */
-
-html[data-theme="light"] {
-  /* Backgrounds */
-  --bg-main: #F8FAFC;
-  --bg-secondary: #FFFFFF;
-  --bg-tertiary: #F1F5F9;
-
-  /* Cards e Componentes */
-  --card-bg: #FFFFFF;
-  --card-border: #E2E8F0;
-  --card-hover: #F1F5F9;
-
-  /* Texto */
-  --text-primary: #0F172A;
-  --text-secondary: #64748B;
-  --text-tertiary: #94A3B8;
-  --text-inverse: #F8FAFC;
-
-  /* Componentes */
-  --input-bg: #F1F5F9;
-  --input-border: #CBD5E1;
-  --divider: #E2E8F0;
-  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-
-  /* Status com fundo */
-  --status-ok-bg: rgba(16, 185, 129, 0.08);
-  --status-ok-text: #059669;
-  --status-warning-bg: rgba(217, 119, 6, 0.08);
-  --status-warning-text: #D97706;
-  --status-danger-bg: rgba(220, 38, 38, 0.08);
-  --status-danger-text: #DC2626;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   Estilos Globais
-   ═══════════════════════════════════════════════════════════════ */
 
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(900px 500px at 85% -10%, rgba(30, 95, 232, 0.10), transparent 60%),
+    radial-gradient(700px 400px at -5% 110%, rgba(30, 95, 232, 0.06), transparent 55%);
+  background-attachment: fixed;
 }
 
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+/* Scrollbar discreta premium */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2A3346; border-radius: 8px; border: 2px solid var(--bg-main); }
+::-webkit-scrollbar-thumb:hover { background: #3A4459; }
+
+/* ── Componentes reutilizáveis ──────────────────────────────────── */
+
+.card {
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.card-pad { padding: 1.25rem; }
+
+/* Título de seção (uppercase tracking) */
+.section-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* Número grande (KPI) */
+.kpi-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }

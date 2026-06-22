@@ -9,17 +9,15 @@ import {
   Users,
   Star,
   Wrench,
-  TrendingUp,
 } from 'lucide-react'
-import { clsx } from 'clsx'
 
 const navItems = [
-  { href: '/dashboard', label: 'Dashboard',         icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
-  { href: '/varejo',    label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE'] },
-  { href: '/estoque',   label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'] },
-  { href: '/leads',     label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'] },
-  { href: '/nps',       label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE'] },
-  { href: '/assistente',label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
+  { href: '/dashboard',  label: 'Dashboard',         icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
+  { href: '/varejo',     label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE'] },
+  { href: '/estoque',    label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'] },
+  { href: '/leads',      label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'] },
+  { href: '/nps',        label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE'] },
+  { href: '/assistente', label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
 ]
 
 export function Sidebar() {
@@ -29,18 +27,24 @@ export function Sidebar() {
   const visibleItems = navItems.filter(item => item.roles.includes(role))
 
   return (
-    <aside className="w-60 shrink-0 flex flex-col h-full" style={{ background: 'linear-gradient(180deg, #002070 0%, #003087 100%)' }}>
+    <aside
+      className="w-60 shrink-0 flex flex-col h-full border-r"
+      style={{ backgroundColor: '#0B0F18', borderColor: 'var(--border)' }}
+    >
       {/* Logo */}
-      <div className="px-4 py-5 border-b border-white/10 flex items-center justify-center">
+      <div className="px-5 py-5 flex items-center justify-center border-b" style={{ borderColor: 'var(--border)' }}>
         <img
           src="/logo-smart-dealer.png"
           alt="Smart Dealer"
-          className="h-16 w-auto object-contain brightness-0 invert"
+          className="h-14 w-auto object-contain"
         />
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-4 space-y-0.5">
+      <nav className="flex-1 px-3 py-5 space-y-1">
+        <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: '#5B677E' }}>
+          Menu
+        </p>
         {visibleItems.map(item => {
           const Icon = item.icon
           const active = pathname === item.href
@@ -48,14 +52,19 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={clsx(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all',
-                active
-                  ? 'bg-white/15 text-white shadow-sm'
-                  : 'text-white/60 hover:text-white hover:bg-white/8'
-              )}
+              className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+              style={{
+                backgroundColor: active ? 'rgba(91,157,255,0.12)' : 'transparent',
+                color: active ? '#FFFFFF' : '#9AA0B0',
+              }}
             >
-              <Icon size={16} className={active ? 'text-white' : 'text-white/50'} />
+              {active && (
+                <span
+                  className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full"
+                  style={{ backgroundColor: 'var(--yamaha-blue)' }}
+                />
+              )}
+              <Icon size={17} style={{ color: active ? 'var(--accent)' : '#6B748A' }} />
               {item.label}
             </Link>
           )
@@ -63,10 +72,12 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-5 py-4 border-t border-white/10">
+      <div className="px-5 py-4 border-t" style={{ borderColor: 'var(--border)' }}>
         <div className="flex items-center gap-2">
-          <TrendingUp size={12} className="text-white/30" />
-          <span className="text-[10px] text-white/30 uppercase tracking-widest">Yamahaway 2026</span>
+          <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: 'var(--ok)' }} />
+          <span className="text-[10px] uppercase tracking-[0.14em]" style={{ color: '#5B677E' }}>
+            Yamahaway 2026
+          </span>
         </div>
       </div>
     </aside>

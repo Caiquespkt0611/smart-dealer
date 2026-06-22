@@ -14,117 +14,92 @@ function ptOnArc(angleDeg: number, cx: number, cy: number, r: number) {
 }
 
 export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugeProps) {
-  const cx = 110, cy = 108, r = 86
   const isOk = score >= meta
-  const color     = isOk ? '#059669' : score >= meta - 3 ? '#D97706' : '#DC2626'
-  const trackOk   = isOk ? '#D1FAE5' : '#FEF3C7'
-  const trackFail = isOk ? '#FEF3C7' : '#FEE2E2'
+  const accent = isOk ? '#2DD4A7' : score >= meta - 3 ? '#FBBF24' : '#FB6B7E'
 
-  const scoreAngle   = (1 - score   / 100) * 180
-  const metaAngle    = (1 - meta    / 100) * 180
-  const nacionalAngle = (1 - nacional / 100) * 180
-
-  const metaPtOuter  = ptOnArc(metaAngle, cx, cy, r + 4)
-  const metaPtInner  = ptOnArc(metaAngle, cx, cy, r - 16)
-  const metaPtLabel  = ptOnArc(metaAngle, cx, cy, r - 32)
-  const nacPt        = ptOnArc(nacionalAngle, cx, cy, r + 14)
+  // Geometria do arco (semicírculo 180°→0°)
+  const cx = 100, cy = 100, r = 80
+  const scoreAngle = (1 - score / 100) * 180
+  const metaAngle = (1 - meta / 100) * 180
+  const nacAngle = (1 - nacional / 100) * 180
 
   const arcPath = `M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`
   const totalLen = 1000
-  const fillLen  = (score / 100) * totalLen
-  const metaFillLen = (meta / 100) * totalLen
+  const fillLen = (score / 100) * totalLen
 
-  const metaPt = ptOnArc(metaAngle, cx, cy, r)
-
-  // zona abaixo da meta (vermelho/amarelo claro)
-  const metaX = metaPt.x, metaY = metaPt.y
-  const largeArcMeta = meta > 50 ? 1 : 0
+  const metaOut = ptOnArc(metaAngle, cx, cy, r + 7)
+  const metaIn = ptOnArc(metaAngle, cx, cy, r - 13)
+  const nacPt = ptOnArc(nacAngle, cx, cy, r)
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex flex-col gap-4">
+    <div className="card card-pad flex flex-col">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between mb-1">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">{label}</p>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-4xl font-bold tabular-nums" style={{ color }}>{score}</span>
-            <span className="text-sm text-slate-400">/ meta {meta}</span>
-          </div>
+          <p className="section-label">{label}</p>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
+            Nacional {nacional} · Meta {meta}
+          </p>
         </div>
-        <div className={`flex flex-col items-center px-3 py-2 rounded-xl border ${
-          isOk ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-100 border-slate-200'
-        }`}>
-          <span className={`text-2xl font-bold tabular-nums ${isOk ? 'text-emerald-600' : 'text-slate-400'}`}>
+        <div
+          className="flex flex-col items-center px-3 py-1.5 rounded-xl"
+          style={{
+            backgroundColor: isOk ? 'var(--ok-bg)' : 'rgba(255,255,255,0.04)',
+            border: `1px solid ${isOk ? 'var(--ok-border)' : 'var(--border)'}`,
+          }}
+        >
+          <span className="text-xl font-bold tabular-nums" style={{ color: isOk ? 'var(--ok)' : 'var(--text-tertiary)' }}>
             {isOk ? `+${kaizenPts}` : '0'}
           </span>
-          <span className={`text-[9px] font-semibold uppercase tracking-wider ${isOk ? 'text-emerald-500' : 'text-slate-400'}`}>
-            pts Kaizen
+          <span className="text-[9px] font-bold uppercase tracking-wider" style={{ color: isOk ? 'var(--ok)' : 'var(--text-tertiary)' }}>
+            Kaizen
           </span>
         </div>
       </div>
 
-      {/* Gauge SVG */}
-      <svg viewBox="0 0 220 128" className="w-full">
-        {/* Zona de perigo (abaixo da meta) */}
-        <path
-          d={`M ${cx - r} ${cy} A ${r} ${r} 0 ${largeArcMeta} 1 ${metaX} ${metaY}`}
-          fill="none" stroke={trackFail} strokeWidth={20}
-        />
-        {/* Zona segura (acima da meta) */}
-        <path
-          d={`M ${metaX} ${metaY} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
-          fill="none" stroke={trackOk} strokeWidth={20}
-        />
-        {/* Background neutro */}
-        <path d={arcPath} fill="none" stroke="#F1F5F9" strokeWidth={20} strokeLinecap="butt" />
+      {/* Gauge — largura controlada e centralizado */}
+      <div className="flex justify-center">
+        <svg viewBox="0 0 200 118" className="w-full" style={{ maxWidth: 240 }}>
+          {/* Trilha */}
+          <path d={arcPath} fill="none" stroke="#1C2433" strokeWidth={14} strokeLinecap="round" />
+          {/* Preenchimento */}
+          <path
+            d={arcPath}
+            fill="none"
+            stroke={accent}
+            strokeWidth={14}
+            strokeLinecap="round"
+            pathLength={totalLen}
+            strokeDasharray={`${fillLen} ${totalLen}`}
+            style={{ filter: `drop-shadow(0 0 5px ${accent}55)` }}
+          />
+          {/* Marcador da meta */}
+          <line x1={metaOut.x} y1={metaOut.y} x2={metaIn.x} y2={metaIn.y} stroke="#FBBF24" strokeWidth={2.5} strokeLinecap="round" />
+          {/* Marcador nacional */}
+          <circle cx={nacPt.x} cy={nacPt.y} r={3} fill="#94A0B8" stroke="#080B12" strokeWidth={1.5} />
 
-        {/* Fill do score */}
-        <path
-          d={arcPath}
-          fill="none"
-          stroke={color}
-          strokeWidth={20}
-          strokeLinecap="butt"
-          pathLength={totalLen}
-          strokeDasharray={`${fillLen} ${totalLen}`}
-          style={{ filter: isOk ? `drop-shadow(0 0 4px ${color}40)` : undefined }}
-        />
+          {/* Score central */}
+          <text x={cx} y={cy - 8} textAnchor="middle" fill="#FFFFFF" fontSize={34} fontWeight="800" fontFamily="ui-monospace,monospace">
+            {score}
+          </text>
+          <text x={cx} y={cy + 10} textAnchor="middle" fill={accent} fontSize={10} fontWeight="700" letterSpacing="0.05em">
+            {isOk ? 'ACIMA DA META' : 'ABAIXO'}
+          </text>
 
-        {/* Marcador Nacional */}
-        <circle cx={ptOnArc(nacionalAngle, cx, cy, r).x} cy={ptOnArc(nacionalAngle, cx, cy, r).y} r={3.5} fill="#94A3B8" />
-        <text x={nacPt.x} y={nacPt.y - 4} textAnchor="middle" fill="#94A3B8" fontSize={8.5} fontFamily="monospace">
-          {nacional}
-        </text>
+          {/* Extremos */}
+          <text x={cx - r} y={cy + 18} textAnchor="middle" fill="#5B677E" fontSize={9}>0</text>
+          <text x={cx + r} y={cy + 18} textAnchor="middle" fill="#5B677E" fontSize={9}>100</text>
+        </svg>
+      </div>
 
-        {/* Marcador Meta */}
-        <line x1={metaPtOuter.x} y1={metaPtOuter.y} x2={metaPtInner.x} y2={metaPtInner.y} stroke="#D97706" strokeWidth={2.5} />
-        <circle cx={metaPt.x} cy={metaPt.y} r={3} fill="#D97706" />
-        <text x={metaPtLabel.x} y={metaPtLabel.y + 4} textAnchor="middle" fill="#D97706" fontSize={9} fontWeight="bold">
-          {meta}
-        </text>
-
-        {/* Score central */}
-        <text x={cx} y={cy - 16} textAnchor="middle" fill="#0F172A" fontSize={36} fontWeight="bold" fontFamily="ui-monospace,monospace">
-          {score}
-        </text>
-        <text x={cx} y={cy + 4} textAnchor="middle" fill="#94A3B8" fontSize={11}>
-          Nacional: {nacional}
-        </text>
-
-        {/* Extremos */}
-        <text x={cx - r - 4} y={cy + 16} textAnchor="end"   fill="#CBD5E1" fontSize={9}>0</text>
-        <text x={cx + r + 4} y={cy + 16} textAnchor="start" fill="#CBD5E1" fontSize={9}>100</text>
-      </svg>
-
-      {/* Status badge */}
-      <div className={`flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold ${
-        isOk
-          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-          : 'bg-amber-50 text-amber-700 border border-amber-200'
-      }`}>
-        {isOk
-          ? `✓ Acima da meta — +${kaizenPts} pts Kaizen garantidos`
-          : `⚠ Abaixo da meta — ${kaizenPts} pts Kaizen em risco`}
+      {/* Legenda compacta */}
+      <div className="flex items-center justify-center gap-4 mt-1 text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-0.5 rounded-full" style={{ backgroundColor: '#FBBF24' }} /> Meta {meta}
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: '#94A0B8' }} /> Nacional {nacional}
+        </span>
       </div>
     </div>
   )

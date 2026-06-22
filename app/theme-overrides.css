@@ -1,61 +1,60 @@
 /* ═══════════════════════════════════════════════════════════════
-   THEME OVERRIDES
+   THEME MAPPING
 
-   Converte classes Tailwind para usar CSS variables
-   Assim o tema muda AUTOMATICAMENTE em todo o site
-   quando data-theme muda.
+   As páginas foram escritas com classes Tailwind "claras"
+   (bg-white, text-slate-*, etc). Aqui mapeamos TODAS elas para a
+   paleta escura premium definida em globals.css.
 
+   Fonte única de verdade: muda aqui → muda no site inteiro.
+   NUNCA usar `opacity` aqui (afeta o elemento todo e apaga conteúdo).
    ═══════════════════════════════════════════════════════════════ */
 
-/* Backgrounds */
-.bg-white { background-color: var(--card-bg) !important; }
-.bg-slate-50 { background-color: var(--bg-tertiary) !important; }
-.bg-slate-100 { background-color: var(--card-hover) !important; }
+/* ── Superfícies ─────────────────────────────────────────────── */
+.bg-white      { background-color: var(--bg-elevated) !important; }
+.bg-slate-50   { background-color: var(--bg-inset) !important; }
+.bg-slate-100  { background-color: var(--bg-elevated-2) !important; }
+.bg-white\/70  { background-color: rgba(26, 34, 51, 0.6) !important; }
+.bg-white\/70:is(*) { background-color: rgba(26, 34, 51, 0.6) !important; }
 
-/* Borders */
-.border-slate-200 { border-color: var(--card-border) !important; }
-.border-slate-100 { border-color: var(--divider) !important; }
+/* ── Bordas ──────────────────────────────────────────────────── */
+.border-slate-200 { border-color: var(--border) !important; }
+.border-slate-100 { border-color: var(--border) !important; }
+.border-slate-50  { border-color: var(--border) !important; }
 
-/* Text */
+/* ── Texto (vívido) ──────────────────────────────────────────── */
 .text-slate-900 { color: var(--text-primary) !important; }
-.text-slate-700 { color: var(--text-primary) !important; }
-.text-slate-400 { color: var(--text-secondary) !important; }
+.text-slate-700 { color: #E6EAF2 !important; }
+.text-slate-600 { color: var(--text-secondary) !important; }
 .text-slate-500 { color: var(--text-tertiary) !important; }
+.text-slate-400 { color: var(--text-tertiary) !important; }
+.text-slate-300 { color: #5B677E !important; }
 
-/* Status colors */
-.text-emerald-700 { color: var(--status-ok-text) !important; }
-.text-emerald-600 { color: var(--status-ok-text) !important; }
-.bg-emerald-50 { background-color: var(--status-ok-bg) !important; }
-.bg-emerald-100 { background-color: var(--status-ok-bg) !important; }
-.border-emerald-200 { border-color: var(--status-ok-text) !important; opacity: 0.2; }
+/* ── Status: VERDE ───────────────────────────────────────────── */
+.text-emerald-700, .text-emerald-600 { color: var(--ok) !important; }
+.bg-emerald-50,  .bg-emerald-100       { background-color: var(--ok-bg) !important; }
+.border-emerald-200                    { border-color: var(--ok-border) !important; }
 
-.text-amber-700 { color: var(--status-warning-text) !important; }
-.text-amber-600 { color: var(--status-warning-text) !important; }
-.bg-amber-50 { background-color: var(--status-warning-bg) !important; }
-.bg-amber-100 { background-color: var(--status-warning-bg) !important; }
-.border-amber-200 { border-color: var(--status-warning-text) !important; opacity: 0.2; }
+/* ── Status: AMARELO ─────────────────────────────────────────── */
+.text-amber-700, .text-amber-600 { color: var(--warn) !important; }
+.bg-amber-50,  .bg-amber-100      { background-color: var(--warn-bg) !important; }
+.border-amber-200                 { border-color: var(--warn-border) !important; }
 
-.text-red-700 { color: var(--status-danger-text) !important; }
-.text-red-600 { color: var(--status-danger-text) !important; }
-.bg-red-50 { background-color: var(--status-danger-bg) !important; }
-.bg-red-100 { background-color: var(--status-danger-bg) !important; }
-.border-red-200 { border-color: var(--status-danger-text) !important; opacity: 0.2; }
+/* ── Status: VERMELHO ────────────────────────────────────────── */
+.text-red-700, .text-red-600 { color: var(--danger) !important; }
+.bg-red-50,  .bg-red-100      { background-color: var(--danger-bg) !important; }
+.border-red-200               { border-color: var(--danger-border) !important; }
 
-/* Shadows */
-.shadow-sm {
-  box-shadow: var(--shadow-sm) !important;
-}
+/* ── Accent: AZUL ────────────────────────────────────────────── */
+.text-blue-500, .text-blue-600 { color: var(--accent) !important; }
+.bg-blue-50                     { background-color: var(--accent-bg) !important; }
+.bg-blue-50\/50                 { background-color: rgba(91,157,255,0.08) !important; }
 
-/* Hover states */
-.hover\:bg-slate-100:hover {
-  background-color: var(--card-hover) !important;
-}
+/* ── Shadows ─────────────────────────────────────────────────── */
+.shadow-sm { box-shadow: var(--shadow-card) !important; }
 
-/* Accessibility: ensure text is readable */
-.text-opacity-60 {
-  opacity: 0.6;
-}
+/* ── Hover ───────────────────────────────────────────────────── */
+.hover\:bg-slate-50:hover  { background-color: var(--bg-elevated-2) !important; }
+.hover\:bg-slate-100:hover { background-color: var(--bg-elevated-2) !important; }
 
-.text-opacity-50 {
-  opacity: 0.5;
-}
+/* Divisores verticais */
+.bg-slate-100.w-px { background-color: var(--border) !important; }

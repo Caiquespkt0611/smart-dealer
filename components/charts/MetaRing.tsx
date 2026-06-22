@@ -13,74 +13,67 @@ function fmtBRL(v: number) {
 }
 
 export function MetaRing({ pct, projecao, meta, junhoEmDobro, premioPotencial }: MetaRingProps) {
-  const r = 68, cx = 88, cy = 88
+  const r = 70, cx = 90, cy = 90
   const circ = 2 * Math.PI * r
   const dash = (Math.min(pct, 100) / 100) * circ
-  const color = pct >= 80 ? '#059669' : pct >= 60 ? '#D97706' : '#DC2626'
-  const trackColor = pct >= 80 ? '#D1FAE5' : pct >= 60 ? '#FEF3C7' : '#FEE2E2'
+  const color = pct >= 80 ? '#2DD4A7' : pct >= 60 ? '#FBBF24' : '#FB6B7E'
   const faltam = Math.max(0, meta - projecao)
   const junhoMeta = Math.ceil(meta * 1.1)
 
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      {/* Ring */}
-      <svg viewBox="0 0 176 176" className="w-44 h-44">
-        {/* Track */}
-        <circle cx={cx} cy={cy} r={r} fill="none" stroke={trackColor} strokeWidth={14} />
-        {/* Progress */}
-        <circle
-          cx={cx} cy={cy} r={r}
-          fill="none"
-          stroke={color}
-          strokeWidth={14}
-          strokeLinecap="round"
-          strokeDasharray={`${dash} ${circ}`}
-          transform={`rotate(-90 ${cx} ${cy})`}
-          style={{ filter: `drop-shadow(0 0 8px ${color}40)` }}
-        />
-        {/* Center */}
-        <text x={cx} y={cy - 10} textAnchor="middle" fill="#0F172A" fontSize={28} fontWeight="bold" fontFamily="ui-monospace,monospace">
-          {pct}%
-        </text>
-        <text x={cx} y={cx + 8} textAnchor="middle" fill="#94A3B8" fontSize={11} fontFamily="sans-serif">
-          da meta
-        </text>
-        <text x={cx} y={cx + 24} textAnchor="middle" fill={color} fontSize={10} fontWeight="600" fontFamily="sans-serif">
-          {pct >= 80 ? '✓ No ritmo' : pct >= 60 ? '⚠ Atenção' : '✕ Crítico'}
-        </text>
-      </svg>
+      <div className="relative">
+        <svg viewBox="0 0 180 180" className="w-40 h-40">
+          {/* Trilha */}
+          <circle cx={cx} cy={cy} r={r} fill="none" stroke="#1C2433" strokeWidth={14} />
+          {/* Progresso */}
+          <circle
+            cx={cx} cy={cy} r={r}
+            fill="none"
+            stroke={color}
+            strokeWidth={14}
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${circ}`}
+            transform={`rotate(-90 ${cx} ${cy})`}
+            style={{ filter: `drop-shadow(0 0 8px ${color}55)`, transition: 'stroke-dasharray .6s ease' }}
+          />
+          <text x={cx} y={cy - 6} textAnchor="middle" fill="#FFFFFF" fontSize={32} fontWeight="800" fontFamily="ui-monospace,monospace">
+            {pct}%
+          </text>
+          <text x={cx} y={cy + 13} textAnchor="middle" fill="#94A0B8" fontSize={11}>da meta</text>
+          <text x={cx} y={cy + 30} textAnchor="middle" fill={color} fontSize={10} fontWeight="700">
+            {pct >= 80 ? 'NO RITMO' : pct >= 60 ? 'ATENÇÃO' : 'CRÍTICO'}
+          </text>
+        </svg>
+      </div>
 
-      {/* Stats */}
-      <div className="w-full space-y-2">
-        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-xs text-slate-400 uppercase tracking-wide">Projeção</span>
-          <span className="text-sm font-bold text-slate-900 tabular-nums">{projecao} motos</span>
-        </div>
-        <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-          <span className="text-xs text-slate-400 uppercase tracking-wide">Meta</span>
-          <span className="text-sm text-slate-500 tabular-nums">{meta} motos</span>
-        </div>
-        {faltam > 0 && (
-          <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
-            <span className="text-xs text-slate-400 uppercase tracking-wide">Faltam</span>
-            <span className="text-sm font-bold text-red-600 tabular-nums">{faltam} motos</span>
-          </div>
-        )}
-        <div className="flex justify-between items-center py-1.5">
-          <span className="text-xs text-slate-400 uppercase tracking-wide">Prêmio</span>
-          <span className="text-sm font-bold text-amber-600 tabular-nums">{fmtBRL(premioPotencial)}</span>
-        </div>
-        {!junhoEmDobro && (
-          <p className="text-[10px] text-slate-400 text-right">
-            Junho em Dobro: precisa {junhoMeta} motos
-          </p>
-        )}
-        {junhoEmDobro && (
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-1.5 text-xs text-emerald-700 text-center font-semibold">
+      <div className="w-full space-y-1">
+        <Row label="Projeção" value={`${projecao} motos`} strong />
+        <Row label="Meta" value={`${meta} motos`} />
+        {faltam > 0 && <Row label="Faltam" value={`${faltam} motos`} color="#FB6B7E" />}
+        <Row label="Prêmio" value={fmtBRL(premioPotencial)} color="#FBBF24" />
+        {junhoEmDobro ? (
+          <div className="mt-2 rounded-lg px-3 py-1.5 text-xs text-center font-semibold"
+            style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>
             ✓ Junho em Dobro ativado!
           </div>
+        ) : (
+          <p className="text-[10px] text-right pt-1" style={{ color: 'var(--text-tertiary)' }}>
+            Junho em Dobro: {junhoMeta} motos
+          </p>
         )}
       </div>
+    </div>
+  )
+}
+
+function Row({ label, value, strong, color }: { label: string; value: string; strong?: boolean; color?: string }) {
+  return (
+    <div className="flex justify-between items-center py-1.5 border-b" style={{ borderColor: 'var(--border)' }}>
+      <span className="text-xs uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>{label}</span>
+      <span className="text-sm tabular-nums" style={{ color: color ?? (strong ? '#FFFFFF' : 'var(--text-secondary)'), fontWeight: strong || color ? 700 : 500 }}>
+        {value}
+      </span>
     </div>
   )
 }
