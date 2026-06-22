@@ -1,9 +1,11 @@
 @import "tailwindcss";
 @import "./theme-overrides.css";
+@import "./card-styles.css";
 
 :root {
   /* Brand Colors (fixos, não mudam com tema) */
   --yamaha-blue: #003087;
+  --yamaha-blue-light: #00308720;
   --yamaha-red: #E40521;
   --success: #10B981;
   --success-light: #D1FAE5;
