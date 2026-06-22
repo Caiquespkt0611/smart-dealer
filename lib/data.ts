@@ -148,12 +148,11 @@ export async function getDashboardData(loja: string): Promise<DashboardData> {
   const tcaPct = leads?.tcaPct ?? 0
   const lcrPct = leads?.lcrGrupoPct ?? 0
 
-  // NPS — coluna é "scoremensal" (lowercase)
   const npsData = npsRes.data ?? []
   const npsVendasRec = npsData.find((n: { tipo: string }) => n.tipo === 'vendas')
   const npsPosRec = npsData.find((n: { tipo: string }) => n.tipo === 'pos-vendas')
-  const npsVendas = npsVendasRec?.scoremensal ?? 0
-  const npsPosvenda = npsPosRec?.scoremensal ?? 0
+  const npsVendas = npsVendasRec?.scoreMensal ?? 0
+  const npsPosvenda = npsPosRec?.scoreMensal ?? 0
 
   // Ranking regional
   const grupoTotais = new Map<string, number>()
