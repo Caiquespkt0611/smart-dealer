@@ -5,6 +5,8 @@ const USERS = [
   { id: '1', email: 'titular@nippon.com', password: 'yamaha2026', name: 'João Paulo Zorzi', role: 'TITULAR' },
   { id: '2', email: 'gerente@nippon.com', password: 'yamaha2026', name: 'Gerente Nippon', role: 'GERENTE' },
   { id: '3', email: 'mecanico@nippon.com', password: 'yamaha2026', name: 'Mecânico Nippon', role: 'MECANICO' },
+  { id: '4', email: 'vendedor@nippon.com', password: 'yamaha2026', name: 'Gisele Medeiros', role: 'VENDEDOR' },
+  { id: '5', email: 'consultor@yamaha.com', password: 'yamaha2026', name: 'Caique Oliveira', role: 'CONSULTOR' },
 ]
 
 export const authOptions: NextAuthOptions = {

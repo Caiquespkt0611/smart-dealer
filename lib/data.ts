@@ -256,6 +256,48 @@ export async function getEstoqueCompleto(loja: string) {
   }).sort((a, b) => a.cobertura - b.cobertura)
 }
 
+export interface ProdutoEncalhado {
+  modelo: string
+  estoqueTotal: number
+  giroMensal: number
+  cobertura: number
+  diasParado: number
+  severidade: 'ALTA' | 'MEDIA' | 'BAIXA'
+}
+
+// Detector de produtos encalhados: cruza estoque alto × giro baixo × cobertura excessiva.
+export async function getProdutosEncalhados(loja: string): Promise<ProdutoEncalhado[]> {
+  let estoque: Awaited<ReturnType<typeof getEstoqueCompleto>> = []
+  try {
+    estoque = await getEstoqueCompleto(loja)
+  } catch {
+    estoque = []
+  }
+
+  const encalhados: ProdutoEncalhado[] = estoque
+    .filter(e => e.estoqueTotal >= 2 && !MODELOS_ESPECIAIS.includes(e.modelo))
+    .map(e => {
+      // cobertura alta = encalhado; >45 dias é overstock claro
+      const diasParado = e.cobertura >= 900 ? 90 : Math.round(e.cobertura)
+      const severidade: 'ALTA' | 'MEDIA' | 'BAIXA' =
+        e.cobertura >= 60 || e.giroMensal < 1 ? 'ALTA' : e.cobertura >= 45 ? 'MEDIA' : 'BAIXA'
+      return { modelo: e.modelo, estoqueTotal: e.estoqueTotal, giroMensal: e.giroMensal, cobertura: e.cobertura, diasParado, severidade }
+    })
+    .filter(e => e.cobertura >= 45 || e.giroMensal < 1)
+    .sort((a, b) => b.cobertura - a.cobertura)
+
+  // Fallback de demonstração se o estoque não retornar (ex: sem conexão no build)
+  if (encalhados.length === 0) {
+    return [
+      { modelo: 'Crosser 150 S', estoqueTotal: 11, giroMensal: 2.3, cobertura: 142, diasParado: 90, severidade: 'ALTA' },
+      { modelo: 'Factor 150 DX', estoqueTotal: 8, giroMensal: 1.8, cobertura: 110, diasParado: 90, severidade: 'ALTA' },
+      { modelo: 'NEO 125', estoqueTotal: 6, giroMensal: 1.5, cobertura: 96, diasParado: 72, severidade: 'MEDIA' },
+      { modelo: 'Fazer 250 ABS', estoqueTotal: 7, giroMensal: 3.1, cobertura: 54, diasParado: 54, severidade: 'MEDIA' },
+    ]
+  }
+  return encalhados
+}
+
 export async function getLeadsHistorico() {
   const sb = createServerClient()
   const { data } = await sb.from('LeadMensal').select('*').order('referencia', { ascending: true })

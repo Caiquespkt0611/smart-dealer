@@ -12,21 +12,29 @@ import {
   PieChart,
   Award,
   GraduationCap,
+  Megaphone,
+  Contact,
+  CalendarClock,
+  BookOpen,
 } from 'lucide-react'
 
 const navItems = [
-  { href: '/dashboard',    label: 'Dashboard',          icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'], group: 'Visão Geral' },
-  { href: '/varejo',       label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE'],             group: 'Visão Geral' },
-  { href: '/market-share', label: 'Market Share',       icon: PieChart,        roles: ['TITULAR', 'GERENTE'],             group: 'Inteligência' },
-  { href: '/kaizen',       label: 'Kaizen',             icon: Award,           roles: ['TITULAR', 'GERENTE'],             group: 'Inteligência' },
-  { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE'],             group: 'Inteligência' },
-  { href: '/estoque',      label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'],             group: 'Operação' },
-  { href: '/leads',        label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'],             group: 'Operação' },
-  { href: '/nps',          label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE'],             group: 'Operação' },
-  { href: '/assistente',   label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO'], group: 'Operação' },
+  { href: '/dashboard',    label: 'Dashboard',          icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO', 'CONSULTOR'], group: 'Visão Geral' },
+  { href: '/varejo',       label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Visão Geral' },
+  { href: '/market-share', label: 'Market Share',       icon: PieChart,        roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
+  { href: '/kaizen',       label: 'Kaizen',             icon: Award,           roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
+  { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
+  { href: '/crm',          label: 'CRM de Leads',       icon: Contact,         roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
+  { href: '/campanhas',    label: 'Campanhas IA',       icon: Megaphone,       roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
+  { href: '/playbook',     label: 'Playbook de Vendas', icon: BookOpen,        roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
+  { href: '/pos-vendas',   label: 'Pós-Vendas',         icon: CalendarClock,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Operação' },
+  { href: '/estoque',      label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
+  { href: '/leads',        label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
+  { href: '/nps',          label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Operação' },
+  { href: '/assistente',   label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO', 'VENDEDOR'],  group: 'Operação' },
 ]
 
-const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Operação']
+const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Comercial', 'Operação']
 
 export function Sidebar() {
   const pathname = usePathname()
