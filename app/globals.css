@@ -85,7 +85,7 @@
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
   -webkit-font-smoothing: antialiased;
   background-image:
     radial-gradient(900px 500px at 85% -10%, var(--app-glow-1), transparent 60%),
