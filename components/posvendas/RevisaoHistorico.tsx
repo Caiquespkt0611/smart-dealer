@@ -35,7 +35,7 @@ export function RevisaoHistorico() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }}>{h.nome}</p>
-            <p className="text-[10px] truncate" style={{ color: 'var(--text-tertiary)' }}>&ldquo;{h.mensagem.length > 28 ? h.mensagem.slice(0, 28) + '…' : h.mensagem}&rdquo;</p>
+            <p className="text-[10px] truncate" style={{ color: 'var(--text-tertiary)' }}>&ldquo;{[...h.mensagem].length > 28 ? [...h.mensagem].slice(0, 28).join('') + '…' : h.mensagem}&rdquo;</p>
           </div>
           <span className="text-[10px] tabular-nums shrink-0" style={{ color: 'var(--text-tertiary)' }}>{h.quando}</span>
         </div>
