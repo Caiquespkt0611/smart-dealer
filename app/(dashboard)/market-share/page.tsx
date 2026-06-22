@@ -19,6 +19,22 @@ export default function MarketSharePage() {
   const fortes = [...d.segments].filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
   const shareTrendDelta = d.trend[d.trend.length - 1].shareYamaha - d.trend[0].shareYamaha
 
+  // ── Mix mensal: colunas (volume) + linhas (share por montadora) ──
+  // Shineray não vem mensal (está em "outros"); alocamos o total dela
+  // proporcionalmente a "outros" para estimar a linha de share mês a mês.
+  const outrosQtdTotal = d.brandShare.filter(b => b.marca !== 'Yamaha' && b.marca !== 'Honda').reduce((a, b) => a + b.qtd, 0)
+  const shinerayQtdTotal = d.brandShare.find(b => b.marca === 'Shineray')?.qtd ?? 0
+  const kShineray = outrosQtdTotal > 0 ? shinerayQtdTotal / outrosQtdTotal : 0
+  const mixData = d.trend.map(t => ({
+    mes: t.mes,
+    total: t.total,
+    honda: t.honda,
+    yamaha: t.yamaha,
+    shareYamaha: t.shareYamaha,
+    shareHonda: +((t.honda / t.total) * 100).toFixed(1),
+    shareShineray: +(((t.outros * kShineray) / t.total) * 100).toFixed(1),
+  }))
+
   return (
     <div className="space-y-6 pb-24">
       {/* Header */}
@@ -144,11 +160,11 @@ export default function MarketSharePage() {
         </div>
 
         <div className="lg:col-span-3 card card-pad flex flex-col">
-          <div className="flex items-center justify-between mb-3">
-            <p className="section-label">Evolução mensal — Yamaha vs Honda</p>
-            <span className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>linha pontilhada = % share Yamaha</span>
+          <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+            <p className="section-label">Evolução mensal — volume e share por montadora</p>
+            <span className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>colunas = volume · linhas = % de share</span>
           </div>
-          <ShareTrendChart data={[...d.trend]} />
+          <ShareTrendChart data={mixData} />
         </div>
       </div>
 

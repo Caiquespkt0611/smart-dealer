@@ -2,12 +2,13 @@
 
 import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip,
-  ComposedChart, Area, Line, XAxis, YAxis, CartesianGrid, Legend,
+  ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid, Legend,
 } from 'recharts'
 
 const YAMAHA = '#1E5FE8'
 const HONDA = '#E40521'
-const OUTROS = '#94A3B8'
+const SHINERAY = '#A855F7'
+const MERCADO = '#64748B'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ShareTooltip({ active, payload }: any) {
@@ -45,45 +46,57 @@ export function ShareDonut({ data }: { data: BrandSlice[] }) {
   )
 }
 
-interface TrendPoint { mes: string; yamaha: number; honda: number; outros: number; shareYamaha: number }
+interface TrendPoint {
+  mes: string; total: number; honda: number; yamaha: number
+  shareYamaha: number; shareHonda: number; shareShineray: number
+}
+
+const VOL_LABELS: Record<string, string> = { total: 'Mercado total', honda: 'Honda', yamaha: 'Yamaha' }
+const SHARE_LABELS: Record<string, string> = { shareYamaha: 'Share Yamaha', shareHonda: 'Share Honda', shareShineray: 'Share Shineray' }
+const LEGEND_LABELS: Record<string, string> = { ...VOL_LABELS, ...SHARE_LABELS }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function TrendTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null
-  const sy = payload.find((p: any) => p.dataKey === 'shareYamaha')
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const vols = payload.filter((p: any) => p.dataKey in VOL_LABELS)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const shares = payload.filter((p: any) => p.dataKey in SHARE_LABELS)
   return (
     <div className="rounded-xl px-4 py-3" style={{ backgroundColor: 'var(--bg-elevated-2)', border: '1px solid var(--border-strong)', boxShadow: '0 8px 24px rgba(0,0,0,.4)' }}>
       <p className="text-[11px] uppercase tracking-wider mb-1.5" style={{ color: 'var(--chart-axis)' }}>{label}/26</p>
-      {payload.filter((p: any) => p.dataKey !== 'shareYamaha').map((p: any) => (
-        <p key={p.dataKey} className="text-xs font-semibold" style={{ color: p.color }}>
-          {p.dataKey === 'yamaha' ? 'Yamaha' : p.dataKey === 'honda' ? 'Honda' : 'Outros'}: {p.value}
-        </p>
+      <p className="text-[9px] uppercase tracking-wider mb-0.5" style={{ color: 'var(--chart-axis)' }}>Volume (emplacamentos)</p>
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      {vols.map((p: any) => (
+        <p key={p.dataKey} className="text-xs font-semibold" style={{ color: p.color }}>{VOL_LABELS[p.dataKey]}: {p.value}</p>
       ))}
-      {sy && <p className="text-[11px] mt-1 pt-1 font-bold" style={{ color: YAMAHA, borderTop: '1px solid var(--border)' }}>Share Yamaha: {sy.value}%</p>}
+      <p className="text-[9px] uppercase tracking-wider mt-1.5 mb-0.5 pt-1.5" style={{ color: 'var(--chart-axis)', borderTop: '1px solid var(--border)' }}>Share por montadora</p>
+      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+      {shares.map((p: any) => (
+        <p key={p.dataKey} className="text-xs font-semibold" style={{ color: p.color }}>{SHARE_LABELS[p.dataKey]}: {p.value}%</p>
+      ))}
     </div>
   )
 }
 
 export function ShareTrendChart({ data }: { data: TrendPoint[] }) {
   return (
-    <ResponsiveContainer width="100%" height={260}>
-      <ComposedChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
-        <defs>
-          <linearGradient id="grad-yam" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={YAMAHA} stopOpacity={0.30} />
-            <stop offset="100%" stopColor={YAMAHA} stopOpacity={0.02} />
-          </linearGradient>
-        </defs>
+    <ResponsiveContainer width="100%" height={280}>
+      <ComposedChart data={data} margin={{ top: 8, right: 4, left: -12, bottom: 0 }} barGap={2} barCategoryGap="22%">
         <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-track)" vertical={false} />
         <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--chart-axis)', fontFamily: 'ui-monospace,monospace' }} axisLine={false} tickLine={false} />
-        <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={30} />
-        <YAxis yAxisId="right" orientation="right" domain={[0, 80]} tick={{ fontSize: 10, fill: YAMAHA }} axisLine={false} tickLine={false} width={30} unit="%" />
-        <Tooltip content={<TrendTooltip />} cursor={{ stroke: 'var(--border-strong)', strokeWidth: 1 }} />
-        <Legend wrapperStyle={{ fontSize: 10, paddingTop: 8 }} formatter={(v) => v === 'yamaha' ? 'Yamaha' : v === 'honda' ? 'Honda' : v === 'outros' ? 'Outros' : 'Share Yamaha %'} />
-        <Area yAxisId="left" type="monotone" dataKey="yamaha" name="yamaha" stroke={YAMAHA} strokeWidth={2.5} fill="url(#grad-yam)" dot={false} />
-        <Line yAxisId="left" type="monotone" dataKey="honda" name="honda" stroke={HONDA} strokeWidth={2} dot={false} />
-        <Line yAxisId="left" type="monotone" dataKey="outros" name="outros" stroke={OUTROS} strokeWidth={1.5} strokeDasharray="4 3" dot={false} />
-        <Line yAxisId="right" type="monotone" dataKey="shareYamaha" name="shareYamaha" stroke={YAMAHA} strokeWidth={2.5} strokeDasharray="2 2" dot={{ r: 3, fill: YAMAHA }} />
+        <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={34} />
+        <YAxis yAxisId="right" orientation="right" domain={[0, 80]} tick={{ fontSize: 10, fill: YAMAHA }} axisLine={false} tickLine={false} width={34} unit="%" />
+        <Tooltip content={<TrendTooltip />} cursor={{ fill: 'var(--border-strong)', fillOpacity: 0.12 }} />
+        <Legend wrapperStyle={{ fontSize: 10, paddingTop: 8 }} formatter={(v) => LEGEND_LABELS[v] ?? v} />
+        {/* Colunas = volume de emplacamentos */}
+        <Bar yAxisId="left" dataKey="total" name="total" fill={MERCADO} fillOpacity={0.45} radius={[3, 3, 0, 0]} maxBarSize={18} />
+        <Bar yAxisId="left" dataKey="honda" name="honda" fill={HONDA} fillOpacity={0.7} radius={[3, 3, 0, 0]} maxBarSize={18} />
+        <Bar yAxisId="left" dataKey="yamaha" name="yamaha" fill={YAMAHA} fillOpacity={0.85} radius={[3, 3, 0, 0]} maxBarSize={18} />
+        {/* Linhas = share % por montadora */}
+        <Line yAxisId="right" type="monotone" dataKey="shareYamaha" name="shareYamaha" stroke={YAMAHA} strokeWidth={2.5} dot={{ r: 2.5, fill: YAMAHA }} />
+        <Line yAxisId="right" type="monotone" dataKey="shareHonda" name="shareHonda" stroke={HONDA} strokeWidth={2} dot={{ r: 2.5, fill: HONDA }} />
+        <Line yAxisId="right" type="monotone" dataKey="shareShineray" name="shareShineray" stroke={SHINERAY} strokeWidth={2} strokeDasharray="4 3" dot={{ r: 2.5, fill: SHINERAY }} />
       </ComposedChart>
     </ResponsiveContainer>
   )
