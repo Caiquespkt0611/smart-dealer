@@ -267,3 +267,40 @@ export async function getNPSHistorico() {
   const { data } = await sb.from('NPSMensal').select('*').order('referencia', { ascending: true })
   return data ?? []
 }
+
+const MESES_PT = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+
+export async function getVendasHistorico(loja: string) {
+  const sb = createServerClient()
+  const lojaFilter = loja === 'Bragança Paulista' ? 'Bragança Paulista'
+                   : loja === 'Extrema' ? 'Extrema' : null
+
+  const q = sb
+    .from('VendaMensal')
+    .select('mes, ano, quantidade')
+    .eq('grupo', 'NIPPON MOTOS')
+    .order('ano', { ascending: true })
+    .order('mes', { ascending: true })
+
+  const { data } = await (lojaFilter ? q.eq('loja', lojaFilter) : q)
+
+  const totMap = new Map<string, { label: string; total: number; mes: number; ano: number }>()
+  for (const v of (data ?? [])) {
+    const key = `${v.ano}/${v.mes}`
+    const cur = totMap.get(key)
+    if (cur) {
+      cur.total += v.quantidade
+    } else {
+      totMap.set(key, {
+        label: `${MESES_PT[v.mes]}/${String(v.ano).slice(2)}`,
+        total: v.quantidade,
+        mes: v.mes,
+        ano: v.ano,
+      })
+    }
+  }
+
+  return Array.from(totMap.values())
+    .sort((a, b) => a.ano !== b.ano ? a.ano - b.ano : a.mes - b.mes)
+    .slice(-13)
+}

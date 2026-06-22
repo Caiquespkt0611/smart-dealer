@@ -1,38 +1,69 @@
-import { getDashboardData } from '@/lib/data'
+import { getDashboardData, getVendasHistorico } from '@/lib/data'
 import { AlertaBanner } from '@/components/dashboard/AlertaBanner'
 import { ChatWidget } from '@/components/dashboard/ChatWidget'
+import { MetaRing } from '@/components/charts/MetaRing'
+import { VendasHistChart } from '@/components/charts/VendasHistChart'
 import {
-  TrendingUp,
-  Users,
-  Star,
-  Trophy,
-  CheckCircle,
-  Clock,
-  Package,
+  TrendingUp, TrendingDown, Minus,
+  Users, Star, Trophy, CheckCircle,
+  Clock, Package, AlertTriangle, Zap,
 } from 'lucide-react'
-
-// ─── helpers ────────────────────────────────────────────────────────────────
-
-function statusColor(s: string) {
-  const norm = s.toUpperCase()
-  if (norm === 'OK')      return { bg: '#10B98120', border: '#10B981', text: '#10B981' }
-  if (norm === 'ATENCAO') return { bg: '#F59E0B20', border: '#F59E0B', text: '#F59E0B' }
-  return                         { bg: '#EF444420', border: '#EF4444', text: '#EF4444' }
-}
 
 function fmtBRL(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function statusColor(s: string) {
+  if (s === 'OK')      return { bg: '#10B98115', border: '#10B98140', text: '#10B981' }
+  if (s === 'ATENCAO') return { bg: '#F59E0B15', border: '#F59E0B40', text: '#F59E0B' }
+  return                      { bg: '#EF444415', border: '#EF444440', text: '#EF4444' }
+}
+
+// ─── KPI Card ───────────────────────────────────────────────────────────────
+
+function KpiCard({
+  label, value, unit, sub, status, icon: Icon, highlight,
+}: {
+  label: string
+  value: string | number
+  unit?: string
+  sub: string
+  status?: 'OK' | 'ATENCAO' | 'CRITICO'
+  icon: React.ElementType
+  highlight?: boolean
+}) {
+  const c = status ? statusColor(status) : { bg: '#00308715', border: '#00308730', text: '#60A5FA' }
   return (
-    <h2 className="text-xs font-semibold uppercase tracking-widest text-[#9CA3AF] mb-3">
-      {children}
-    </h2>
+    <div
+      className="bg-[#111827] rounded-2xl p-5 flex flex-col gap-3 border"
+      style={{ borderColor: highlight ? c.border : '#1F2937' }}
+    >
+      <div className="flex items-start justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280]">{label}</p>
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: c.bg }}>
+          <Icon size={15} style={{ color: c.text }} />
+        </div>
+      </div>
+      <div>
+        <div className="flex items-baseline gap-1">
+          <span className="text-3xl font-bold tabular-nums text-white">{value}</span>
+          {unit && <span className="text-sm text-[#6B7280]">{unit}</span>}
+        </div>
+        <p className="text-xs text-[#4B5563] mt-1">{sub}</p>
+      </div>
+      {status && (
+        <div
+          className="text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full w-fit"
+          style={{ backgroundColor: c.bg, color: c.text }}
+        >
+          {status === 'OK' ? '✓ OK' : status === 'ATENCAO' ? '⚠ Atenção' : '✕ Crítico'}
+        </div>
+      )}
+    </div>
   )
 }
 
-// ─── page ───────────────────────────────────────────────────────────────────
+// ─── Page ───────────────────────────────────────────────────────────────────
 
 export default async function DashboardPage({
   searchParams,
@@ -40,202 +71,238 @@ export default async function DashboardPage({
   searchParams: Promise<{ loja?: string }>
 }) {
   const { loja = 'Grupo Nippon' } = await searchParams
-  const data = await getDashboardData(loja)
 
-  // Status derivados
+  const [data, historico] = await Promise.all([
+    getDashboardData(loja),
+    getVendasHistorico(loja),
+  ])
+
   const tempoStatus = data.tempoAtend <= 10 ? 'OK' : data.tempoAtend <= 15 ? 'ATENCAO' : 'CRITICO'
   const tcaStatus   = data.tcaPct >= 80 ? 'OK' : data.tcaPct >= 60 ? 'ATENCAO' : 'CRITICO'
   const lcrStatus   = data.lcrPct >= 9  ? 'OK' : data.lcrPct >= 7  ? 'ATENCAO' : 'CRITICO'
-  const npsVStatus  = data.npsVendas >= 93    ? 'OK' : data.npsVendas >= 90    ? 'ATENCAO' : 'CRITICO'
-  const npsPStatus  = data.npsPosvenda >= 87  ? 'OK' : data.npsPosvenda >= 85  ? 'ATENCAO' : 'CRITICO'
+  const npsVStatus  = data.npsVendas >= 93   ? 'OK' : 'ATENCAO'
+  const npsPStatus  = data.npsPosvenda >= 87 ? 'OK' : 'ATENCAO'
   const varejoStatus = data.pctAtingimento >= 80 ? 'OK' : data.pctAtingimento >= 60 ? 'ATENCAO' : 'CRITICO'
 
-  const temCritico = data.estoqueAlertas.some(e => e.status === 'CRITICO')
-
-  const kaizen =
-    (data.lcrPct >= 9 ? 4 : data.lcrPct >= 7 ? 2 : 0) +
-    (data.npsVendas >= 93   ? 5  : 0) +
-    (data.npsPosvenda >= 87 ? 10 : 0)
+  const kaizenLCR   = data.lcrPct >= 9 ? 4 : data.lcrPct >= 7 ? 2 : 0
+  const kaizenNpsV  = data.npsVendas >= 93   ? 5  : 0
+  const kaizenNpsP  = data.npsPosvenda >= 87 ? 10 : 0
+  const kaizenTotal = kaizenLCR + kaizenNpsV + kaizenNpsP
 
   const critcos = data.estoqueAlertas.filter(e => e.status === 'CRITICO')
+  const temCritico = critcos.length > 0
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-5 pb-24">
+
       {/* Banner de alerta */}
       {(temCritico || data.pctAtingimento < 80) && (
         <AlertaBanner estoqueAlertas={critcos} projecaoPct={data.pctAtingimento} />
       )}
 
-      {/* Título + Kaizen */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-          <p className="text-sm text-[#9CA3AF] mt-0.5">
-            {loja} · Junho/2026 · Dados até dia 14
+      {/* ── Header ── */}
+      <div>
+        <h1 className="text-2xl font-bold text-white tracking-tight">Dashboard</h1>
+        <p className="text-sm text-[#4B5563] mt-0.5">
+          {loja} · Junho/2026 · Dados até dia 14
+        </p>
+      </div>
+
+      {/* ── KPI Row ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <KpiCard
+          label="Vendas até D14"
+          value={data.vendasMes}
+          unit="motos"
+          sub={`Projeção: ${data.projecao} motos`}
+          status={varejoStatus}
+          icon={TrendingUp}
+          highlight
+        />
+        <KpiCard
+          label="Meta Jun/26"
+          value={`${data.pctAtingimento}%`}
+          sub={`${data.projecao} de ${data.meta} motos`}
+          status={varejoStatus}
+          icon={Zap}
+          highlight
+        />
+        <KpiCard
+          label="Ranking Regional"
+          value={`${data.rankingPos}º`}
+          unit={`de ${data.rankingTotal}`}
+          sub={`Prêmio: ${fmtBRL(data.premioPotencial)}`}
+          icon={Trophy}
+        />
+        <KpiCard
+          label="Kaizen Junho"
+          value={kaizenTotal}
+          unit="/19 pts"
+          sub={`LCR ${kaizenLCR} · NPS ${kaizenNpsV + kaizenNpsP}`}
+          status={kaizenTotal >= 15 ? 'OK' : kaizenTotal >= 10 ? 'ATENCAO' : 'CRITICO'}
+          icon={Star}
+          highlight={kaizenTotal < 15}
+        />
+      </div>
+
+      {/* ── Meta + Histórico ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        {/* Meta Ring */}
+        <div className="lg:col-span-2 bg-[#111827] border border-[#1F2937] rounded-2xl p-6">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280] mb-5">
+            Projeção vs Meta
           </p>
+          <MetaRing
+            pct={data.pctAtingimento}
+            projecao={data.projecao}
+            meta={data.meta}
+            junhoEmDobro={data.junhoEmDobro}
+            premioPotencial={data.premioPotencial}
+          />
         </div>
-        <div className="bg-[#111827] border border-[#1F2937] rounded-xl px-5 py-3 text-center">
-          <div className="text-[10px] text-[#9CA3AF] uppercase tracking-widest mb-0.5">Kaizen Total</div>
-          <div
-            className="text-2xl font-bold tabular-nums"
-            style={{ color: kaizen >= 15 ? '#10B981' : '#F59E0B' }}
-          >
-            {kaizen}
-            <span className="text-sm font-normal text-[#9CA3AF]">/19</span>
+
+        {/* Histórico de Vendas */}
+        <div className="lg:col-span-3 bg-[#111827] border border-[#1F2937] rounded-2xl p-6">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280]">
+              Histórico de Vendas — Últimos 13 meses
+            </p>
+            <div className="flex items-center gap-3 text-[10px] text-[#4B5563]">
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-0.5 bg-[#003087] inline-block rounded" />
+                Vendas
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="w-3 h-0.5 bg-[#F59E0B] inline-block rounded border-dashed" style={{ borderTop: '2px dashed #F59E0B', height: 0 }} />
+                Meta
+              </span>
+            </div>
           </div>
+          <VendasHistChart
+            data={historico}
+            meta={data.meta}
+            projecao={data.projecao}
+          />
         </div>
       </div>
 
-      {/* ── Varejo ── */}
-      <section>
-        <SectionTitle>Varejo — Junho/2026</SectionTitle>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* ── Kaizen Strip ── */}
+      <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5">
+        <div className="flex flex-wrap items-center gap-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-[#4B5563]">Kaizen Jun/26</p>
+            <p className="text-2xl font-bold tabular-nums mt-0.5" style={{ color: kaizenTotal >= 15 ? '#10B981' : '#F59E0B' }}>
+              {kaizenTotal}
+              <span className="text-sm font-normal text-[#4B5563]">/19</span>
+            </p>
+          </div>
 
-          {/* Vendas até dia 14 */}
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase tracking-widest text-[#9CA3AF]">Vendas até Dia 14</span>
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: statusColor(varejoStatus).bg }}
-              >
-                <TrendingUp size={15} style={{ color: statusColor(varejoStatus).text }} />
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold tabular-nums text-white">
-                {data.vendasMes}
-                <span className="text-lg font-normal text-[#9CA3AF] ml-1">motos</span>
-              </div>
-              <div className="text-sm text-[#9CA3AF] mt-0.5">
-                Projeção: <span className="text-white font-semibold">{data.projecao}</span> motos
-              </div>
-            </div>
-            <div>
-              <div className="flex justify-between text-xs text-[#9CA3AF] mb-1">
-                <span>Meta: {data.meta}</span>
-                <span>{data.pctAtingimento}%</span>
-              </div>
-              <div className="h-1.5 bg-[#1F2937] rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{
-                    width: `${Math.min(data.pctAtingimento, 100)}%`,
-                    backgroundColor:
-                      data.pctAtingimento >= 80 ? '#10B981' :
-                      data.pctAtingimento >= 60 ? '#F59E0B' : '#EF4444',
-                  }}
-                />
-              </div>
-            </div>
-            <span
-              className="text-xs font-medium px-2 py-0.5 rounded-full w-fit"
+          <div className="h-10 w-px bg-[#1F2937] hidden lg:block" />
+
+          {[
+            {
+              label: 'LCR Grupo',
+              detalhe: `${data.lcrPct}% (meta ≥ 9%)`,
+              ganhou: kaizenLCR > 0,
+              pts: kaizenLCR,
+              max: 4,
+            },
+            {
+              label: 'NPS Vendas',
+              detalhe: `${data.npsVendas} (meta ≥ 93)`,
+              ganhou: kaizenNpsV > 0,
+              pts: kaizenNpsV,
+              max: 5,
+            },
+            {
+              label: 'NPS Pós-Vendas',
+              detalhe: `${data.npsPosvenda} (meta ≥ 87)`,
+              ganhou: kaizenNpsP > 0,
+              pts: kaizenNpsP,
+              max: 10,
+            },
+          ].map(item => (
+            <div
+              key={item.label}
+              className="flex items-center gap-3 px-4 py-2.5 rounded-xl border flex-1 min-w-[180px]"
               style={{
-                backgroundColor: statusColor(varejoStatus).bg,
-                color: statusColor(varejoStatus).text,
+                borderColor: item.ganhou ? '#10B98140' : '#1F2937',
+                backgroundColor: item.ganhou ? '#10B98108' : 'transparent',
               }}
             >
-              {varejoStatus === 'OK' ? '✓ OK' : varejoStatus === 'ATENCAO' ? '⚠ Atenção' : '✕ Crítico'}
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                style={{
+                  backgroundColor: item.ganhou ? '#10B98120' : '#1F2937',
+                  color: item.ganhou ? '#10B981' : '#4B5563',
+                }}
+              >
+                {item.ganhou ? '✓' : '○'}
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-white">{item.label}</p>
+                <p className="text-[10px] text-[#4B5563]">{item.detalhe}</p>
+              </div>
+              <div className="ml-auto text-right">
+                <p
+                  className="text-lg font-bold tabular-nums"
+                  style={{ color: item.ganhou ? '#10B981' : '#4B5563' }}
+                >
+                  {item.ganhou ? `+${item.pts}` : '0'}
+                </p>
+                <p className="text-[10px] text-[#4B5563]">/{item.max} pts</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Estoque Crítico ── */}
+      {data.estoqueAlertas.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2 mb-3">
+            <AlertTriangle size={13} className="text-[#F59E0B]" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280]">
+              Estoque — Alertas de Cobertura
+            </h2>
+            <span className="ml-auto text-[10px] text-[#4B5563]">
+              {data.estoqueAlertas.filter(e => e.status === 'CRITICO').length} crítico(s) ·{' '}
+              {data.estoqueAlertas.filter(e => e.status === 'ATENCAO').length} atenção
             </span>
           </div>
-
-          {/* Projeção vs Meta */}
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase tracking-widest text-[#9CA3AF]">Projeção vs Meta</span>
-              <span className="text-xs text-[#9CA3AF]">Jun/26</span>
-            </div>
-            <div className="flex items-end gap-3">
-              <div>
-                <div className="text-3xl font-bold tabular-nums text-white">{data.projecao}</div>
-                <div className="text-xs text-[#9CA3AF]">projetado</div>
-              </div>
-              <div className="text-2xl text-[#374151] pb-0.5">/</div>
-              <div>
-                <div className="text-3xl font-bold tabular-nums text-[#6B7280]">{data.meta}</div>
-                <div className="text-xs text-[#9CA3AF]">meta</div>
-              </div>
-            </div>
-            <div className="text-sm text-[#9CA3AF]">
-              Faltam{' '}
-              <span className="text-white font-semibold">
-                {Math.max(0, data.meta - data.projecao)}
-              </span>{' '}
-              motos para bater a meta
-            </div>
-            {data.junhoEmDobro ? (
-              <div className="bg-[#10B98115] border border-[#10B98140] rounded-lg px-3 py-1.5 text-xs text-[#10B981] font-medium">
-                No ritmo do Junho em Dobro!
-              </div>
-            ) : (
-              <div className="bg-[#EF444415] border border-[#EF444440] rounded-lg px-3 py-1.5 text-xs text-[#FCA5A5]">
-                Precisa de {Math.ceil(data.meta * 1.1) - data.projecao} motos extras p/ Junho em Dobro
-              </div>
-            )}
-          </div>
-
-          {/* Ranking Regional */}
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs uppercase tracking-widest text-[#9CA3AF]">Ranking Regional</span>
-              <Trophy size={15} className="text-[#F59E0B]" />
-            </div>
-            <div className="flex items-end gap-2">
-              <span className="text-5xl font-bold tabular-nums text-white">{data.rankingPos}º</span>
-              <span className="text-lg text-[#9CA3AF] pb-1">de {data.rankingTotal}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-xs text-[#9CA3AF]">Prêmio em jogo</div>
-              <div className="text-2xl font-bold text-white tabular-nums">
-                {fmtBRL(data.premioPotencial)}
-              </div>
-              {data.junhoEmDobro && (
-                <div className="text-xs text-[#10B981] font-medium">✓ Junho em Dobro ativado</div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Estoque ── */}
-      <section>
-        <SectionTitle>Estoque — Alertas de Cobertura</SectionTitle>
-        {data.estoqueAlertas.length === 0 ? (
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-8 flex flex-col items-center gap-3">
-            <CheckCircle size={28} className="text-[#10B981]" />
-            <span className="text-[#9CA3AF] text-sm">Todos os modelos com cobertura adequada</span>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
             {data.estoqueAlertas.map(e => {
               const c = statusColor(e.status)
-              const pctCobertura = Math.min((e.cobertura / 45) * 100, 100)
+              const pctCob = Math.min((e.cobertura / 45) * 100, 100)
               return (
                 <div
                   key={e.modelo}
-                  className="bg-[#111827] rounded-xl p-4 flex flex-col gap-2.5"
-                  style={{ border: `1px solid ${c.border}40` }}
+                  className="bg-[#111827] rounded-xl p-4 flex flex-col gap-2.5 border"
+                  style={{ borderColor: c.border }}
                 >
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-white leading-tight">{e.modelo}</span>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="text-sm font-semibold text-white leading-tight">{e.modelo}</p>
                     <span
-                      className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0 ml-2"
+                      className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0 tabular-nums"
                       style={{ backgroundColor: c.bg, color: c.text }}
                     >
                       {e.cobertura}d
                     </span>
                   </div>
-                  <div className="h-1 bg-[#1F2937] rounded-full overflow-hidden">
+                  {/* Barra de cobertura */}
+                  <div className="h-1.5 bg-[#0A0E1A] rounded-full overflow-hidden">
                     <div
-                      className="h-full rounded-full"
-                      style={{ width: `${pctCobertura}%`, backgroundColor: c.border }}
+                      className="h-full rounded-full transition-all"
+                      style={{ width: `${pctCob}%`, backgroundColor: c.text }}
                     />
                   </div>
-                  <div className="flex justify-between text-xs text-[#9CA3AF]">
-                    <span>Estoque: <span className="text-white">{e.estoqueTotal}</span> un</span>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-[#6B7280]">
+                      Estoque: <span className="text-white font-medium">{e.estoqueTotal}</span> un
+                    </span>
                     {e.sugestaoCompra > 0 && (
-                      <span style={{ color: c.text }} className="font-medium">
-                        Comprar: +{e.sugestaoCompra}
+                      <span className="font-semibold" style={{ color: c.text }}>
+                        + comprar {e.sugestaoCompra}
                       </span>
                     )}
                   </div>
@@ -243,17 +310,21 @@ export default async function DashboardPage({
               )
             })}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* ── Leads + NPS ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Leads */}
-        <section>
-          <SectionTitle>Leads — Junho/2026</SectionTitle>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 space-y-4">
-            {([
+        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Users size={13} className="text-[#6B7280]" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280]">
+              Leads — Junho/2026
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {[
               {
                 label: 'Tempo de Atendimento',
                 value: `${data.tempoAtend} min`,
@@ -262,119 +333,97 @@ export default async function DashboardPage({
                 icon: Clock,
               },
               {
-                label: 'TCA — Tx. Confirmação',
+                label: 'TCA — Confirmação',
                 value: `${data.tcaPct}%`,
                 meta: '≥ 80%',
                 status: tcaStatus,
                 icon: CheckCircle,
               },
               {
-                label: 'LCR — Tx. Conversão',
+                label: 'LCR — Conversão',
                 value: `${data.lcrPct}%`,
-                meta: '≥ 9% (4 pts Kaizen)',
+                meta: `≥ 9% (+4 pts Kaizen)`,
                 status: lcrStatus,
-                icon: Users,
+                icon: TrendingUp,
               },
-            ] as const).map(item => {
+            ].map(item => {
               const c = statusColor(item.status)
               const Icon = item.icon
               return (
-                <div key={item.label} className="flex items-center gap-4">
-                  <div
-                    className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
-                    style={{ backgroundColor: c.bg }}
-                  >
-                    <Icon size={16} style={{ color: c.text }} />
+                <div key={item.label} className="flex items-center gap-3 p-3 rounded-xl" style={{ backgroundColor: c.bg }}>
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: c.bg, border: `1px solid ${c.border}` }}>
+                    <Icon size={14} style={{ color: c.text }} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-center gap-2">
-                      <span className="text-sm text-[#9CA3AF] truncate">{item.label}</span>
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="text-sm font-bold tabular-nums text-white">{item.value}</span>
-                        <span
-                          className="text-xs px-1.5 py-0.5 rounded-full"
-                          style={{ backgroundColor: c.bg, color: c.text }}
-                        >
-                          {item.status === 'OK' ? '✓' : item.status === 'ATENCAO' ? '⚠' : '✕'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-xs text-[#4B5563] mt-0.5">Meta: {item.meta}</div>
+                    <p className="text-xs text-[#9CA3AF] truncate">{item.label}</p>
+                    <p className="text-[10px] text-[#4B5563]">Meta: {item.meta}</p>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <p className="text-base font-bold tabular-nums text-white">{item.value}</p>
+                    <p className="text-[10px] font-semibold" style={{ color: c.text }}>
+                      {item.status === 'OK' ? '✓ OK' : item.status === 'ATENCAO' ? '⚠ Atenção' : '✕ Crítico'}
+                    </p>
                   </div>
                 </div>
               )
             })}
           </div>
-        </section>
+        </div>
 
         {/* NPS */}
-        <section>
-          <SectionTitle>NPS — Junho/2026</SectionTitle>
-          <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-5 space-y-4">
-            {([
-              {
-                label: 'NPS Vendas',
-                value: data.npsVendas,
-                meta: '≥ 93',
-                kaizen: 5,
-                status: npsVStatus,
-                nacional: 92.6,
-              },
-              {
-                label: 'NPS Pós-vendas',
-                value: data.npsPosvenda,
-                meta: '≥ 87',
-                kaizen: 10,
-                status: npsPStatus,
-                nacional: 86.2,
-              },
-            ] as const).map(item => {
+        <div className="bg-[#111827] border border-[#1F2937] rounded-2xl p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <Star size={13} className="text-[#6B7280]" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-[#6B7280]">
+              NPS — Junho/2026
+            </h2>
+          </div>
+          <div className="space-y-3">
+            {[
+              { label: 'NPS Vendas', value: data.npsVendas, meta: 93, nacional: 92.6, kaizen: 5, status: npsVStatus },
+              { label: 'NPS Pós-Vendas', value: data.npsPosvenda, meta: 87, nacional: 86.2, kaizen: 10, status: npsPStatus },
+            ].map(item => {
               const c = statusColor(item.status)
+              const pct = Math.min((item.value / item.meta) * 100, 110)
+              const earned = item.status === 'OK'
               return (
-                <div key={item.label} className="flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-[#9CA3AF]">{item.label}</span>
+                <div key={item.label} className="p-3 rounded-xl border" style={{ borderColor: c.border, backgroundColor: c.bg }}>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-semibold text-white">{item.label}</p>
                     <span
-                      className="text-xs px-2 py-0.5 rounded-full font-medium"
-                      style={{ backgroundColor: '#00308720', color: '#60A5FA' }}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                      style={{
+                        backgroundColor: earned ? '#10B98120' : '#1F2937',
+                        color: earned ? '#10B981' : '#4B5563',
+                      }}
                     >
-                      +{item.kaizen} pts Kaizen
+                      {earned ? `✓ +${item.kaizen} pts Kaizen` : `○ ${item.kaizen} pts (não ganhos)`}
                     </span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-3xl font-bold tabular-nums text-white">{item.value}</div>
-                    <div className="flex-1">
-                      <div className="h-2 bg-[#1F2937] rounded-full overflow-hidden">
+                  <div className="flex items-end gap-3">
+                    <span className="text-2xl font-bold tabular-nums" style={{ color: c.text }}>
+                      {item.value}
+                    </span>
+                    <div className="flex-1 pb-1">
+                      <div className="h-1.5 bg-[#0A0E1A] rounded-full overflow-hidden">
                         <div
                           className="h-full rounded-full"
-                          style={{
-                            width: `${Math.min(item.value, 100)}%`,
-                            backgroundColor: c.border,
-                          }}
+                          style={{ width: `${Math.min(pct, 100)}%`, backgroundColor: c.text }}
                         />
                       </div>
-                      <div className="flex justify-between text-xs text-[#4B5563] mt-1">
+                      <div className="flex justify-between text-[10px] text-[#4B5563] mt-1">
                         <span>Nacional: {item.nacional}</span>
-                        <span style={{ color: c.text }}>
-                          {item.status === 'OK' ? '✓ Meta atingida' : '⚠ Atenção'}
-                        </span>
+                        <span>Meta: {item.meta}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               )
             })}
-            <div className="border-t border-[#1F2937] pt-3 flex justify-between items-center">
-              <span className="text-xs text-[#9CA3AF]">Total Kaizen NPS</span>
-              <span className="text-lg font-bold text-[#10B981]">
-                {(data.npsVendas >= 93 ? 5 : 0) + (data.npsPosvenda >= 87 ? 10 : 0)}/15 pts
-              </span>
-            </div>
           </div>
-        </section>
+        </div>
       </div>
 
-      {/* ChatWidget flutuante */}
       <ChatWidget />
     </div>
   )
