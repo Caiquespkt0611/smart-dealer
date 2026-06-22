@@ -171,7 +171,7 @@ export default async function DashboardPage({
       </div>
 
       {/* Kaizen Strip */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="card p-5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="shrink-0">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Kaizen Jun/26</p>
@@ -263,7 +263,7 @@ export default async function DashboardPage({
       {/* Leads + NPS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Leads */}
-        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5">
+        <div className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={13} className="text-slate-600" />
             <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">Leads — Junho/2026</h2>
@@ -298,7 +298,7 @@ export default async function DashboardPage({
         </div>
 
         {/* NPS */}
-        <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5">
+        <div className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Star size={13} className="text-slate-600" />
             <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">NPS — Junho/2026</h2>

@@ -57,7 +57,7 @@ export default async function NpsPage() {
       </div>
 
       {/* Kaizen NPS */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+      <div className="card p-5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="shrink-0">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Total Kaizen NPS</p>
@@ -110,7 +110,7 @@ export default async function NpsPage() {
       </div>
 
       {/* Gráfico histórico */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+      <div className="card p-6">
         <div className="flex items-center justify-between mb-5">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
@@ -135,7 +135,7 @@ export default async function NpsPage() {
       {/* Tabelas históricas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* NPS Vendas */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="card overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Histórico NPS Vendas
@@ -184,7 +184,7 @@ export default async function NpsPage() {
         </div>
 
         {/* NPS Pós-Vendas */}
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="card overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Histórico NPS Pós-Vendas
