@@ -48,20 +48,20 @@ export default function AssistentePage() {
   return (
     <div className="flex flex-col gap-4" style={{ height: 'calc(100vh - 8rem)' }}>
       <div>
-        <h1 className="text-2xl font-bold text-white">Assistente Técnico</h1>
-        <p className="text-sm text-[#9CA3AF] mt-0.5">
+        <h1 className="text-2xl font-bold text-slate-900">Assistente Técnico</h1>
+        <p className="text-sm text-slate-400 mt-0.5">
           Especialista em motocicletas Yamaha · Manual de Serviço Oficial
         </p>
       </div>
 
-      <div className="flex-1 bg-[#111827] border border-[#1F2937] rounded-2xl flex flex-col overflow-hidden">
+      <div className="flex-1 bg-white border border-slate-200 rounded-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-[#1F2937] shrink-0">
+        <div className="flex items-center gap-3 px-5 py-4 border-b border-slate-200 shrink-0">
           <div className="w-9 h-9 rounded-lg bg-[#003087]/20 flex items-center justify-center">
             <Wrench size={16} className="text-[#60A5FA]" />
           </div>
           <div>
-            <div className="text-sm font-semibold text-white">Assistente Técnico Yamaha</div>
+            <div className="text-sm font-semibold text-slate-900">Assistente Técnico Yamaha</div>
             <div className="text-xs text-[#10B981]">● Especializado Fazer 250 ABS</div>
           </div>
         </div>
@@ -70,7 +70,7 @@ export default function AssistentePage() {
         <div className="flex-1 overflow-y-auto p-5 space-y-3">
           {msgs.length === 0 && (
             <div className="space-y-4">
-              <p className="text-sm text-[#9CA3AF]">
+              <p className="text-sm text-slate-400">
                 Olá mecânico! Tenho acesso ao Manual de Serviço oficial Yamaha. Posso responder
                 sobre especificações técnicas, procedimentos e torques.
               </p>
@@ -79,7 +79,7 @@ export default function AssistentePage() {
                   <button
                     key={chip}
                     onClick={() => sendMessage(chip)}
-                    className="text-xs bg-[#1F2937] hover:bg-[#374151] text-[#9CA3AF] hover:text-white px-3 py-1.5 rounded-full transition-colors"
+                    className="text-xs bg-slate-100 hover:bg-[#374151] text-slate-400 hover:text-slate-900 px-3 py-1.5 rounded-full transition-colors"
                   >
                     {chip}
                   </button>
@@ -93,8 +93,8 @@ export default function AssistentePage() {
               <div
                 className={`max-w-[80%] rounded-xl px-4 py-3 text-sm whitespace-pre-wrap ${
                   m.role === 'user'
-                    ? 'bg-[#003087] text-white'
-                    : 'bg-[#1F2937] text-[#E5E7EB]'
+                    ? 'bg-[#003087] text-slate-900'
+                    : 'bg-slate-100 text-[#E5E7EB]'
                 }`}
               >
                 {m.text}
@@ -104,7 +104,7 @@ export default function AssistentePage() {
 
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-[#1F2937] rounded-xl px-4 py-3">
+              <div className="bg-slate-100 rounded-xl px-4 py-3">
                 <div className="flex gap-1">
                   {[0, 1, 2].map(i => (
                     <div
@@ -121,7 +121,7 @@ export default function AssistentePage() {
         </div>
 
         {/* Input */}
-        <div className="p-4 border-t border-[#1F2937] shrink-0">
+        <div className="p-4 border-t border-slate-200 shrink-0">
           <div className="flex gap-2">
             <input
               value={input}
@@ -133,7 +133,7 @@ export default function AssistentePage() {
                 }
               }}
               placeholder="Pergunte sobre manutenção, especificações ou procedimentos..."
-              className="flex-1 bg-[#0A0E1A] border border-[#1F2937] rounded-lg px-3 py-2 text-sm text-white placeholder-[#4B5563] focus:outline-none focus:border-[#003087]"
+              className="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-[#4B5563] focus:outline-none focus:border-[#003087]"
             />
             <button
               onClick={() => sendMessage(input)}
@@ -141,7 +141,7 @@ export default function AssistentePage() {
               className="w-9 h-9 rounded-lg bg-[#003087] hover:bg-[#004db3] disabled:opacity-50 flex items-center justify-center transition-colors shrink-0"
               aria-label="Enviar"
             >
-              <Send size={14} className="text-white" />
+              <Send size={14} className="text-slate-900" />
             </button>
           </div>
         </div>
