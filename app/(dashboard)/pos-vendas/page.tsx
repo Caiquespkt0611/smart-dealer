@@ -1,5 +1,6 @@
 import { posVendasData } from '@/lib/posvendas-data'
 import { renovacaoData } from '@/lib/renovacao-data'
+import { mensagemRevisao, mensagemRenovacao } from '@/lib/mensagens'
 import { RevisaoButton } from '@/components/posvendas/RevisaoButton'
 import { RevisaoHistorico } from '@/components/posvendas/RevisaoHistorico'
 import {
@@ -55,11 +56,11 @@ export default function PosVendasPage() {
                 {ribeiro.modelo} · {ribeiro.kmEstimado.toLocaleString('pt-BR')} km · revisão dos {ribeiro.proximaRevisaoKm.toLocaleString('pt-BR')} km vencida há {Math.abs(ribeiro.diasParaRevisao)} dias.
               </p>
               <p className="text-[11px] mt-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)' }}>
-                <Phone size={11} /> +{ribeiro.telefone} · mensagem enviada: <b style={{ color: 'var(--text-primary)' }}>&ldquo;Revisão&rdquo;</b>
+                <Phone size={11} /> +{ribeiro.telefone} · chamada de revisão personalizada
               </p>
             </div>
             <div className="self-center">
-              <RevisaoButton id={ribeiro.id} nome={ribeiro.nome} telefone={ribeiro.telefone} mensagem="Revisão" />
+              <RevisaoButton id={ribeiro.id} nome={ribeiro.nome} telefone={ribeiro.telefone} mensagem={mensagemRevisao(ribeiro.nome, ribeiro.modelo)} />
             </div>
           </div>
         </div>
@@ -110,7 +111,7 @@ export default function PosVendasPage() {
                         <p className="text-[10px] mt-0.5" style={{ color: 'var(--text-tertiary)' }}>{c.proximaRevisaoKm.toLocaleString('pt-BR')} km</p>
                       </td>
                       <td className="px-4 py-3 text-right">
-                        <RevisaoButton id={c.id} nome={c.nome} telefone={c.telefone} mensagem="Revisão" compact />
+                        <RevisaoButton id={c.id} nome={c.nome} telefone={c.telefone} mensagem={mensagemRevisao(c.nome, c.modelo)} compact />
                       </td>
                     </tr>
                   )
@@ -158,7 +159,7 @@ export default function PosVendasPage() {
                 <span className="font-semibold" style={{ color: 'var(--accent)' }}>{r.ofertaModelo}</span>
               </div>
               <RevisaoButton id={1000 + i} nome={r.nome} telefone={r.telefone}
-                mensagem={`Olá ${r.nome.split(' ')[0]}! Temos uma condição especial de upgrade da sua ${r.modeloAtual} para a nova ${r.ofertaModelo}, com voucher de ${fmtBRL(r.voucher)}. Posso te apresentar?`}
+                mensagem={mensagemRenovacao(r.nome, r.modeloAtual, r.ofertaModelo, fmtBRL(r.voucher))}
                 compact />
             </div>
           ))}
