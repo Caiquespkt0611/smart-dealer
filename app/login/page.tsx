@@ -124,12 +124,26 @@ const features = [
   },
 ]
 
+const DEMO_ACCOUNTS = [
+  { label: 'Titular', email: 'titular@nippon.com', hint: 'vê tudo' },
+  { label: 'Gerente', email: 'gerente@nippon.com', hint: 'gestão' },
+  { label: 'Vendedor', email: 'vendedor@nippon.com', hint: 'comercial' },
+  { label: 'Consultor', email: 'consultor@yamaha.com', hint: 'analítico' },
+  { label: 'Mecânico', email: 'mecanico@nippon.com', hint: 'técnico' },
+]
+
 export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  function fillDemo(demoEmail: string) {
+    setEmail(demoEmail)
+    setPassword('yamaha2026')
+    setError('')
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -149,7 +163,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#0A0E1A]">
+    <div className="min-h-screen flex bg-[#070A10]">
       {/* ── LEFT PANEL ── */}
       <div
         className="hidden lg:flex lg:w-[52%] relative flex-col justify-center p-12 overflow-hidden"
@@ -218,88 +232,145 @@ export default function LoginPage() {
       </div>
 
       {/* ── RIGHT PANEL ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
-        <div className="w-full max-w-[400px]">
-          {/* Logo — acima do formulário */}
-          <div className="flex justify-center mb-8 lg:mb-10">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
+        {/* Profundidade: glows + grid sutil (espelha o lado esquerdo) */}
+        <div
+          className="absolute top-[-140px] right-[-100px] w-[460px] h-[460px] rounded-full opacity-[0.12] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #0066ff 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute bottom-[-120px] left-[-100px] w-[380px] h-[380px] rounded-full opacity-[0.08] pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #003087 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute inset-0 opacity-[0.025] pointer-events-none"
+          style={{
+            backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
+            backgroundSize: '52px 52px',
+          }}
+        />
+
+        <div className="w-full max-w-[400px] relative z-10">
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
             <img
               src="/logo-smart-dealer.png"
               alt="Smart Dealer"
-              className="h-32 w-auto object-contain"
+              className="h-24 w-auto object-contain"
             />
           </div>
 
-          <h2 className="text-2xl font-bold text-white mb-1">Bem-vindo de volta</h2>
-          <p className="text-[#6B7280] text-sm mb-8">
-            Entre para acompanhar sua concessionária
-          </p>
+          {/* Card glass */}
+          <div
+            className="rounded-2xl p-7 sm:p-8"
+            style={{
+              background: 'rgba(255,255,255,0.035)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              boxShadow: '0 24px 60px -12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
+            <h2 className="text-2xl font-bold text-white mb-1">Bem-vindo de volta</h2>
+            <p className="text-[#7B8AA0] text-sm mb-7">
+              Entre para acompanhar sua concessionária
+            </p>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-[#9CA3AF] mb-2 font-medium">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="titular@nippon.com"
-                className="w-full bg-[#111827] border border-[#1F2937] rounded-xl px-4 py-3 text-white placeholder-[#374151] text-sm focus:outline-none focus:border-[#003087] focus:ring-1 focus:ring-[#003087]/50 transition-all"
-                required
-              />
-            </div>
-
-            {/* Password */}
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-[#9CA3AF] mb-2 font-medium">
-                Senha
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full bg-[#111827] border border-[#1F2937] rounded-xl px-4 py-3 text-white placeholder-[#374151] text-sm focus:outline-none focus:border-[#003087] focus:ring-1 focus:ring-[#003087]/50 transition-all"
-                required
-              />
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-2 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-xl px-4 py-3 text-[#EF4444] text-sm">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-                {error}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider text-[#9CA3AF] mb-1.5 font-medium">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder="titular@nippon.com"
+                  className="w-full bg-[#0B0F18] border border-[#212B3D] rounded-xl px-4 py-3 text-white placeholder-[#374151] text-sm focus:outline-none focus:border-[#3B6FE0] focus:ring-2 focus:ring-[#003087]/40 transition-all"
+                  required
+                />
               </div>
-            )}
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full font-semibold py-3 rounded-xl text-white text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
-              style={{ background: 'linear-gradient(135deg, #003087, #0044c8)' }}
-            >
-              <span
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, #0044c8, #0055e0)' }}
-              />
-              <span className="relative">
-                {loading ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".25"/><path d="M21 12a9 9 0 00-9-9" />
-                    </svg>
-                    Entrando...
-                  </span>
-                ) : (
-                  'Entrar'
-                )}
-              </span>
-            </button>
-          </form>
+              {/* Password */}
+              <div>
+                <label className="block text-[11px] uppercase tracking-wider text-[#9CA3AF] mb-1.5 font-medium">
+                  Senha
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full bg-[#0B0F18] border border-[#212B3D] rounded-xl px-4 py-3 text-white placeholder-[#374151] text-sm focus:outline-none focus:border-[#3B6FE0] focus:ring-2 focus:ring-[#003087]/40 transition-all"
+                  required
+                />
+              </div>
+
+              {/* Error */}
+              {error && (
+                <div className="flex items-center gap-2 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-xl px-4 py-3 text-[#F87171] text-sm">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+                  </svg>
+                  {error}
+                </div>
+              )}
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full font-semibold py-3 rounded-xl text-white text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group mt-1"
+                style={{ background: 'linear-gradient(135deg, #003087, #0044c8)', boxShadow: '0 8px 24px -6px rgba(0,68,200,0.5)' }}
+              >
+                <span
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ background: 'linear-gradient(135deg, #0044c8, #0055e0)' }}
+                />
+                <span className="relative">
+                  {loading ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".25"/><path d="M21 12a9 9 0 00-9-9" />
+                      </svg>
+                      Entrando...
+                    </span>
+                  ) : (
+                    'Entrar'
+                  )}
+                </span>
+              </button>
+            </form>
+
+            {/* Acesso de demonstração */}
+            <div className="mt-6 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+              <p className="text-[10px] uppercase tracking-wider text-[#5A6B85] mb-2.5 text-center">
+                Acesso de demonstração · 1 clique
+              </p>
+              <div className="flex flex-wrap justify-center gap-2">
+                {DEMO_ACCOUNTS.map(d => (
+                  <button
+                    key={d.email}
+                    type="button"
+                    onClick={() => fillDemo(d.email)}
+                    className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all"
+                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.18)' }}
+                  >
+                    <span className="font-medium text-[#cfe0f5]">{d.label}</span>
+                    <span className="text-[10px] text-[#5A6B85] group-hover:text-[#93bce8]">{d.hint}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Footer seguro */}
+          <div className="flex items-center justify-center gap-2 mt-5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5A6B85" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
+            </svg>
+            <span className="text-[11px] text-[#5A6B85]">Conexão segura · Yamahaway 2026</span>
+          </div>
         </div>
       </div>
     </div>
