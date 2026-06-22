@@ -30,7 +30,7 @@ export default async function EstoquePage({
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Estoque</h1>
-        <p className="text-sm text-slate-400 mt-0.5">{loja} · Cobertura por modelo · Sugestão de compra</p>
+        <p className="text-sm text-slate-600 mt-0.5">{loja} · Cobertura por modelo · Sugestão de compra</p>
       </div>
 
       {/* Resumo */}
@@ -44,7 +44,7 @@ export default async function EstoquePage({
             <item.Icon size={20} style={{ color: item.color }} />
             <div>
               <div className="text-2xl font-bold tabular-nums text-slate-900">{item.val}</div>
-              <div className="text-xs text-slate-400">{item.label}</div>
+              <div className="text-xs text-slate-600">{item.label}</div>
             </div>
           </div>
         ))}
@@ -52,21 +52,21 @@ export default async function EstoquePage({
 
       {/* Tabela completa */}
       <section>
-        <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
+        <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-3">
           Cobertura por Modelo
         </h2>
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className="text-left px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Modelo</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Chão</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Trânsito</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Total</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Giro/mês</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Cobertura</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Sugestão</th>
-                <th className="text-right px-4 py-3 text-slate-400 font-medium text-xs uppercase tracking-wider">Status</th>
+                <th className="text-left px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Modelo</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Chão</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Trânsito</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Total</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Giro/mês</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Cobertura</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Sugestão</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Status</th>
               </tr>
             </thead>
             <tbody>
@@ -78,10 +78,10 @@ export default async function EstoquePage({
                     className={`border-b border-slate-200 last:border-0 ${i % 2 === 0 ? 'bg-transparent' : 'bg-slate-50'}`}
                   >
                     <td className="px-4 py-3 text-slate-900 font-medium">{e.modelo}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-400">{e.chao}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-400">{e.transito}</td>
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-600">{e.chao}</td>
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-600">{e.transito}</td>
                     <td className="px-4 py-3 text-right tabular-nums text-slate-900 font-bold">{e.estoqueTotal}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-400">{e.giroMensal}</td>
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-600">{e.giroMensal}</td>
                     <td className="px-4 py-3 text-right">
                       <span className="tabular-nums font-bold" style={{ color }}>
                         {e.cobertura === 999 ? '—' : `${e.cobertura}d`}
@@ -91,7 +91,7 @@ export default async function EstoquePage({
                       {e.sugestaoCompra > 0 ? (
                         <span className="text-[#EF4444] font-bold tabular-nums">+{e.sugestaoCompra}</span>
                       ) : (
-                        <span className="text-slate-400">—</span>
+                        <span className="text-slate-600">—</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">
@@ -113,7 +113,7 @@ export default async function EstoquePage({
       {/* Sem Mix */}
       {semMix.length > 0 && (
         <section>
-          <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-3">
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-3">
             Sem Mix — Modelos da Gama Oficial Ausentes
           </h2>
           <div className="bg-white border border-[#EF444430] rounded-xl p-4">

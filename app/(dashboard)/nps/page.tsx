@@ -33,7 +33,7 @@ export default async function NpsPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">NPS</h1>
-        <p className="text-sm text-slate-400 mt-0.5">
+        <p className="text-sm text-slate-600 mt-0.5">
           Satisfação do Cliente · Vendas · Pós-Vendas · Kaizen
         </p>
       </div>
@@ -60,10 +60,10 @@ export default async function NpsPage() {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="shrink-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Total Kaizen NPS</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Total Kaizen NPS</p>
             <p className={`text-3xl font-bold tabular-nums mt-0.5 ${kaizenTotal >= 15 ? 'text-emerald-600' : 'text-amber-600'}`}>
               {kaizenTotal}
-              <span className="text-base font-normal text-slate-400">/15 pts</span>
+              <span className="text-base font-normal text-slate-600">/15 pts</span>
             </p>
           </div>
 
@@ -90,19 +90,19 @@ export default async function NpsPage() {
               }`}
             >
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-base font-bold shrink-0 ${
-                item.ganhou ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-400'
+                item.ganhou ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
               }`}>
                 {item.ganhou ? '✓' : '○'}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-slate-700">{item.label}</p>
-                <p className="text-xs text-slate-400">{item.detalhe}</p>
+                <p className="text-xs text-slate-600">{item.detalhe}</p>
               </div>
               <div className="text-right shrink-0">
                 <p className={`text-2xl font-bold tabular-nums ${item.ganhou ? 'text-emerald-600' : 'text-slate-300'}`}>
                   {item.ganhou ? `+${item.pts}` : '0'}
                 </p>
-                <p className="text-xs text-slate-400">/ {item.pts} pts</p>
+                <p className="text-xs text-slate-600">/ {item.pts} pts</p>
               </div>
             </div>
           ))}
@@ -113,12 +113,12 @@ export default async function NpsPage() {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
         <div className="flex items-center justify-between mb-5">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Evolução Histórica
             </p>
-            <p className="text-xs text-slate-400 mt-0.5">Jul/2025 → Jun/2026 · score mensal</p>
+            <p className="text-xs text-slate-600 mt-0.5">Jul/2025 → Jun/2026 · score mensal</p>
           </div>
-          <div className="flex items-center gap-4 text-[10px] text-slate-400">
+          <div className="flex items-center gap-4 text-[10px] text-slate-600">
             <span className="flex items-center gap-1.5">
               <span className="w-3 h-0.5 bg-[#003087] inline-block rounded" />
               Vendas (meta 93)
@@ -137,17 +137,17 @@ export default async function NpsPage() {
         {/* NPS Vendas */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Histórico NPS Vendas
             </p>
           </div>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Período</th>
-                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Mensal</th>
-                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Trimestral</th>
-                <th className="text-center px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Meta</th>
+                <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Período</th>
+                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Mensal</th>
+                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Trimestral</th>
+                <th className="text-center px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Meta</th>
               </tr>
             </thead>
             <tbody>
@@ -166,7 +166,7 @@ export default async function NpsPage() {
                     <td className={`px-5 py-2.5 text-right tabular-nums font-bold ${color}`}>
                       {row.scoreMensal}
                     </td>
-                    <td className="px-5 py-2.5 text-right tabular-nums text-slate-400">
+                    <td className="px-5 py-2.5 text-right tabular-nums text-slate-600">
                       {row.scoreTrimestral}
                     </td>
                     <td className="px-4 py-2.5 text-center">
@@ -186,17 +186,17 @@ export default async function NpsPage() {
         {/* NPS Pós-Vendas */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Histórico NPS Pós-Vendas
             </p>
           </div>
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-100">
-                <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Período</th>
-                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Mensal</th>
-                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Trimestral</th>
-                <th className="text-center px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Meta</th>
+                <th className="text-left px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Período</th>
+                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Mensal</th>
+                <th className="text-right px-5 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Trimestral</th>
+                <th className="text-center px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-slate-600">Meta</th>
               </tr>
             </thead>
             <tbody>
@@ -215,7 +215,7 @@ export default async function NpsPage() {
                     <td className={`px-5 py-2.5 text-right tabular-nums font-bold ${color}`}>
                       {row.scoreMensal}
                     </td>
-                    <td className="px-5 py-2.5 text-right tabular-nums text-slate-400">
+                    <td className="px-5 py-2.5 text-right tabular-nums text-slate-600">
                       {row.scoreTrimestral}
                     </td>
                     <td className="px-4 py-2.5 text-center">

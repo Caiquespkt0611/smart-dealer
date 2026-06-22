@@ -34,7 +34,7 @@ function KpiCard({
   return (
     <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col gap-3">
       <div className="flex items-start justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">{label}</p>
+        <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">{label}</p>
         <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${s ? s.bg : 'bg-blue-50'}`}>
           <Icon size={15} className={s ? s.text : 'text-blue-600'} />
         </div>
@@ -42,9 +42,9 @@ function KpiCard({
       <div>
         <div className="flex items-baseline gap-1">
           <span className="text-3xl font-bold tabular-nums text-slate-900">{value}</span>
-          {unit && <span className="text-sm text-slate-400">{unit}</span>}
+          {unit && <span className="text-sm text-slate-600">{unit}</span>}
         </div>
-        <p className="text-xs text-slate-400 mt-1">{sub}</p>
+        <p className="text-xs text-slate-600 mt-1">{sub}</p>
       </div>
       {status && (
         <div className={`flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider ${s!.text}`}>
@@ -92,7 +92,7 @@ export default async function DashboardPage({
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-400 mt-0.5">{loja} · Junho/2026 · Dados até dia 14</p>
+        <p className="text-sm text-slate-600 mt-0.5">{loja} · Junho/2026 · Dados até dia 14</p>
       </div>
 
       {/* KPI Row */}
@@ -133,7 +133,7 @@ export default async function DashboardPage({
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4" style={{ minHeight: 340 }}>
         {/* Ring */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-5">
+          <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600 mb-5">
             Projeção vs Meta
           </p>
           <div className="flex-1 flex items-center justify-center">
@@ -150,10 +150,10 @@ export default async function DashboardPage({
         {/* Chart */}
         <div className="lg:col-span-3 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-4 shrink-0">
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Histórico — últimos 13 meses
             </p>
-            <div className="flex items-center gap-3 text-[10px] text-slate-400">
+            <div className="flex items-center gap-3 text-[10px] text-slate-600">
               <span className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-[#003087] inline-block rounded" />
                 Vendas
@@ -174,10 +174,10 @@ export default async function DashboardPage({
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="shrink-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Kaizen Jun/26</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Kaizen Jun/26</p>
             <p className={`text-2xl font-bold tabular-nums mt-0.5 ${kaizenTotal >= 15 ? 'text-emerald-600' : 'text-amber-600'}`}>
               {kaizenTotal}
-              <span className="text-sm font-normal text-slate-400">/19</span>
+              <span className="text-sm font-normal text-slate-600">/19</span>
             </p>
           </div>
 
@@ -195,19 +195,19 @@ export default async function DashboardPage({
               }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-                item.ganhou ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-400'
+                item.ganhou ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600'
               }`}>
                 {item.ganhou ? '✓' : '○'}
               </div>
               <div className="min-w-0">
                 <p className="text-xs font-semibold text-slate-700 truncate">{item.label}</p>
-                <p className="text-[10px] text-slate-400">{item.detalhe}</p>
+                <p className="text-[10px] text-slate-600">{item.detalhe}</p>
               </div>
               <div className="ml-auto text-right shrink-0">
                 <p className={`text-lg font-bold tabular-nums ${item.ganhou ? 'text-emerald-600' : 'text-slate-300'}`}>
                   {item.ganhou ? `+${item.pts}` : '0'}
                 </p>
-                <p className="text-[10px] text-slate-400">/{item.max} pts</p>
+                <p className="text-[10px] text-slate-600">/{item.max} pts</p>
               </div>
             </div>
           ))}
@@ -219,10 +219,10 @@ export default async function DashboardPage({
         <section>
           <div className="flex items-center gap-2 mb-3">
             <AlertTriangle size={13} className="text-amber-500" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Estoque — Alertas de Cobertura
             </h2>
-            <span className="ml-auto text-[10px] text-slate-400">
+            <span className="ml-auto text-[10px] text-slate-600">
               {data.estoqueAlertas.filter(e => e.status === 'CRITICO').length} crítico(s) ·{' '}
               {data.estoqueAlertas.filter(e => e.status === 'ATENCAO').length} atenção
             </span>
@@ -246,7 +246,7 @@ export default async function DashboardPage({
                     />
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-slate-400">
+                    <span className="text-slate-600">
                       Estoque: <span className="text-slate-700 font-medium">{e.estoqueTotal}</span> un
                     </span>
                     {e.sugestaoCompra > 0 && (
@@ -265,8 +265,8 @@ export default async function DashboardPage({
         {/* Leads */}
         <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Users size={13} className="text-slate-400" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">Leads — Junho/2026</h2>
+            <Users size={13} className="text-slate-600" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">Leads — Junho/2026</h2>
           </div>
           <div className="space-y-2.5">
             {([
@@ -283,7 +283,7 @@ export default async function DashboardPage({
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-medium text-slate-700 truncate">{item.label}</p>
-                    <p className="text-[10px] text-slate-400">Meta: {item.meta}</p>
+                    <p className="text-[10px] text-slate-600">Meta: {item.meta}</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="text-base font-bold tabular-nums text-slate-900">{item.value}</p>
@@ -300,8 +300,8 @@ export default async function DashboardPage({
         {/* NPS */}
         <div className="bg-white border border-slate-200 shadow-sm rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Star size={13} className="text-slate-400" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-400">NPS — Junho/2026</h2>
+            <Star size={13} className="text-slate-600" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">NPS — Junho/2026</h2>
           </div>
           <div className="space-y-3">
             {[
@@ -315,7 +315,7 @@ export default async function DashboardPage({
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs font-semibold text-slate-700">{item.label}</p>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                      earned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'
+                      earned ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'
                     }`}>
                       {earned ? `✓ +${item.kaizen} pts Kaizen` : `○ ${item.kaizen} pts não ganhos`}
                     </span>
@@ -331,7 +331,7 @@ export default async function DashboardPage({
                           style={{ width: `${Math.min(pct, 100)}%` }}
                         />
                       </div>
-                      <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+                      <div className="flex justify-between text-[10px] text-slate-600 mt-1">
                         <span>Nacional: {item.nacional}</span>
                         <span>Meta: {item.meta}</span>
                       </div>
@@ -342,10 +342,10 @@ export default async function DashboardPage({
             })}
 
             <div className="flex justify-between items-center pt-2 border-t border-slate-100">
-              <span className="text-xs text-slate-400">Total Kaizen NPS</span>
+              <span className="text-xs text-slate-600">Total Kaizen NPS</span>
               <span className={`text-lg font-bold tabular-nums ${(kaizenNpsV + kaizenNpsP) >= 15 ? 'text-emerald-600' : 'text-amber-600'}`}>
                 {kaizenNpsV + kaizenNpsP}
-                <span className="text-sm font-normal text-slate-400">/15 pts</span>
+                <span className="text-sm font-normal text-slate-600">/15 pts</span>
               </span>
             </div>
           </div>
