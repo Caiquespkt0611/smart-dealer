@@ -1,0 +1,61 @@
+/* ═══════════════════════════════════════════════════════════════
+   THEME OVERRIDES
+
+   Converte classes Tailwind para usar CSS variables
+   Assim o tema muda AUTOMATICAMENTE em todo o site
+   quando data-theme muda.
+
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Backgrounds */
+.bg-white { background-color: var(--card-bg) !important; }
+.bg-slate-50 { background-color: var(--bg-tertiary) !important; }
+.bg-slate-100 { background-color: var(--card-hover) !important; }
+
+/* Borders */
+.border-slate-200 { border-color: var(--card-border) !important; }
+.border-slate-100 { border-color: var(--divider) !important; }
+
+/* Text */
+.text-slate-900 { color: var(--text-primary) !important; }
+.text-slate-700 { color: var(--text-primary) !important; }
+.text-slate-400 { color: var(--text-secondary) !important; }
+.text-slate-500 { color: var(--text-tertiary) !important; }
+
+/* Status colors */
+.text-emerald-700 { color: var(--status-ok-text) !important; }
+.text-emerald-600 { color: var(--status-ok-text) !important; }
+.bg-emerald-50 { background-color: var(--status-ok-bg) !important; }
+.bg-emerald-100 { background-color: var(--status-ok-bg) !important; }
+.border-emerald-200 { border-color: var(--status-ok-text) !important; opacity: 0.2; }
+
+.text-amber-700 { color: var(--status-warning-text) !important; }
+.text-amber-600 { color: var(--status-warning-text) !important; }
+.bg-amber-50 { background-color: var(--status-warning-bg) !important; }
+.bg-amber-100 { background-color: var(--status-warning-bg) !important; }
+.border-amber-200 { border-color: var(--status-warning-text) !important; opacity: 0.2; }
+
+.text-red-700 { color: var(--status-danger-text) !important; }
+.text-red-600 { color: var(--status-danger-text) !important; }
+.bg-red-50 { background-color: var(--status-danger-bg) !important; }
+.bg-red-100 { background-color: var(--status-danger-bg) !important; }
+.border-red-200 { border-color: var(--status-danger-text) !important; opacity: 0.2; }
+
+/* Shadows */
+.shadow-sm {
+  box-shadow: var(--shadow-sm) !important;
+}
+
+/* Hover states */
+.hover\:bg-slate-100:hover {
+  background-color: var(--card-hover) !important;
+}
+
+/* Accessibility: ensure text is readable */
+.text-opacity-60 {
+  opacity: 0.6;
+}
+
+.text-opacity-50 {
+  opacity: 0.5;
+}

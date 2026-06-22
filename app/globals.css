@@ -1,39 +1,96 @@
 @import "tailwindcss";
+@import "./theme-overrides.css";
 
 :root {
+  /* Brand Colors (fixos, não mudam com tema) */
   --yamaha-blue: #003087;
   --yamaha-red: #E40521;
   --success: #10B981;
+  --success-light: #D1FAE5;
   --warning: #F59E0B;
+  --warning-light: #FEF3C7;
   --danger: #EF4444;
+  --danger-light: #FEE2E2;
 }
 
-/* Tema Escuro (padrão) */
+/* ═══════════════════════════════════════════════════════════════
+   TEMA ESCURO (padrão)
+   ═══════════════════════════════════════════════════════════════ */
+
 :root,
 html[data-theme="dark"] {
+  /* Backgrounds */
   --bg-main: #0A0E1A;
   --bg-secondary: #111827;
   --bg-tertiary: #0F1724;
-  --border-color: #1F2937;
+
+  /* Cards e Componentes */
+  --card-bg: #111827;
+  --card-border: #1F2937;
+  --card-hover: #1F2937;
+
+  /* Texto */
   --text-primary: #F9FAFB;
   --text-secondary: #9CA3AF;
   --text-tertiary: #6B7280;
-  --header-bg: #003087;
-  --shadow: rgba(0, 0, 0, 0.3);
+  --text-inverse: #0A0E1A;
+
+  /* Componentes */
+  --input-bg: #1F2937;
+  --input-border: #374151;
+  --divider: #1F2937;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+
+  /* Status com fundo */
+  --status-ok-bg: rgba(16, 185, 129, 0.1);
+  --status-ok-text: #10B981;
+  --status-warning-bg: rgba(245, 158, 11, 0.1);
+  --status-warning-text: #F59E0B;
+  --status-danger-bg: rgba(239, 68, 68, 0.1);
+  --status-danger-text: #EF4444;
 }
 
-/* Tema Claro */
+/* ═══════════════════════════════════════════════════════════════
+   TEMA CLARO
+   ═══════════════════════════════════════════════════════════════ */
+
 html[data-theme="light"] {
+  /* Backgrounds */
   --bg-main: #F8FAFC;
   --bg-secondary: #FFFFFF;
   --bg-tertiary: #F1F5F9;
-  --border-color: #E2E8F0;
+
+  /* Cards e Componentes */
+  --card-bg: #FFFFFF;
+  --card-border: #E2E8F0;
+  --card-hover: #F1F5F9;
+
+  /* Texto */
   --text-primary: #0F172A;
   --text-secondary: #64748B;
   --text-tertiary: #94A3B8;
-  --header-bg: #FFFFFF;
-  --shadow: rgba(0, 0, 0, 0.08);
+  --text-inverse: #F8FAFC;
+
+  /* Componentes */
+  --input-bg: #F1F5F9;
+  --input-border: #CBD5E1;
+  --divider: #E2E8F0;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  /* Status com fundo */
+  --status-ok-bg: rgba(16, 185, 129, 0.08);
+  --status-ok-text: #059669;
+  --status-warning-bg: rgba(217, 119, 6, 0.08);
+  --status-warning-text: #D97706;
+  --status-danger-bg: rgba(220, 38, 38, 0.08);
+  --status-danger-text: #DC2626;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   Estilos Globais
+   ═══════════════════════════════════════════════════════════════ */
 
 body {
   background-color: var(--bg-main);
