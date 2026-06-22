@@ -1,7 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
+import { shareData } from '@/lib/share-data'
+import { kaizenData } from '@/lib/kaizen-data'
+import { treinamentoData } from '@/lib/treinamento-data'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+
+function buildShareContext() {
+  const d = shareData
+  const fracos = [...d.segments].filter(s => s.total >= 30).sort((a, b) => a.shareYamaha - b.shareYamaha).slice(0, 3)
+  const fortes = [...d.segments].filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
+  return `
+MARKET SHARE (emplacamentos ${d.areas.join(' + ')}, Jan–Jun 2026 — mercado de ${d.totalMercado2026} motos):
+- Share Yamaha: ${d.yamahaShare}% (${d.yamahaQtd} motos) | Honda lidera com ${d.hondaShare}% (${d.hondaQtd}).
+- Nippon Motos: ${d.nipponQtd} motos = ${d.nipponShareDoMercado}% do mercado e ${d.nipponShareDaYamaha}% de toda Yamaha regional.
+- Segmentos onde a Yamaha está FRACA (oportunidade): ${fracos.map(s => `${s.segmento} (${s.shareYamaha}%, mercado de ${s.total})`).join('; ')}.
+- Segmentos onde a Yamaha é FORTE (defender): ${fortes.map(s => `${s.segmento} (${s.shareYamaha}%)`).join('; ')}.
+- ${d.numCompetitorCnpj} concessionárias concorrentes mapeadas na região.`
+}
+
+function buildKaizenContext() {
+  const d = kaizenData
+  const max = d.totalPossivel + d.totalExtra
+  const recuperar = d.items.filter(i => i.status !== 'OK')
+    .map(i => `${i.indicador}/${i.area} (status ${i.status}, ${i.pontosObtidos}/${i.pontosPossiveis} pts)`)
+  return `
+KAIZEN (${d.competencia}):
+- Pontuação atual: ${d.totalObtido} de ${d.totalPossivel} base (máximo possível ${max} com extras).
+- Indicadores a recuperar: ${recuperar.join('; ')}.`
+}
+
+function buildTreinoContext() {
+  const d = treinamentoData
+  const pct = Math.round((d.totalOk / d.totalCerts) * 100)
+  const fracos = d.porCargo.filter(c => c.pct < 70).map(c => `${c.cargo} (${c.pct}%)`)
+  return `
+TREINAMENTO (Universidade Yamaha):
+- Índice geral: ${pct}% (${d.totalOk}/${d.totalCerts} certificações OK, ${d.totalPend} pendências).
+- Setores com baixa cobertura: ${fracos.length ? fracos.join('; ') : 'nenhum crítico'}.`
+}
 
 const SYSTEM_PROMPT = `Você é o Assistente Smart Dealer da Nippon Motos, grupo com lojas em Bragança Paulista e Extrema (SP). Consultor inteligente para o titular e gerentes.
 
@@ -33,7 +70,12 @@ NPS ATUAL:
 - NPS Pós-vendas: 87.7 (meta: 87) — OK | +10 pts Kaizen
 - Total Kaizen NPS: 15 pontos garantidos
 
+${buildShareContext()}
+${buildKaizenContext()}
+${buildTreinoContext()}
+
 Responda de forma direta e prática. Use no máximo 3 parágrafos curtos.
+Quando perguntarem "o que posso melhorar", priorize por impacto: market share em segmentos de alto volume, pontos do Kaizen na mesa e pendências de treinamento.
 Use apenas os dados acima. Nunca invente dados que não estão aqui.
 Se não souber algo, diga que precisa verificar.`
 

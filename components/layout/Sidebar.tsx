@@ -9,16 +9,24 @@ import {
   Users,
   Star,
   Wrench,
+  PieChart,
+  Award,
+  GraduationCap,
 } from 'lucide-react'
 
 const navItems = [
-  { href: '/dashboard',  label: 'Dashboard',         icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
-  { href: '/varejo',     label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE'] },
-  { href: '/estoque',    label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'] },
-  { href: '/leads',      label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'] },
-  { href: '/nps',        label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE'] },
-  { href: '/assistente', label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO'] },
+  { href: '/dashboard',    label: 'Dashboard',          icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO'], group: 'Visão Geral' },
+  { href: '/varejo',       label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE'],             group: 'Visão Geral' },
+  { href: '/market-share', label: 'Market Share',       icon: PieChart,        roles: ['TITULAR', 'GERENTE'],             group: 'Inteligência' },
+  { href: '/kaizen',       label: 'Kaizen',             icon: Award,           roles: ['TITULAR', 'GERENTE'],             group: 'Inteligência' },
+  { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE'],             group: 'Inteligência' },
+  { href: '/estoque',      label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'],             group: 'Operação' },
+  { href: '/leads',        label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'],             group: 'Operação' },
+  { href: '/nps',          label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE'],             group: 'Operação' },
+  { href: '/assistente',   label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO'], group: 'Operação' },
 ]
+
+const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Operação']
 
 export function Sidebar() {
   const pathname = usePathname()
@@ -42,32 +50,40 @@ export function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 px-3 py-5 space-y-1">
-        <p className="px-3 pb-2 text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--sidebar-muted)' }}>
-          Menu
-        </p>
-        {visibleItems.map(item => {
-          const Icon = item.icon
-          const active = pathname === item.href
+      <nav className="flex-1 px-3 py-5 space-y-5 overflow-y-auto">
+        {GROUP_ORDER.map(group => {
+          const items = visibleItems.filter(i => i.group === group)
+          if (!items.length) return null
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
-              style={{
-                backgroundColor: active ? 'var(--accent-bg)' : 'transparent',
-                color: active ? 'var(--text-primary)' : 'var(--sidebar-item)',
-              }}
-            >
-              {active && (
-                <span
-                  className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full"
-                  style={{ backgroundColor: 'var(--yamaha-blue)' }}
-                />
-              )}
-              <Icon size={17} style={{ color: active ? 'var(--accent)' : 'var(--sidebar-icon)' }} />
-              {item.label}
-            </Link>
+            <div key={group} className="space-y-1">
+              <p className="px-3 pb-1.5 text-[10px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--sidebar-muted)' }}>
+                {group}
+              </p>
+              {items.map(item => {
+                const Icon = item.icon
+                const active = pathname === item.href
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+                    style={{
+                      backgroundColor: active ? 'var(--accent-bg)' : 'transparent',
+                      color: active ? 'var(--text-primary)' : 'var(--sidebar-item)',
+                    }}
+                  >
+                    {active && (
+                      <span
+                        className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full"
+                        style={{ backgroundColor: 'var(--yamaha-blue)' }}
+                      />
+                    )}
+                    <Icon size={17} style={{ color: active ? 'var(--accent)' : 'var(--sidebar-icon)' }} />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
           )
         })}
       </nav>
