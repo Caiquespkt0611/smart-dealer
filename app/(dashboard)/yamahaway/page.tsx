@@ -1,7 +1,8 @@
-import { radarBanca, feedbackRespostas, businessCase, comSemSmartDealer, formulaSucesso } from '@/lib/yamahaway-data'
+import { radarBanca, feedbackRespostas, businessCase, comSemSmartDealer } from '@/lib/yamahaway-data'
+import { formulaDiagnostico, resumoDiagnostico, prioridadesBanca, type StatusItem } from '@/lib/formula-sucesso'
 import { getCampanhaAnalise } from '@/lib/campanha-vendas'
 import { RadarBanca } from '@/components/charts/RadarBanca'
-import { Trophy, MessageSquare, Scale, Sparkles, CheckCircle2, Clock } from 'lucide-react'
+import { Trophy, MessageSquare, Scale, CheckCircle2, Clock, ListChecks, Target } from 'lucide-react'
 
 export const metadata = { title: 'Yamahaway 2026 · Smart Dealer' }
 export const dynamic = 'force-dynamic'
@@ -147,21 +148,91 @@ export default async function YamahawayPage() {
         </div>
       </section>
 
-      {/* ── FÓRMULA DO SUCESSO ── */}
+      {/* ── PRIORIDADES PARA A 2ª BANCA ── */}
       <section>
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles size={14} style={{ color: 'var(--warn)' }} />
-          <h2 className="section-label">Fórmula do Sucesso — a evidência de cada critério</h2>
+          <Target size={14} style={{ color: 'var(--danger)' }} />
+          <h2 className="section-label">As 5 ações que mais movem a nota — fazer antes da 2ª banca</h2>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {formulaSucesso.map(f => (
-            <div key={f.criterio} className="card card-pad">
-              <p className="text-xs font-bold mb-1.5" style={{ color: 'var(--accent)' }}>{f.criterio}</p>
-              <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{f.evidencia}</p>
+        <div className="space-y-2.5">
+          {prioridadesBanca.map((p, i) => (
+            <div key={i} className="card card-pad flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shrink-0"
+                style={{ backgroundColor: 'var(--danger-bg)', color: 'var(--danger)' }}>{i + 1}</span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{p.acao}</p>
+                <p className="text-[11px] mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  <b style={{ color: 'var(--accent)' }}>{p.criterio}</b> · {p.porque}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FÓRMULA DO SUCESSO: DIAGNÓSTICO ITEM A ITEM ── */}
+      <section>
+        <div className="flex items-center gap-2 mb-1">
+          <ListChecks size={14} style={{ color: 'var(--warn)' }} />
+          <h2 className="section-label">Fórmula do Sucesso — diagnóstico item a item do formulário</h2>
+        </div>
+        <ResumoStatus />
+        <div className="space-y-4 mt-3">
+          {formulaDiagnostico.map(c => (
+            <div key={c.criterio} className="card overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 flex-wrap gap-2" style={{ borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-inset)' }}>
+                <h3 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>{c.criterio}</h3>
+                <span className="text-xs tabular-nums" style={{ color: 'var(--text-tertiary)' }}>
+                  1ª banca: <b style={{ color: 'var(--accent)' }}>{String(c.nota1aBanca).replace('.', ',')}</b> / 5
+                </span>
+              </div>
+              <div>
+                {c.itens.map((it, i) => (
+                  <div key={i} className="px-4 py-3 grid grid-cols-1 lg:grid-cols-[minmax(220px,1.1fr)_1.4fr_1.4fr] gap-x-4 gap-y-1.5"
+                    style={{ borderBottom: i < c.itens.length - 1 ? '1px solid var(--border)' : undefined }}>
+                    <div className="flex items-start gap-2">
+                      <StatusBadge status={it.status} />
+                      <p className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{it.item}</p>
+                    </div>
+                    <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                      {it.onde && <><b style={{ color: 'var(--text-tertiary)' }}>Onde está: </b>{it.onde}</>}
+                    </p>
+                    <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+                      <b style={{ color: 'var(--accent)' }}>O que fazer: </b>{it.fazer}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
       </section>
     </div>
+  )
+}
+
+function ResumoStatus() {
+  const r = resumoDiagnostico()
+  return (
+    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+      {r.total} itens do formulário de avaliação:{' '}
+      <b style={{ color: 'var(--ok)' }}>{r.temos} temos</b> ·{' '}
+      <b style={{ color: 'var(--warn)' }}>{r.parcial} parciais</b> ·{' '}
+      <b style={{ color: 'var(--danger)' }}>{r.falta} faltam</b> — os que faltam são os que mais movem a nota.
+    </p>
+  )
+}
+
+function StatusBadge({ status }: { status: StatusItem }) {
+  const cfg = {
+    temos:   { label: '✓', bg: 'var(--ok-bg)', cor: 'var(--ok)' },
+    parcial: { label: '~', bg: 'var(--warn-bg)', cor: 'var(--warn)' },
+    falta:   { label: '✕', bg: 'var(--danger-bg)', cor: 'var(--danger)' },
+  }[status]
+  return (
+    <span className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0 mt-[-1px]"
+      style={{ backgroundColor: cfg.bg, color: cfg.cor }} title={status}>
+      {cfg.label}
+    </span>
   )
 }

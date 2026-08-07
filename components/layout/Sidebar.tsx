@@ -20,6 +20,7 @@ import {
   Percent,
   Wallet,
   Ticket,
+  MessageCircle,
 } from 'lucide-react'
 
 const navItems = [
@@ -33,6 +34,7 @@ const navItems = [
   { href: '/kaizen',       label: 'Kaizen',             icon: Award,           roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
   { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
   { href: '/crm',          label: 'CRM de Leads',       icon: Contact,         roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
+  { href: '/atendimento',  label: 'Atendimento Diário', icon: MessageCircle,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Comercial' },
   { href: '/campanhas',    label: 'Campanhas IA',       icon: Megaphone,       roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
   { href: '/playbook',     label: 'Playbook de Vendas', icon: BookOpen,        roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
   { href: '/pos-vendas',   label: 'Pós-Vendas',         icon: CalendarClock,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Operação' },
