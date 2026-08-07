@@ -126,7 +126,7 @@ export function montarDeckSmartDealer(dd: DeckDados) {
     ])
     tabela(sl, {
       x: MG, y: TOPO_Y + 10, colsW: [190, 130, 150, 130, COL - 600], sz: 10, hLinha: 24,
-      cab: ['SEGMENTO', 'MERCADO/MÊS', 'SHARE (BASE → ATUAL)', 'IMPACTO', 'LEITURA'].map(t => ({ t, algn: 'l' })),
+      cab: ['SEGMENTO', 'MERCADO/MÊS', 'SHARE (BASE → ATUAL)', 'IMPACTO', 'LEITURA'].map(t => ({ t, algn: 'l', fill: C.pdcaAzul, cor: C.branco })),
       linhas,
     })
     rodape(sl, rodapeBase)
@@ -143,7 +143,7 @@ export function montarDeckSmartDealer(dd: DeckDados) {
       texto(sl, { x: MG, y, w: COL, txt: `Cidades abaixo do share do território (${v(a.shareAtual)}%)`, sz: 10.5, b: true, cor: C.ink2 })
       y = tabela(sl, {
         x: MG, y: y + 18, colsW: [200, 150, 130, 160], sz: 10, hLinha: 22,
-        cab: ['CIDADE', 'MERCADO (UN/MÊS)', 'SHARE HOJE', 'ESPAÇO A OCUPAR'].map(t => ({ t, algn: 'l' })),
+        cab: ['CIDADE', 'MERCADO (UN/MÊS)', 'SHARE HOJE', 'ESPAÇO A OCUPAR'].map(t => ({ t, algn: 'l', fill: C.pdcaAzul, cor: C.branco })),
         linhas: a.cidades.slice(0, 4).map(c => [
           { t: c.cidade, b: true },
           { t: v(c.mktMes), algn: 'r' },
@@ -213,7 +213,7 @@ export function montarDeckSmartDealer(dd: DeckDados) {
     ], undefined)
     y = tabela(sl, {
       x: MG, y: y + 16, colsW: [140, 110, 130, 130, COL - 510], sz: 10, hLinha: 22,
-      cab: ['MÊS', 'CARTA', 'RESULTADO', 'PRÊMIO', 'REGRA APLICADA'].map(t => ({ t, algn: 'l' })),
+      cab: ['MÊS', 'CARTA', 'RESULTADO', 'PRÊMIO', 'REGRA APLICADA'].map(t => ({ t, algn: 'l', fill: C.pdcaAzul, cor: C.branco })),
       linhas: campanha.meses.map(m => [
         { t: m.nomeMes + (m.metaEstimada ? ' *' : ''), b: true },
         { t: `${m.meta} un`, algn: 'r' },

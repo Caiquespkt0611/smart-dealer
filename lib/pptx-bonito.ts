@@ -261,8 +261,10 @@ function tabela(sl, o){
           + `<a:srgbClr val="${linhaCor}"/></a:solidFill></a:ln${d}>`).join('')
       : `<a:lnB w="${emu(0.75)}"><a:solidFill><a:srgbClr val="${linhaCor}"/>`
         + `</a:solidFill></a:lnB>`;
-    const fundo = c.fill ? `<a:solidFill><a:srgbClr val="${c.fill}"/></a:solidFill>`
-                         : '<a:noFill/>';
+    /* sem fill explícito → branco: o tableStyleId builtin não existe no pacote
+       e o PowerPoint pinta as linhas com o tema (fundo preto). O Keynote tolera;
+       o PowerPoint não. Fundo sempre explícito resolve nos dois. */
+    const fundo = `<a:solidFill><a:srgbClr val="${c.fill || 'FFFFFF'}"/></a:solidFill>`;
     const spans = (c.gridSpan ? ` gridSpan="${c.gridSpan}"` : '')
                 + (c.rowSpan ? ` rowSpan="${c.rowSpan}"` : '');
     return `<a:tc${spans}>${corpo}<a:tcPr marL="${emu(padH)}" marR="${emu(padH)}" `
