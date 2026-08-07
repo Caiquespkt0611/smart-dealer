@@ -1,5 +1,6 @@
 import { getCampanhaAnalise, CAMPANHA } from '@/lib/campanha-vendas'
-import { Ticket, Trophy, RotateCcw, Users, AlertTriangle } from 'lucide-react'
+import { getVouchersAnalise } from '@/lib/campanha-vouchers'
+import { Ticket, Trophy, RotateCcw, Users, AlertTriangle, Bike, Wallet } from 'lucide-react'
 
 export const metadata = { title: 'Campanhas Yamaha · Smart Dealer' }
 export const dynamic = 'force-dynamic'
@@ -7,27 +8,99 @@ export const dynamic = 'force-dynamic'
 const fmtBRL = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })
 
 export default async function VouchersPage() {
-  const c = await getCampanhaAnalise()
+  const [c, vch] = await Promise.all([getCampanhaAnalise(), getVouchersAnalise()])
   const pctTri = c.metaTrimestre ? Math.round((c.vendidoTrimestre / c.metaTrimestre) * 100) : 0
+
+  // consolidado das DUAS fontes de recebimento
+  const jaGarantido = c.garantido + vch.totalMesFechado
+  const potencialMes = c.cenarios[2].total + vch.totalMesFechado + vch.totalProjetado
 
   return (
     <div className="space-y-6 pb-24">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
-          {CAMPANHA.nome} — o que a Nippon vai receber
+          Campanhas Yamaha — o que a Nippon tem a receber
         </h1>
         <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-          Circular {CAMPANHA.circular} · {CAMPANHA.periodo} · faixa {c.faixaGrupo} ({fmtBRL(c.premioFaixa)}/mês de referência)
+          Duas fontes: prêmio por atingimento (Campeões de Vendas) + ressarcimento por modelo vendido (campanhas de incentivo)
         </p>
       </div>
 
-      {/* ── HERO ── */}
+      {/* ── CONSOLIDADO ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Hero label="Garantido até agora" valor={fmtBRL(c.garantido)} sub="pelas apurações mensais já fechadas" cor="var(--ok)" icone={Trophy} />
-        <Hero label="Recuperável no trimestre" valor={fmtBRL(c.recuperavel)} sub="se a meta acumulada fechar em 100%" cor="var(--warn)" icone={RotateCcw} />
-        <Hero label="Meta do trimestre" valor={`${c.vendidoTrimestre} / ${c.metaTrimestre}`} sub={`${pctTri}% do acumulado Jul–Set`} cor="var(--accent)" icone={Ticket} />
-        <Hero label="Potencial máximo" valor={fmtBRL(c.cenarios[2].total)} sub="fechando os meses abertos em 110%" cor="var(--text-primary)" icone={Users} />
+        <Hero label="Recebível já apurado" valor={fmtBRL(jaGarantido)} sub={`Campeões ${fmtBRL(c.garantido)} + vouchers de ${vch.mesFechadoNome.toLowerCase()} ${fmtBRL(vch.totalMesFechado)}`} cor="var(--ok)" icone={Wallet} />
+        <Hero label={`Vouchers — projeção ${vch.mesCorrenteNome.toLowerCase()}`} valor={fmtBRL(vch.totalProjetado)} sub="no ritmo dos últimos 3 meses" cor="var(--accent)" icone={Bike} />
+        <Hero label="Recuperável no trimestre" valor={fmtBRL(c.recuperavel)} sub="Campeões: meta acumulada em 100%" cor="var(--warn)" icone={RotateCcw} />
+        <Hero label="Potencial total do período" valor={fmtBRL(potencialMes)} sub="Campeões em 110% + vouchers jul/ago" cor="var(--text-primary)" icone={Trophy} />
+      </div>
+
+      {/* ══════════ FONTE 1 · CAMPANHAS DE INCENTIVO POR MODELO ══════════ */}
+      <section>
+        <div className="flex items-center gap-2 mb-1">
+          <Bike size={14} style={{ color: 'var(--accent)' }} />
+          <h2 className="section-label">Fonte 1 · Incentivo por modelo (circulares de 31/07 · vigência 01–31/08)</h2>
+        </div>
+        <p className="text-[11px] mb-3" style={{ color: 'var(--text-tertiary)' }}>
+          A Yamaha ressarce a concessionária por chassi emitido com o bônus aplicado. Campanhas equivalentes valeram em julho.
+        </p>
+        <div className="card overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[760px]">
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border)' }}>
+                  {['Modelo', 'Circular', 'Bônus cliente', 'Ressarcimento/un', `${vch.mesFechadoNome} (real)`, `Recebível ${vch.mesFechadoNome.slice(0, 3)}`, `${vch.mesCorrenteNome} (proj.)`, `Recebível ${vch.mesCorrenteNome.slice(0, 3)}`].map((h, i) => (
+                    <th key={h} className={`px-3 py-3 text-xs uppercase tracking-wider font-medium ${i === 0 ? 'text-left' : 'text-right'}`}
+                      style={{ color: 'var(--text-tertiary)' }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {vch.modelos.map(m => (
+                  <tr key={m.circular} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td className="px-3 py-3">
+                      <p className="font-medium text-xs" style={{ color: 'var(--text-primary)' }}>{m.modelo}</p>
+                      <p className="text-[10px]" style={{ color: 'var(--text-tertiary)' }}>{m.custeio}</p>
+                    </td>
+                    <td className="px-3 py-3 text-right text-[11px]" style={{ color: 'var(--text-tertiary)' }}>{m.circular}</td>
+                    <td className="px-3 py-3 text-right tabular-nums" style={{ color: 'var(--text-secondary)' }}>{fmtBRL(m.bonusCliente)}</td>
+                    <td className="px-3 py-3 text-right tabular-nums font-semibold" style={{ color: 'var(--accent)' }}>{fmtBRL(m.ressarcimento)}</td>
+                    <td className="px-3 py-3 text-right tabular-nums" style={{ color: 'var(--text-secondary)' }}>{m.vendasMesFechado} un</td>
+                    <td className="px-3 py-3 text-right tabular-nums font-bold" style={{ color: 'var(--ok)' }}>{fmtBRL(m.recebivelMesFechado)}</td>
+                    <td className="px-3 py-3 text-right tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+                      {m.projecaoMesCorrente} un{m.vendasMesCorrente > 0 ? ` (${m.vendasMesCorrente} já vendidas)` : ''}
+                    </td>
+                    <td className="px-3 py-3 text-right tabular-nums font-bold" style={{ color: 'var(--text-primary)' }}>{fmtBRL(m.recebivelProjetado)}</td>
+                  </tr>
+                ))}
+                <tr style={{ backgroundColor: 'var(--bg-inset)' }}>
+                  <td className="px-3 py-3 font-bold text-xs" style={{ color: 'var(--text-primary)' }} colSpan={4}>Total vouchers</td>
+                  <td className="px-3 py-3 text-right tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+                    {vch.modelos.reduce((s, m) => s + m.vendasMesFechado, 0)} un
+                  </td>
+                  <td className="px-3 py-3 text-right tabular-nums font-bold" style={{ color: 'var(--ok)' }}>{fmtBRL(vch.totalMesFechado)}</td>
+                  <td className="px-3 py-3 text-right tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+                    {vch.modelos.reduce((s, m) => s + m.projecaoMesCorrente, 0)} un
+                  </td>
+                  <td className="px-3 py-3 text-right tabular-nums font-bold" style={{ color: 'var(--text-primary)' }}>{fmtBRL(vch.totalProjetado)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="card card-pad mt-3">
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1.5 text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+            {vch.regras.map((r, i) => (
+              <li key={i} className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>{r}</li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ══════════ FONTE 2 · CAMPEÕES DE VENDAS ══════════ */}
+      <div className="flex items-center gap-2 pt-2">
+        <Trophy size={14} style={{ color: 'var(--warn)' }} />
+        <h2 className="section-label">Fonte 2 · {CAMPANHA.nome} (circular {CAMPANHA.circular} · {CAMPANHA.periodo}) — faixa {c.faixaGrupo}, {fmtBRL(c.premioFaixa)}/mês de referência</h2>
       </div>
 
       {/* ── APURAÇÃO MÊS A MÊS ── */}
