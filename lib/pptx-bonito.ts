@@ -685,6 +685,27 @@ function baixarPptx(arquivo, slides, meta){
                  alvo:'notesMasters/notesMaster1.xml'});
   relsPres.push({id:`rId${N+3}`, tipo:'officeDocument/2006/relationships/theme',
                  alvo:'theme/theme1.xml'});
+  /* Partes que todo pptx salvo pelo PowerPoint carrega. O aplicativo normal
+     tolera a ausência; o VALIDADOR do Modo de Exibição Protegido (arquivo
+     baixado da internet, Mark-of-the-Web) não — pede "reparar" e falha.
+     tableStyles.xml também dá corpo ao tableStyleId citado nas tabelas. */
+  relsPres.push({id:`rId${N+4}`, tipo:'officeDocument/2006/relationships/presProps',
+                 alvo:'presProps.xml'});
+  relsPres.push({id:`rId${N+5}`, tipo:'officeDocument/2006/relationships/viewProps',
+                 alvo:'viewProps.xml'});
+  relsPres.push({id:`rId${N+6}`, tipo:'officeDocument/2006/relationships/tableStyles',
+                 alvo:'tableStyles.xml'});
+  partes.push({nome:'ppt/presProps.xml', dados:
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
+    + `<p:presentationPr ${NS_P}/>`});
+  partes.push({nome:'ppt/viewProps.xml', dados:
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
+    + `<p:viewPr ${NS_P}><p:normalViewPr><p:restoredLeft sz="15620"/>`
+    + `<p:restoredTop sz="94660"/></p:normalViewPr><p:gridSpacing cx="72008" cy="72008"/></p:viewPr>`});
+  partes.push({nome:'ppt/tableStyles.xml', dados:
+    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
+    + `<a:tblStyleLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" `
+    + `def="{2D5ABB26-0587-4C30-8999-92F81FD0307C}"/>`});
 
   partes.push({nome:'ppt/presentation.xml', dados:
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`
@@ -726,6 +747,12 @@ function baixarPptx(arquivo, slides, meta){
       + `vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>`
     + `<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/`
       + `vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>`
+    + `<Override PartName="/ppt/presProps.xml" ContentType="application/`
+      + `vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>`
+    + `<Override PartName="/ppt/viewProps.xml" ContentType="application/`
+      + `vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>`
+    + `<Override PartName="/ppt/tableStyles.xml" ContentType="application/`
+      + `vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>`
     + `<Override PartName="/ppt/theme/theme1.xml" ContentType="application/`
       + `vnd.openxmlformats-officedocument.theme+xml"/>`
     + `<Override PartName="/ppt/theme/theme2.xml" ContentType="application/`

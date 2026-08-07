@@ -17,9 +17,13 @@ export default async function MarketSharePage() {
   const d = await getShareData()
 
   // ── Insights (server-side) ──
-  const segmentsByGap = [...d.segments].filter(s => s.total >= 30).sort((a, b) => b.gap - a.gap)
+  // Oportunidade/plano só onde a Yamaha tem produto (não dá para disputar
+  // segmento sem moto no catálogo — ex.: big trail >800cc, customs).
+  const atua = d.segmentosYamahaAtua?.length ? new Set(d.segmentosYamahaAtua) : null
+  const disputaveis = [...d.segments].filter(s => !atua || atua.has(s.segmento))
+  const segmentsByGap = disputaveis.filter(s => s.total >= 30).sort((a, b) => b.gap - a.gap)
   const perdendo = segmentsByGap.slice(0, 3)
-  const fortes = [...d.segments].filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
+  const fortes = disputaveis.filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
   const shareTrendDelta = d.trend[d.trend.length - 1].shareYamaha - d.trend[0].shareYamaha
 
   // ── Mix mensal: colunas (volume) + linhas (share por montadora) ──
@@ -185,9 +189,14 @@ export default async function MarketSharePage() {
               </tr>
             </thead>
             <tbody>
-              {[...d.segments].sort((a, b) => b.total - a.total).map(s => (
-                <tr key={s.segmento} style={{ borderBottom: '1px solid var(--border)' }}>
-                  <td className="px-4 py-3 font-medium" style={{ color: 'var(--text-primary)' }}>{segLabel(s.segmento)}</td>
+              {[...d.segments].sort((a, b) => b.total - a.total).map(s => {
+                const semProduto = atua ? !atua.has(s.segmento) : false
+                return (
+                <tr key={s.segmento} style={{ borderBottom: '1px solid var(--border)', opacity: semProduto ? 0.45 : 1 }}>
+                  <td className="px-4 py-3 font-medium" style={{ color: 'var(--text-primary)' }}>
+                    {segLabel(s.segmento)}
+                    {semProduto && <span className="ml-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-tertiary)' }}>sem produto Yamaha</span>}
+                  </td>
                   <td className="px-4 py-3 text-right tabular-nums hidden sm:table-cell" style={{ color: 'var(--text-secondary)' }}>{s.total}</td>
                   <td className="px-4 py-3">
                     <div className="flex h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--bg-inset)' }}>
@@ -203,7 +212,8 @@ export default async function MarketSharePage() {
                     {s.yamaha}
                   </td>
                 </tr>
-              ))}
+                )
+              })}
             </tbody>
           </table>
         </div>

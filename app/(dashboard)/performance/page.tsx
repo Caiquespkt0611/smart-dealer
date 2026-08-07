@@ -86,6 +86,12 @@ export default async function PerformancePage() {
       {/* ── SEGMENTOS ── */}
       <section>
         <h2 className="section-label mb-3">Segmentos — onde o volume está variando (vs {a.baseNome})</h2>
+        {a.foraAtuacao.qtd > 0 && (
+          <p className="text-[11px] mb-2" style={{ color: 'var(--text-tertiary)' }}>
+            Análise restrita aos segmentos onde a Yamaha tem produto. {a.foraAtuacao.qtd} segmentos sem moto no
+            catálogo (~{String(a.foraAtuacao.unMes).replace('.', ',')} un/mês do mercado) ficam fora da análise e do PDCA.
+          </p>
+        )}
         <div className="card overflow-hidden">
           <table className="w-full text-sm">
             <thead>

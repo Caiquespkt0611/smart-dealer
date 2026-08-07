@@ -61,6 +61,8 @@ export interface PerformanceAnalise {
   dominante: 'mercado' | 'share'
   veredito: string
   segmentos: SegmentoAnalise[]
+  /** segmentos sem produto Yamaha — fora da análise e do PDCA */
+  foraAtuacao: { qtd: number; unMes: number }
   cidades: CidadeAnalise[]
   // invasão
   yamNoTerrMes: number      // Yamaha emplacada no território, un/mês
@@ -128,8 +130,19 @@ export async function getPerformanceAnalise(): Promise<PerformanceAnalise> {
   }
 
   // ── Segmentos (parser v2: séries mensais) ──────────────────────────────────
+  // Só onde a Yamaha TEM produto (aba CADASTRO SEGMENTO YAMAHA ATUA): não há
+  // como a Nippon disputar segmento sem moto no catálogo — ex.: big trail
+  // acima de 800cc, customs, super sport. Esses ficam fora da análise e do PDCA.
+  const atua = share.segmentosYamahaAtua?.length ? new Set(share.segmentosYamahaAtua) : null
+  const nMesesTrend = share.trend.length || 1
+  let foraQtd = 0, foraUn = 0
   const segmentos: SegmentoAnalise[] = []
   for (const st of share.segmentsTrend ?? []) {
+    if (atua && !atua.has(st.segmento)) {
+      foraQtd++
+      foraUn += st.meses.reduce((s2, m) => s2 + m.total, 0) / nMesesTrend
+      continue
+    }
     const n = st.meses.length
     if (!n) continue
     const atual = st.meses[n - 1]
@@ -187,7 +200,9 @@ export async function getPerformanceAnalise(): Promise<PerformanceAnalise> {
     shareAtual: r1(shareAtual), shareBase: r1(shareBase),
     varReal: r1(varReal), efeitoMercado: r1(efeitoMercado), efeitoShare: r1(efeitoShare),
     dominante, veredito,
-    segmentos, cidades,
+    segmentos,
+    foraAtuacao: { qtd: foraQtd, unMes: r1(foraUn) },
+    cidades,
     yamNoTerrMes, nipponMes, invasaoMes, invasaoPct, invasores,
   }
 }

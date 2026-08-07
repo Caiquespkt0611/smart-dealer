@@ -67,6 +67,8 @@ export interface ShareData {
   /** séries mensais (parser v2+; ausentes em agregados antigos) */
   segmentsTrend?: ReadonlyArray<{ segmento: string; meses: ReadonlyArray<{ mes: number; total: number; yamaha: number; honda: number }> }>
   nipponTrend?: ReadonlyArray<{ mes: number; qtd: number }>
+  /** segmentos onde a Yamaha tem produto (aba CADASTRO SEGMENTO YAMAHA ATUA) */
+  segmentosYamahaAtua?: readonly string[]
 }
 
 export async function getShareData(): Promise<ShareData> {

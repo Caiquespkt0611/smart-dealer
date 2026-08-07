@@ -6,7 +6,7 @@ import { cnpjNomes } from '@/lib/cnpj-nomes'
 
 // Versão do parser: quando muda, a ingestão reprocessa a planilha mesmo sem
 // arquivo novo (agregados ganham campos novos).
-export const VERSAO_PARSER = 2
+export const VERSAO_PARSER = 3
 
 // Áreas de mercado da Nippon (Bragança/Itaquaquecetuba não existem como área — caem em Amparo/Mogi)
 const AREAS_NIPPON = ['Amparo', 'Ouro Fino']
@@ -173,6 +173,17 @@ export function parseWorkbook(buffer: Buffer | ArrayBuffer): DadosImportados {
   }
   if (!Object.keys(calendario).length) throw new Error('Calendário de dias úteis vazio')
 
+  // ── CADASTRO SEGMENTO YAMAHA ATUA ──────────────────────────────────────────
+  // Segmentos onde a Yamaha TEM produto: análise de share e PDCA só fazem
+  // sentido dentro deles (não há como disputar segmento sem moto no catálogo).
+  const segAtua: string[] = []
+  try {
+    const sa = sheetRows(wb, 'CADASTRO SEGMENTO YAMAHA ATUA')
+    for (const r of sa.slice(1)) {
+      if (r?.[0]) segAtua.push(String(r[0]).trim())
+    }
+  } catch { /* aba ausente em exports antigos — segue sem filtro */ }
+
   // ── EMPLACAMENTO → agregados de share (áreas da Nippon, meses fechados) ────
   const sr = sheetRows(wb, 'EMPLACAMENTO')
   const sHdr = acharHeader(sr, 'CNPJ')
@@ -301,6 +312,7 @@ export function parseWorkbook(buffer: Buffer | ArrayBuffer): DadosImportados {
     brandShare, trend, segments, cities, competitors,
     numCompetitorCnpj: Object.keys(comp).length,
     segmentsTrend, nipponTrend,
+    segmentosYamahaAtua: segAtua,
   }
 
   // ── Referência + resumo ────────────────────────────────────────────────────

@@ -8,8 +8,10 @@ import { getShareData, type ShareData } from '@/lib/dados-vivos'
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 function buildShareContext(d: ShareData) {
-  const fracos = [...d.segments].filter(s => s.total >= 30).sort((a, b) => a.shareYamaha - b.shareYamaha).slice(0, 3)
-  const fortes = [...d.segments].filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
+  const atua = d.segmentosYamahaAtua?.length ? new Set(d.segmentosYamahaAtua) : null
+  const disputaveis = [...d.segments].filter(s => !atua || atua.has(s.segmento))
+  const fracos = disputaveis.filter(s => s.total >= 30).sort((a, b) => a.shareYamaha - b.shareYamaha).slice(0, 3)
+  const fortes = disputaveis.filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
   return `
 MARKET SHARE (emplacamentos ${d.areas.join(' + ')}, ${d.referencia} — mercado de ${d.totalMercado2026} motos):
 - Share Yamaha: ${d.yamahaShare}% (${d.yamahaQtd} motos) | Honda lidera com ${d.hondaShare}% (${d.hondaQtd}).
