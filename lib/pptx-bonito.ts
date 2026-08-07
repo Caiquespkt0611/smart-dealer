@@ -61,6 +61,7 @@ const CSTBG = {bom:C.bgBom, atencao:C.bgAtencao, critico:C.bgCritico};
 /* o xmlEsc do xlsx troca \n por &#10;, que no PowerPoint vira caractere solto
    em vez de quebra — aqui a quebra vira parágrafo, então o escape é outro */
 const esx = s => String(s ?? '')
+  .replace(/[\u00A0\u202F]/g, ' ')
   .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
   .replace(/"/g,'&quot;').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
 
