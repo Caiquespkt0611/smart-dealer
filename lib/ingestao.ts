@@ -3,7 +3,7 @@
 // mudou (etag/updated_at); se mudou, reprocessa e atualiza banco + agregados.
 // O concessionário sempre abre o sistema já atualizado — ninguém faz upload em tela.
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import { parseWorkbook, type DadosImportados } from '@/lib/importar-dados'
+import { parseWorkbook, VERSAO_PARSER, type DadosImportados } from '@/lib/importar-dados'
 import { BUCKET_DADOS } from '@/lib/dados-vivos'
 
 export const ARQUIVO_PLANILHA = 'DADOS_DE_EMPLACAMENTO.xlsx'
@@ -70,7 +70,7 @@ export async function aplicarDados(dados: DadosImportados, versaoFonte: string) 
   // Agregados no Storage (lidos por dados-vivos.ts)
   await gravarJson(sb, 'share.json', dados.share)
   await gravarJson(sb, 'calendario.json', dados.calendario)
-  await gravarJson(sb, 'referencia.json', { ...dados.referencia, versaoFonte })
+  await gravarJson(sb, 'referencia.json', { ...dados.referencia, versaoFonte, versaoParser: VERSAO_PARSER })
 }
 
 /** Etag/versão atual da planilha no bucket (null se não existe). */
@@ -105,8 +105,8 @@ export async function garantirDadosAtualizados(): Promise<void> {
       if (!versao) return // planilha ainda não publicada — segue com o que há
 
       const { data: refBlob } = await sb.storage.from(BUCKET_DADOS).download('referencia.json')
-      const refAtual = refBlob ? JSON.parse(await refBlob.text()) as { versaoFonte?: string } : null
-      if (refAtual?.versaoFonte === versao) return // já processada
+      const refAtual = refBlob ? JSON.parse(await refBlob.text()) as { versaoFonte?: string; versaoParser?: number } : null
+      if (refAtual?.versaoFonte === versao && refAtual?.versaoParser === VERSAO_PARSER) return // já processada
 
       const { data: arquivo, error } = await sb.storage.from(BUCKET_DADOS).download(ARQUIVO_PLANILHA)
       if (error || !arquivo) return

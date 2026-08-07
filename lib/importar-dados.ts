@@ -4,6 +4,10 @@
 import * as XLSX from 'xlsx'
 import { cnpjNomes } from '@/lib/cnpj-nomes'
 
+// Versão do parser: quando muda, a ingestão reprocessa a planilha mesmo sem
+// arquivo novo (agregados ganham campos novos).
+export const VERSAO_PARSER = 2
+
 // Áreas de mercado da Nippon (Bragança/Itaquaquecetuba não existem como área — caem em Amparo/Mogi)
 const AREAS_NIPPON = ['Amparo', 'Ouro Fino']
 const NIPPON_RAIZ = '33054346'
@@ -183,12 +187,17 @@ export function parseWorkbook(buffer: Buffer | ArrayBuffer): DadosImportados {
   const porMarca: Record<string, number> = {}
   const trendAcc: Record<number, { total: number; yamaha: number; honda: number; outros: number }> = {}
   const porSeg: Record<string, Record<string, number>> = {}
+  const segMes: Record<string, Record<number, { total: number; yamaha: number; honda: number }>> = {}
+  const nipponMes: Record<number, number> = {}
   const porCidade: Record<string, Record<string, number>> = {}
   const cidadeArea: Record<string, string> = {}
   const comp: Record<string, Acc> = {}
   let nipponQtd = 0
   let totalMercado = 0
-  for (const c of mesesFechados) trendAcc[c.mes] = { total: 0, yamaha: 0, honda: 0, outros: 0 }
+  for (const c of mesesFechados) {
+    trendAcc[c.mes] = { total: 0, yamaha: 0, honda: 0, outros: 0 }
+    nipponMes[c.mes] = 0
+  }
 
   const titleCase = (s: string) => s.toLowerCase().replace(/(^|\s)\S/g, c => c.toUpperCase())
 
@@ -209,6 +218,11 @@ export function parseWorkbook(buffer: Buffer | ArrayBuffer): DadosImportados {
       if (marca === 'Yamaha') trendAcc[c.mes].yamaha += q
       else if (marca === 'Honda') trendAcc[c.mes].honda += q
       else trendAcc[c.mes].outros += q
+      const sm = ((segMes[segmento] ??= {})[c.mes] ??= { total: 0, yamaha: 0, honda: 0 })
+      sm.total += q
+      if (marca === 'Yamaha') sm.yamaha += q
+      if (marca === 'Honda') sm.honda += q
+      if (cnpj.slice(0, 8) === NIPPON_RAIZ) nipponMes[c.mes] += q
     }
     if (!qtdTotal) continue
     totalMercado += qtdTotal
@@ -263,6 +277,17 @@ export function parseWorkbook(buffer: Buffer | ArrayBuffer): DadosImportados {
       return { cnpj, marca: maxKey(acc.marcas), qtd: acc.qtd, cidade: maxKey(acc.cidades), ...(nome ? { nome } : {}) }
     })
 
+  // séries mensais por segmento (análise de performance: recuperar/defender)
+  const segmentsTrend = Object.entries(segMes).map(([segmento, meses]) => ({
+    segmento,
+    meses: mesesFechados.map(c => {
+      const m = meses[c.mes] ?? { total: 0, yamaha: 0, honda: 0 }
+      return { mes: c.mes, total: m.total, yamaha: m.yamaha, honda: m.honda }
+    }),
+  }))
+
+  const nipponTrend = mesesFechados.map(c => ({ mes: c.mes, qtd: nipponMes[c.mes] }))
+
   const share = {
     referencia: `Jan–${MESES_NOME[mesFechado]} ${ano}`,
     ultimoMesFechado: mesFechado,
@@ -275,6 +300,7 @@ export function parseWorkbook(buffer: Buffer | ArrayBuffer): DadosImportados {
     areas: AREAS_NIPPON,
     brandShare, trend, segments, cities, competitors,
     numCompetitorCnpj: Object.keys(comp).length,
+    segmentsTrend, nipponTrend,
   }
 
   // ── Referência + resumo ────────────────────────────────────────────────────

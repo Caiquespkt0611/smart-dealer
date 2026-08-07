@@ -64,6 +64,9 @@ export interface ShareData {
   cities: ReadonlyArray<{ cidade: string; area: string; total: number; yamaha: number; shareYamaha: number }>
   competitors: ReadonlyArray<{ cnpj: string; marca: string; qtd: number; cidade: string; nome?: string }>
   numCompetitorCnpj: number
+  /** séries mensais (parser v2+; ausentes em agregados antigos) */
+  segmentsTrend?: ReadonlyArray<{ segmento: string; meses: ReadonlyArray<{ mes: number; total: number; yamaha: number; honda: number }> }>
+  nipponTrend?: ReadonlyArray<{ mes: number; qtd: number }>
 }
 
 export async function getShareData(): Promise<ShareData> {

@@ -16,11 +16,19 @@ import {
   Contact,
   CalendarClock,
   BookOpen,
+  Activity,
+  Percent,
+  Wallet,
+  Ticket,
 } from 'lucide-react'
 
 const navItems = [
   { href: '/dashboard',    label: 'Dashboard',          icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO', 'CONSULTOR'], group: 'Visão Geral' },
   { href: '/varejo',       label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Visão Geral' },
+  { href: '/performance',  label: 'Performance + PDCA', icon: Activity,        roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
+  { href: '/k2',           label: 'K2 · Absorção',      icon: Percent,         roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
+  { href: '/credito',      label: 'Linha de Crédito',   icon: Wallet,          roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
+  { href: '/vouchers',     label: 'Campanhas Yamaha',   icon: Ticket,          roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
   { href: '/market-share', label: 'Market Share',       icon: PieChart,        roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
   { href: '/kaizen',       label: 'Kaizen',             icon: Award,           roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
   { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência' },
