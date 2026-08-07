@@ -1,4 +1,5 @@
-import { shareData } from '@/lib/share-data'
+import { getShareData } from '@/lib/dados-vivos'
+import { garantirDadosAtualizados } from '@/lib/ingestao'
 import { ShareDonut, ShareTrendChart } from '@/components/charts/ShareCharts'
 import {
   TrendingUp, TrendingDown, Target, AlertTriangle,
@@ -6,12 +7,14 @@ import {
 } from 'lucide-react'
 
 export const metadata = { title: 'Market Share · Smart Dealer' }
+export const dynamic = 'force-dynamic'
 
 const YAMAHA = '#1E5FE8'
 const HONDA = '#E40521'
 
-export default function MarketSharePage() {
-  const d = shareData
+export default async function MarketSharePage() {
+  await garantirDadosAtualizados()
+  const d = await getShareData()
 
   // ── Insights (server-side) ──
   const segmentsByGap = [...d.segments].filter(s => s.total >= 30).sort((a, b) => b.gap - a.gap)
@@ -42,7 +45,7 @@ export default function MarketSharePage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Market Share</h1>
           <p className="text-sm mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-            Emplacamentos {d.areas.join(' + ')} · Jan–Jun 2026 · {d.totalMercado2026.toLocaleString('pt-BR')} motos no mercado
+            Emplacamentos {d.areas.join(' + ')} · {d.referencia} · {d.totalMercado2026.toLocaleString('pt-BR')} motos no mercado
           </p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold"

@@ -4,21 +4,22 @@ interface MetaRingProps {
   pct: number
   projecao: number
   meta: number
-  junhoEmDobro: boolean
+  metaEmDobro: boolean
   premioPotencial: number
+  projecaoLabel?: string
 }
 
 function fmtBRL(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })
 }
 
-export function MetaRing({ pct, projecao, meta, junhoEmDobro, premioPotencial }: MetaRingProps) {
+export function MetaRing({ pct, projecao, meta, metaEmDobro, premioPotencial, projecaoLabel = 'Projeção' }: MetaRingProps) {
   const r = 70, cx = 90, cy = 90
   const circ = 2 * Math.PI * r
   const dash = (Math.min(pct, 100) / 100) * circ
   const color = pct >= 80 ? '#2DD4A7' : pct >= 60 ? '#FBBF24' : '#FB6B7E'
   const faltam = Math.max(0, meta - projecao)
-  const junhoMeta = Math.ceil(meta * 1.1)
+  const superMeta = Math.ceil(meta * 1.1)
 
   return (
     <div className="flex flex-col items-center gap-5 w-full">
@@ -40,7 +41,7 @@ export function MetaRing({ pct, projecao, meta, junhoEmDobro, premioPotencial }:
           <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--text-primary)" fontSize={32} fontWeight="800" fontFamily="ui-monospace,monospace">
             {pct}%
           </text>
-          <text x={cx} y={cy + 13} textAnchor="middle" fill="var(--chart-axis)" fontSize={11}>da meta</text>
+          <text x={cx} y={cy + 13} textAnchor="middle" fill="var(--chart-axis)" fontSize={11}>da carta</text>
           <text x={cx} y={cy + 30} textAnchor="middle" fill={color} fontSize={10} fontWeight="700">
             {pct >= 80 ? 'NO RITMO' : pct >= 60 ? 'ATENÇÃO' : 'CRÍTICO'}
           </text>
@@ -48,18 +49,18 @@ export function MetaRing({ pct, projecao, meta, junhoEmDobro, premioPotencial }:
       </div>
 
       <div className="w-full space-y-1">
-        <Row label="Projeção" value={`${projecao} motos`} strong />
-        <Row label="Meta" value={`${meta} motos`} />
+        <Row label={projecaoLabel} value={`${projecao} motos`} strong />
+        <Row label="Carta" value={`${meta} motos`} />
         {faltam > 0 && <Row label="Faltam" value={`${faltam} motos`} color="#FB6B7E" />}
         <Row label="Prêmio" value={fmtBRL(premioPotencial)} color="#FBBF24" />
-        {junhoEmDobro ? (
+        {metaEmDobro ? (
           <div className="mt-2 rounded-lg px-3 py-1.5 text-xs text-center font-semibold"
             style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>
-            ✓ Junho em Dobro ativado!
+            ✓ Supermeta 110% no ritmo — prêmio em dobro!
           </div>
         ) : (
           <p className="text-[10px] text-right pt-1" style={{ color: 'var(--text-tertiary)' }}>
-            Junho em Dobro: {junhoMeta} motos
+            Supermeta 110%: {superMeta} motos
           </p>
         )}
       </div>

@@ -116,7 +116,7 @@ export default async function NpsPage() {
             <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
               Evolução Histórica
             </p>
-            <p className="text-xs text-slate-600 mt-0.5">Jul/2025 → Jun/2026 · score mensal</p>
+            <p className="text-xs text-slate-600 mt-0.5">Últimos 12 meses · score mensal</p>
           </div>
           <div className="flex items-center gap-4 text-[10px] text-slate-600">
             <span className="flex items-center gap-1.5">

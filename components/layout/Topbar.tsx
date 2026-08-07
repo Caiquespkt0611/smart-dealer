@@ -4,7 +4,7 @@ import { LogOut, ChevronDown, Building2, Sun, Moon } from 'lucide-react'
 import { useState } from 'react'
 import { useTheme } from '@/components/providers/ThemeProvider'
 
-const LOJAS = ['Grupo Nippon', 'Bragança Paulista', 'Extrema']
+const LOJAS = ['Grupo Nippon', 'Bragança Paulista', 'Atibaia', 'Amparo', 'Extrema']
 
 interface TopbarProps {
   loja: string

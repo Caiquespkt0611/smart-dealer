@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { shareData } from '@/lib/share-data'
 import { kaizenData } from '@/lib/kaizen-data'
 import { treinamentoData } from '@/lib/treinamento-data'
+import { getDashboardData, getEstoqueCompleto } from '@/lib/data'
+import { getShareData, type ShareData } from '@/lib/dados-vivos'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-function buildShareContext() {
-  const d = shareData
+function buildShareContext(d: ShareData) {
   const fracos = [...d.segments].filter(s => s.total >= 30).sort((a, b) => a.shareYamaha - b.shareYamaha).slice(0, 3)
   const fortes = [...d.segments].filter(s => s.total >= 20).sort((a, b) => b.shareYamaha - a.shareYamaha).slice(0, 2)
   return `
-MARKET SHARE (emplacamentos ${d.areas.join(' + ')}, Jan–Jun 2026 — mercado de ${d.totalMercado2026} motos):
+MARKET SHARE (emplacamentos ${d.areas.join(' + ')}, ${d.referencia} — mercado de ${d.totalMercado2026} motos):
 - Share Yamaha: ${d.yamahaShare}% (${d.yamahaQtd} motos) | Honda lidera com ${d.hondaShare}% (${d.hondaQtd}).
 - Nippon Motos: ${d.nipponQtd} motos = ${d.nipponShareDoMercado}% do mercado e ${d.nipponShareDaYamaha}% de toda Yamaha regional.
 - Segmentos onde a Yamaha está FRACA (oportunidade): ${fracos.map(s => `${s.segmento} (${s.shareYamaha}%, mercado de ${s.total})`).join('; ')}.
@@ -40,37 +40,48 @@ TREINAMENTO (Universidade Yamaha):
 - Setores com baixa cobertura: ${fracos.length ? fracos.join('; ') : 'nenhum crítico'}.`
 }
 
-const SYSTEM_PROMPT = `Você é o Assistente Smart Dealer da Nippon Motos, grupo com lojas em Bragança Paulista e Extrema (SP). Consultor inteligente para o titular e gerentes.
+type Dash = Awaited<ReturnType<typeof getDashboardData>>
+type Estq = Awaited<ReturnType<typeof getEstoqueCompleto>>
 
-DADOS ATUAIS (junho/2026):
+function buildVarejoContext(d: Dash, estoque: Estq) {
+  try {
+    const criticos = estoque.filter(e => e.status === 'CRITICO').slice(0, 6)
+    const varejo = d.modo === 'largada'
+      ? `VAREJO — LARGADA DE ${d.nomeMesCorrente.toUpperCase()}/${d.ano} (sem vendas registradas ainda no mês):
+- ${d.nomeMesFechado} fechou com ${d.fechamentoAnterior} motos. Carta de ${d.nomeMesCorrente.toLowerCase()}: ${d.meta} (salto de ${d.saltoCarta >= 0 ? '+' : ''}${d.saltoCarta}).
+- Ritmo que a carta pede: ${d.ritmoNecessario} un/dia em ${d.diasUteisMes} dias úteis.
+- Ritmo de ${d.nomeMesFechado.toLowerCase()} cobriria ${d.pctAtingimento}% da carta.`
+      : `VAREJO ${d.nomeMesCorrente.toUpperCase()}/${d.ano} (mês em curso):
+- Vendas: ${d.vendasMes} motos | projeção de fechamento: ${d.projecao} | carta: ${d.meta} (${d.pctAtingimento}%).`
+    return `${varejo}
+- Ranking regional: ${d.rankingPos}º de ${d.rankingTotal} grupos | Prêmio em jogo: R$ ${d.premioPotencial.toLocaleString('pt-BR')}.
 
-VAREJO JUNHO/2026:
-- Grupo total até dia 14: 42 motos (projeção: 104 | meta: 160 | 65.6% da meta)
-- Bragança Paulista: 33 vendidas (projeção: 82)
-- Extrema: 9 vendidas (projeção: 22)
-- Ranking regional: 4º de 9 grupos
-- Prêmio em jogo: R$ 15.000 (Junho em Dobro: R$ 30.000 se atingir 176 motos)
-- Para bater a meta: precisa de 118 motos nos dias restantes do mês
+ESTOQUE CRÍTICO (posição atual):
+${criticos.length ? criticos.map(e => `- ${e.modelo}: ${e.cobertura} dias de cobertura${e.sugestaoCompra > 0 ? ` → comprar ${e.sugestaoCompra} un` : ''}`).join('\n') : '- nenhum modelo crítico'}
 
-ESTOQUE CRÍTICO:
-- AEROX: 5 dias de cobertura → URGENTE: comprar 33 unidades
-- Factor 150 ED: 15 dias → comprar 26 unidades
-- NMAX: 16 dias → comprar 13 unidades
-- Lander 250 ABS: 20 dias → comprar 18 unidades
-- SEM MIX em Bragança Paulista: NEOS, XMAX ABS
-- SEM MIX em Extrema: Factor 150 DX, MT-03 ABS, R15 ABS, NEOS, XMAX ABS
+LEADS (${d.referenciaLeads}):
+- Tempo de atendimento: ${d.tempoAtend} min (meta ≤ 10) | TCA: ${d.tcaPct}% | LCR: ${d.lcrPct}%.
 
-LEADS JUNHO/2026:
-- Tempo de atendimento: 45 min (meta: até 10 min — CRÍTICO)
-- TCA (Taxa de Confirmação de Atendimento): 100% — OK
-- LCR (Taxa de Conversão): dados parciais do mês
+NPS (${d.referenciaNps}):
+- Vendas: ${d.npsVendas} (meta 93) | Pós-vendas: ${d.npsPosvenda} (meta 87).`
+  } catch {
+    return 'VAREJO: dados indisponíveis no momento — diga que precisa verificar.'
+  }
+}
 
-NPS ATUAL:
-- NPS Vendas: 94.5 (meta: 93) — OK | +5 pts Kaizen
-- NPS Pós-vendas: 87.7 (meta: 87) — OK | +10 pts Kaizen
-- Total Kaizen NPS: 15 pontos garantidos
+async function buildSystemPrompt() {
+  const [d, estoque, share] = await Promise.all([
+    getDashboardData('Grupo Nippon'),
+    getEstoqueCompleto('Grupo Nippon').catch(() => [] as Estq),
+    getShareData(),
+  ])
+  return `Você é o Assistente Smart Dealer da Nippon Motos, grupo com lojas em Bragança Paulista, Atibaia, Amparo e Extrema. Consultor inteligente para o titular e gerentes.
 
-${buildShareContext()}
+DADOS ATUAIS (${d.nomeMesCorrente.toLowerCase()}/${d.ano} · mercado fechado até ${d.nomeMesFechado.toLowerCase()}):
+
+${buildVarejoContext(d, estoque)}
+
+${buildShareContext(share)}
 ${buildKaizenContext()}
 ${buildTreinoContext()}
 
@@ -78,6 +89,7 @@ Responda de forma direta e prática. Use no máximo 3 parágrafos curtos.
 Quando perguntarem "o que posso melhorar", priorize por impacto: market share em segmentos de alto volume, pontos do Kaizen na mesa e pendências de treinamento.
 Use apenas os dados acima. Nunca invente dados que não estão aqui.
 Se não souber algo, diga que precisa verificar.`
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -90,7 +102,7 @@ export async function POST(req: NextRequest) {
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 512,
-      system: SYSTEM_PROMPT,
+      system: await buildSystemPrompt(),
       messages: [{ role: 'user', content: message }],
     })
 

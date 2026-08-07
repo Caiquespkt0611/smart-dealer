@@ -1,5 +1,5 @@
 import { getDashboardData } from '@/lib/data'
-import { TrendingUp, TrendingDown, Minus, Trophy, AlertTriangle } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, AlertTriangle } from 'lucide-react'
 
 function fmtBRL(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })
@@ -22,22 +22,30 @@ export default async function VarejoPage({
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Varejo</h1>
         <p className="text-sm text-slate-600 mt-0.5">
-          {loja} · Junho/2026 · Dados até dia 14
+          {loja} · {data.nomeMesCorrente}/{data.ano}
+          {data.modo === 'largada'
+            ? ` · o que ${data.nomeMesFechado.toLowerCase()} diz sobre o que ${data.nomeMesCorrente.toLowerCase()} exige`
+            : ' · mês em curso'}
         </p>
       </div>
 
-      {/* ── Projeção ── */}
+      {/* ── Projeção / Largada ── */}
       <section>
         <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-3">
-          Projeção de Fechamento
+          {data.modo === 'largada' ? `Carta de ${data.nomeMesCorrente} vs Fechamento de ${data.nomeMesFechado}` : 'Projeção de Fechamento'}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[
-            { label: 'Vendas até dia 14', val: data.vendasMes, unit: 'motos', color: 'var(--text-primary)' },
+          {(data.modo === 'largada' ? [
+            { label: `Fechamento ${data.nomeMesFechado}`, val: data.fechamentoAnterior, unit: 'motos', color: 'var(--text-primary)' },
+            { label: `Carta ${data.nomeMesCorrente}`, val: data.meta, unit: 'motos', color: 'var(--accent)' },
+            { label: 'Salto que a carta pede', val: `${data.saltoCarta >= 0 ? '+' : ''}${data.saltoCarta}`, unit: 'motos', color: data.saltoCarta > 0 ? '#F59E0B' : '#10B981' },
+            { label: `Ritmo necessário`, val: data.ritmoNecessario, unit: `un/dia · ${data.diasUteisMes} úteis`, color: 'var(--text-primary)' },
+          ] : [
+            { label: `Vendas ${data.nomeMesCorrente}`, val: data.vendasMes, unit: 'motos', color: 'var(--text-primary)' },
             { label: 'Projeção de fechamento', val: data.projecao, unit: 'motos', color: 'var(--accent)' },
             { label: 'Meta do mês', val: data.meta, unit: 'motos', color: '#9CA3AF' },
             { label: '% Atingimento', val: `${data.pctAtingimento}%`, unit: '', color: data.pctAtingimento >= 80 ? '#10B981' : data.pctAtingimento >= 60 ? '#F59E0B' : '#EF4444' },
-          ].map(item => (
+          ]).map(item => (
             <div key={item.label} className="bg-white border border-slate-200 rounded-xl p-5">
               <div className="text-xs uppercase tracking-widest text-slate-600 mb-2">{item.label}</div>
               <div className="text-3xl font-bold tabular-nums" style={{ color: item.color }}>
@@ -51,8 +59,8 @@ export default async function VarejoPage({
         {/* Barra de progresso grande */}
         <div className="bg-white border border-slate-200 rounded-xl p-5 mt-4">
           <div className="flex justify-between text-sm mb-3">
-            <span className="text-slate-600">Projeção: <span className="text-slate-900 font-bold">{data.projecao}</span></span>
-            <span className="text-slate-600">Meta: <span className="text-slate-900 font-bold">{data.meta}</span></span>
+            <span className="text-slate-600">{data.modo === 'largada' ? `Fech. ${data.nomeMesFechado}` : 'Projeção'}: <span className="text-slate-900 font-bold">{data.projecao}</span></span>
+            <span className="text-slate-600">Carta: <span className="text-slate-900 font-bold">{data.meta}</span></span>
           </div>
           <div className="h-4 bg-slate-100 rounded-full overflow-hidden">
             <div
@@ -71,18 +79,19 @@ export default async function VarejoPage({
             <span>{data.meta}</span>
           </div>
 
-          {!data.junhoEmDobro && (
+          {!data.metaEmDobro && (
             <div className="mt-3 flex items-center gap-2 text-sm">
               <AlertTriangle size={14} className="text-[#F59E0B]" />
               <span className="text-slate-600">
-                Precisa de <span className="text-slate-900 font-bold">{Math.max(0, data.meta - data.projecao)}</span> motos para bater a meta ·{' '}
-                <span className="text-[#F59E0B]">{Math.ceil(data.meta * 1.1) - data.projecao} motos</span> para Junho em Dobro
+                {data.modo === 'largada'
+                  ? <>A carta pede <span className="text-slate-900 font-bold">{Math.max(0, data.saltoCarta)}</span> motos a mais que {data.nomeMesFechado.toLowerCase()} · Supermeta 110%: <span className="text-[#F59E0B]">{Math.ceil(data.meta * 1.1)} motos</span></>
+                  : <>Precisa de <span className="text-slate-900 font-bold">{Math.max(0, data.meta - data.projecao)}</span> motos para bater a carta · <span className="text-[#F59E0B]">{Math.ceil(data.meta * 1.1) - data.projecao} motos</span> para a Supermeta 110%</>}
               </span>
             </div>
           )}
-          {data.junhoEmDobro && (
+          {data.metaEmDobro && (
             <div className="mt-3 flex items-center gap-2 text-sm text-[#10B981]">
-              No ritmo do Junho em Dobro — prêmio dobra para {fmtBRL(data.premioPotencial)}!
+              No ritmo da Supermeta 110% — prêmio dobra para {fmtBRL(data.premioPotencial)}!
             </div>
           )}
         </div>
@@ -91,14 +100,14 @@ export default async function VarejoPage({
       {/* ── Modelo a Modelo ── */}
       <section>
         <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-3">
-          Vendas por Modelo — Junho vs Maio (janela equivalente)
+          Vendas por Modelo — {data.nomeMesFechado} fechado (tendência vs mês anterior)
         </h2>
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
                 <th className="text-left px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Modelo</th>
-                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Jun/26</th>
+                <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">{data.nomeMesFechado.slice(0, 3)}/{String(data.ano).slice(2)}</th>
                 <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Giro/mês</th>
                 <th className="text-right px-4 py-3 text-slate-600 font-medium text-xs uppercase tracking-wider">Tendência</th>
               </tr>
@@ -134,7 +143,9 @@ export default async function VarejoPage({
       {/* ── Ranking Regional ── */}
       <section>
         <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-600 mb-3">
-          Ranking Regional — % Atingimento da Meta
+          Ranking Regional — {data.modo === 'largada'
+            ? `Fechamento de ${data.nomeMesFechado} vs carta de ${data.nomeMesCorrente}`
+            : '% Atingimento da Carta'}
         </h2>
         <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
           <table className="w-full text-sm">

@@ -12,6 +12,13 @@ function fmtBRL(v: number) {
   return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 0 })
 }
 
+// '2026/07' → 'Jul/26'
+function fmtRef(ref: string) {
+  const [ano, mes] = ref.split('/')
+  const nomes = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+  return mes ? `${nomes[Number(mes)]}/${ano.slice(2)}` : ref
+}
+
 type Status = 'OK' | 'ATENCAO' | 'CRITICO'
 
 function statusStyle(s: Status) {
@@ -92,23 +99,40 @@ export default async function DashboardPage({
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-600 mt-0.5">{loja} · Junho/2026 · Dados até dia 14</p>
+        <p className="text-sm text-slate-600 mt-0.5">
+          {loja} · {data.nomeMesCorrente}/{data.ano} · carta {data.meta} motos
+          {data.modo === 'largada' && ` · aguardando primeiras vendas do mês`}
+        </p>
       </div>
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {data.modo === 'largada' ? (
+          <KpiCard
+            label={`Fechamento ${data.nomeMesFechado}`}
+            value={data.fechamentoAnterior}
+            unit="motos"
+            sub={`Carta de ${data.nomeMesCorrente.toLowerCase()}: ${data.meta} (${data.saltoCarta >= 0 ? '+' : ''}${data.saltoCarta})`}
+            status={varejoStatus}
+            icon={TrendingUp}
+          />
+        ) : (
+          <KpiCard
+            label={`Vendas ${data.nomeMesCorrente}`}
+            value={data.vendasMes}
+            unit="motos"
+            sub={`Projeção: ${data.projecao} motos`}
+            status={varejoStatus}
+            icon={TrendingUp}
+          />
+        )}
         <KpiCard
-          label="Vendas até D14"
-          value={data.vendasMes}
-          unit="motos"
-          sub={`Projeção: ${data.projecao} motos`}
-          status={varejoStatus}
-          icon={TrendingUp}
-        />
-        <KpiCard
-          label="% da Meta"
-          value={`${data.pctAtingimento}%`}
-          sub={`${data.projecao} de ${data.meta} motos`}
+          label={data.modo === 'largada' ? 'Ritmo que a carta pede' : '% da Meta'}
+          value={data.modo === 'largada' ? data.ritmoNecessario : `${data.pctAtingimento}%`}
+          unit={data.modo === 'largada' ? `un/dia · ${data.diasUteisMes} úteis` : undefined}
+          sub={data.modo === 'largada'
+            ? `Ritmo de ${data.nomeMesFechado.toLowerCase()} cobre ${data.pctAtingimento}% da carta`
+            : `${data.projecao} de ${data.meta} motos`}
           status={varejoStatus}
           icon={Zap}
         />
@@ -120,7 +144,7 @@ export default async function DashboardPage({
           icon={Trophy}
         />
         <KpiCard
-          label="Kaizen Junho"
+          label={`Kaizen ${fmtRef(data.referenciaNps)}`}
           value={kaizenTotal}
           unit="/19 pts"
           sub={`LCR ${kaizenLCR} · NPS ${kaizenNpsV + kaizenNpsP}`}
@@ -134,15 +158,16 @@ export default async function DashboardPage({
         {/* Ring */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600 mb-5">
-            Projeção vs Meta
+            {data.modo === 'largada' ? `Ritmo de ${data.nomeMesFechado} vs Carta` : 'Projeção vs Meta'}
           </p>
           <div className="flex-1 flex items-center justify-center">
             <MetaRing
               pct={data.pctAtingimento}
               projecao={data.projecao}
               meta={data.meta}
-              junhoEmDobro={data.junhoEmDobro}
+              metaEmDobro={data.metaEmDobro}
               premioPotencial={data.premioPotencial}
+              projecaoLabel={data.modo === 'largada' ? `Fech. ${data.nomeMesFechado}` : 'Projeção'}
             />
           </div>
         </div>
@@ -165,7 +190,7 @@ export default async function DashboardPage({
             </div>
           </div>
           <div className="flex-1">
-            <VendasHistChart data={historico} />
+            <VendasHistChart data={historico} refMes={data.mesCorrente} refAno={data.ano} />
           </div>
         </div>
       </div>
@@ -174,7 +199,7 @@ export default async function DashboardPage({
       <div className="card p-5">
         <div className="flex flex-wrap items-center gap-4">
           <div className="shrink-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Kaizen Jun/26</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600">Kaizen {fmtRef(data.referenciaNps)}</p>
             <p className={`text-2xl font-bold tabular-nums mt-0.5 ${kaizenTotal >= 15 ? 'text-emerald-600' : 'text-amber-600'}`}>
               {kaizenTotal}
               <span className="text-sm font-normal text-slate-600">/19</span>
@@ -266,7 +291,7 @@ export default async function DashboardPage({
         <div className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Users size={13} className="text-slate-600" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">Leads — Junho/2026</h2>
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">Leads — {fmtRef(data.referenciaLeads)}</h2>
           </div>
           <div className="space-y-2.5">
             {([
@@ -301,7 +326,7 @@ export default async function DashboardPage({
         <div className="card p-5">
           <div className="flex items-center gap-2 mb-4">
             <Star size={13} className="text-slate-600" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">NPS — Junho/2026</h2>
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">NPS — {fmtRef(data.referenciaNps)}</h2>
           </div>
           <div className="space-y-3">
             {[
