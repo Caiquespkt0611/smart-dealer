@@ -1,5 +1,6 @@
 import { getPerformanceAnalise, gerarAcoesPDCA } from '@/lib/performance'
 import { getCampanhaAnalise } from '@/lib/campanha-vendas'
+import { getVouchersAnalise } from '@/lib/campanha-vouchers'
 import { PdcaButton } from '@/components/performance/PdcaButton'
 import { DeckButton } from '@/components/performance/DeckButton'
 import {
@@ -17,7 +18,10 @@ export default async function PerformancePage() {
   const a = await getPerformanceAnalise()
   const d = a.dash
   const acoes = gerarAcoesPDCA(a)
-  const campanha = await getCampanhaAnalise().catch(() => null)
+  const [campanha, vouchers] = await Promise.all([
+    getCampanhaAnalise().catch(() => null),
+    getVouchersAnalise().catch(() => null),
+  ])
   const hoje = new Date()
   const dataStr = `${String(hoje.getDate()).padStart(2, '0')}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${hoje.getFullYear()}`
   const dataBr = dataStr.replace(/-/g, '/')
@@ -41,7 +45,7 @@ export default async function PerformancePage() {
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <PdcaButton acoes={acoes} subtitulo={subtitulo} arquivo={`PDCA_NIPPON-MOTOS_${dataStr}`} />
-          <DeckButton dados={{ analise: a, acoes, campanha, dataStr: dataBr }} />
+          <DeckButton dados={{ analise: a, acoes, campanha, vouchers, dataStr: dataBr }} />
         </div>
       </div>
 

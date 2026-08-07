@@ -1,5 +1,5 @@
 import { radarBanca, feedbackRespostas, businessCase, comSemSmartDealer } from '@/lib/yamahaway-data'
-import { formulaDiagnostico, resumoDiagnostico, prioridadesBanca, type StatusItem } from '@/lib/formula-sucesso'
+import { formulaDiagnostico, resumoDiagnostico, prioridadesBanca, materiaisProntos, type StatusItem } from '@/lib/formula-sucesso'
 import { getCampanhaAnalise } from '@/lib/campanha-vendas'
 import { RadarBanca } from '@/components/charts/RadarBanca'
 import { Trophy, MessageSquare, Scale, CheckCircle2, Clock, ListChecks, Target } from 'lucide-react'
@@ -170,6 +170,56 @@ export default async function YamahawayPage() {
         </div>
       </section>
 
+      {/* ── MINUTAS PRONTAS (itens que faltavam) ── */}
+      <section>
+        <div className="flex items-center gap-2 mb-1">
+          <CheckCircle2 size={14} style={{ color: 'var(--ok)' }} />
+          <h2 className="section-label">Minutas prontas — 4 itens em branco já redigidos para o grupo validar</h2>
+        </div>
+        <p className="text-[11px] mb-3" style={{ color: 'var(--text-tertiary)' }}>
+          É copiar para o slide depois de ajustar. Cada minuta fecha um item do formulário que estava em branco.
+        </p>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="card card-pad">
+            <MinutaHeader titulo={materiaisProntos.objetivo.titulo} fecha={materiaisProntos.objetivo.fecha} />
+            <p className="text-xs italic mb-2" style={{ color: 'var(--text-primary)' }}>“{materiaisProntos.objetivo.texto}”</p>
+            <ul className="space-y-1">
+              {materiaisProntos.objetivo.metas.map((m, i) => (
+                <li key={i} className="text-[11px] flex gap-2" style={{ color: 'var(--text-secondary)' }}>
+                  <span style={{ color: 'var(--accent)' }}>{i + 1}.</span>{m}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="card card-pad">
+            <MinutaHeader titulo={materiaisProntos.hipoteses.titulo} fecha={materiaisProntos.hipoteses.fecha} />
+            <ul className="space-y-1.5">
+              {materiaisProntos.hipoteses.itens.map((h, i) => (
+                <li key={i} className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{h}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="card card-pad">
+            <MinutaHeader titulo={materiaisProntos.seteSteps.titulo} fecha={materiaisProntos.seteSteps.fecha} />
+            <div className="space-y-1">
+              {materiaisProntos.seteSteps.passos.map((p, i) => (
+                <div key={i} className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>
+                  <b style={{ color: 'var(--text-primary)' }}>{p.passo}</b> — {p.atua}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="card card-pad">
+            <MinutaHeader titulo={materiaisProntos.posicionamento.titulo} fecha={materiaisProntos.posicionamento.fecha} />
+            <p className="text-xs italic" style={{ color: 'var(--text-primary)' }}>“{materiaisProntos.posicionamento.texto}”</p>
+            <p className="text-[10px] mt-3 pt-2" style={{ color: 'var(--text-tertiary)', borderTop: '1px solid var(--border)' }}>
+              Ficam de fora (dependem de campo): pesquisa com clientes reais e tabulação de fatores de compra —
+              são as ações 1 do bloco acima.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ── FÓRMULA DO SUCESSO: DIAGNÓSTICO ITEM A ITEM ── */}
       <section>
         <div className="flex items-center gap-2 mb-1">
@@ -207,6 +257,15 @@ export default async function YamahawayPage() {
           ))}
         </div>
       </section>
+    </div>
+  )
+}
+
+function MinutaHeader({ titulo, fecha }: { titulo: string; fecha: string }) {
+  return (
+    <div className="mb-2">
+      <p className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{titulo}</p>
+      <p className="text-[10px]" style={{ color: 'var(--ok)' }}>fecha: {fecha}</p>
     </div>
   )
 }

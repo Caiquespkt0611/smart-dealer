@@ -229,6 +229,50 @@ export function resumoDiagnostico() {
   }
 }
 
+// ── Minutas prontas para os itens que FALTAM ─────────────────────────────────
+// Redigidas para o grupo VALIDAR (não partir do zero). Cada uma fecha um item
+// em branco do formulário — é copiar para o slide depois de ajustar.
+
+export const materiaisProntos = {
+  objetivo: {
+    titulo: 'Objetivo do trabalho (uma frase, sempre a mesma)',
+    fecha: 'Planejamento · "objetivo claro e definido" + "mensurável"',
+    texto: 'Aumentar o atingimento de carta e a absorção do pós-vendas da Nippon Motos usando decisão guiada por dados — medido por três metas públicas.',
+    metas: [
+      'Carta: fechar setembro em ≥100% da Carta Varejo (hoje: julho fechou em 90%).',
+      'Pós-vendas: taxa de absorção K2 em 65% até dezembro (hoje: 49,4% — gap de ~R$ 41 mil/mês de MC).',
+      'Cliente: 100% dos leads respondidos em ≤10 minutos (hoje: 45 min de tempo médio).',
+    ],
+  },
+  hipoteses: {
+    titulo: 'As 3 hipóteses do trabalho (formato "se X, então Y — medido por Z")',
+    fecha: 'Pesquisa · "hipóteses claras a partir das análises"',
+    itens: [
+      'H1 — Se o lead for respondido em até 10 minutos, a conversão em venda sobe. Medida: tempo de resposta × conversão no relatório de Atendimento Diário.',
+      'H2 — Se o plano de ação nasce dos números (e não de opinião), ele é executado e o resultado aparece na carta. Medida: ações do PDCA concluídas × atingimento mensal.',
+      'H3 — Se o pós-vendas absorve 65% das despesas fixas, a operação para de depender da venda de motos para pagar a conta. Medida: taxa K2 mensal × ponto de equilíbrio.',
+    ],
+  },
+  seteSteps: {
+    titulo: 'Os 7 passos da venda — e onde o Smart Dealer atua em cada um',
+    fecha: 'Foco no Cliente · "os 7 passos foram claramente descritos"',
+    passos: [
+      { passo: '1. Recepção / primeiro contato', atua: 'Atendimento Diário: lead respondido em ≤10 min, linha monitorada (lead que cai em linha offline se perde)' },
+      { passo: '2. Sondagem (entender a necessidade)', atua: 'CRM registra origem, modelo de interesse e estágio; conversas guardam o que o cliente pediu' },
+      { passo: '3. Apresentação do produto', atua: 'Playbook de Vendas: argumento por modelo + comparativo contra a Honda do segmento' },
+      { passo: '4. Test-ride / demonstração', atua: 'Estoque na tela: o vendedor sabe na hora se tem a moto (e a cor) para mostrar' },
+      { passo: '5. Negociação / proposta', atua: 'Campanhas vigentes na tela (bônus por modelo + condição do mês) — a melhor oferta sem ligar para ninguém' },
+      { passo: '6. Fechamento', atua: 'Linha de Crédito: semáforo e simulador respondem se o pedido cabe; leads quentes voltam para a mesa' },
+      { passo: '7. Entrega e pós-venda', atua: 'Régua de revisão com disparo de WhatsApp (1.000 → 24.000 km) + renovação estratégica em 2–4 anos' },
+    ],
+  },
+  posicionamento: {
+    titulo: 'Posicionamento (minuta)',
+    fecha: 'Foco no Cliente · "posicionamento Yamaha claramente definido"',
+    texto: 'A Honda vende mais motos; a Yamaha pode atender melhor. O Smart Dealer posiciona a concessionária Yamaha como a que responde em minutos, é transparente no crédito e acompanha a moto a vida inteira — da primeira mensagem à revisão de 24.000 km. Diferenciação por experiência, não por volume.',
+  },
+} as const
+
 // As 5 ações de maior impacto na nota, em ordem de prioridade
 export const prioridadesBanca = [
   { acao: 'Pesquisa com 5–10 clientes reais da Nippon (2 perguntas, uma tarde)', criterio: 'Foco no Cliente', porque: 'Único critério com dois sub-itens zerados (pesquisas e fatores de compra) — e o de nota mais baixa depois de Pesquisa.' },

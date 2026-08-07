@@ -12,12 +12,14 @@ import {
 } from '@/lib/pptx-bonito'
 import type { PerformanceAnalise, AcaoPDCA } from '@/lib/performance'
 import type { CampanhaAnalise } from '@/lib/campanha-vendas'
+import type { VouchersAnalise } from '@/lib/campanha-vouchers'
 import { k2Data } from '@/lib/k2-data'
 
 export interface DeckDados {
   analise: PerformanceAnalise
   acoes: AcaoPDCA[]
   campanha: CampanhaAnalise | null
+  vouchers: VouchersAnalise | null
   dataStr: string   // 'dd/mm/aaaa'
 }
 
@@ -27,7 +29,7 @@ const sinal = (n: number, casas = 1) => `${n >= 0 ? '+' : ''}${v(n, casas)}`
 const stDe = (bom: boolean, ruim: boolean) => (bom ? 'bom' : ruim ? 'critico' : 'atencao') as 'bom' | 'atencao' | 'critico'
 
 export function montarDeckSmartDealer(dd: DeckDados) {
-  const { analise: a, acoes, campanha } = dd
+  const { analise: a, acoes, campanha, vouchers } = dd
   const d = a.dash
   const S: object[] = []
   const rodapeBase = `Smart Dealer · Nippon Motos · varejo e emplacamento até ${a.mesFechadoNome} fechado · `
@@ -199,13 +201,15 @@ export function montarDeckSmartDealer(dd: DeckDados) {
   if (campanha) {
     const sl = novoSlide({})
     const stCamp = stDe(campanha.garantido > 0, false)
-    cabecalho(sl, 'campeões de vendas', 'O que está em jogo até setembro', 'Circular CA-MTC-080-26')
+    cabecalho(sl, 'campanhas yamaha', 'O que a Nippon tem a receber', 'Campeões de Vendas + incentivo por modelo')
     let y = TOPO_Y + 8
+    const vchFechado = vouchers?.totalMesFechado ?? 0
+    const vchProj = vouchers?.totalProjetado ?? 0
     y = kpis(sl, MG, y, COL, [
-      { rot: 'GARANTIDO ATÉ AGORA', val: brl(campanha.garantido), cor: C.bom },
+      { rot: 'JÁ APURADO (2 FONTES)', val: brl(campanha.garantido + vchFechado), sub: `Campeões ${brl(campanha.garantido)} + vouchers ${brl(vchFechado)}`, cor: C.bom },
+      { rot: 'VOUCHERS — PROJEÇÃO DO MÊS', val: brl(vchProj), sub: 'ritmo dos últimos 3 meses' },
       { rot: 'RECUPERÁVEL NO TRIMESTRE', val: brl(campanha.recuperavel), sub: 'meta acumulada em 100%' },
-      { rot: 'CENÁRIO 100%', val: brl(campanha.cenarios[1].total) },
-      { rot: 'CENÁRIO 110%', val: brl(campanha.cenarios[2].total), cor: C.bom },
+      { rot: 'POTENCIAL TOTAL', val: brl(campanha.cenarios[2].total + vchFechado + vchProj), cor: C.bom },
     ], undefined)
     y = tabela(sl, {
       x: MG, y: y + 16, colsW: [140, 110, 130, 130, COL - 510], sz: 10, hLinha: 22,
@@ -220,8 +224,10 @@ export function montarDeckSmartDealer(dd: DeckDados) {
     }) + 8
     destaque(sl, {
       x: MG, y, w: COL, status: stCamp, rot: 'A LEITURA',
-      txt: `${a.mesFechadoNome} fechou em 90% exatos — ${brl(campanha.garantido)} garantidos. Bater a carta nos meses `
-        + `abertos recupera ${brl(campanha.recuperavel)} no acumulado e destrava o incentivo dos gerentes (R$ 30–50/moto).`,
+      txt: `Duas fontes: Campeões de Vendas (${brl(campanha.garantido)} garantidos em ${a.mesFechadoNome.toLowerCase()}; `
+        + `${brl(campanha.recuperavel)} recuperáveis no acumulado) + incentivo por modelo `
+        + `(${brl(vchFechado)} de ${a.mesFechadoNome.toLowerCase()}, projeção ${brl(vchProj)} no mês — Fazer, NMAX, MT-07, Lander e XMAX). `
+        + `Bônus não cumulativo com taxas subsidiadas: valores de voucher são o teto.`,
       hMax: 64,
     })
     rodape(sl, '* carta ainda não informada — estimada igual à atual. ' + rodapeBase)

@@ -83,7 +83,7 @@ const campanha = {
 } as unknown as CampanhaAnalise
 
 async function main() {
-  const slides = montarDeckSmartDealer({ analise, acoes, campanha, dataStr: '07/08/2026' })
+  const slides = montarDeckSmartDealer({ analise, acoes, campanha, vouchers: null, dataStr: '07/08/2026' })
   console.log('slides montados:', slides.length)
 
   const blob = montarPptx('teste.pptx', slides, { titulo: 'Teste', autor: 'Smart Dealer' }) as Blob
