@@ -28,7 +28,7 @@ function RadarTooltip({ active, payload }: any) {
 
 export function RadarBanca({ data }: { data: Ponto[] }) {
   return (
-    <div className="w-full h-full min-h-[300px]">
+    <div className="w-full flex-1" style={{ minHeight: 320 }}>
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart data={data} outerRadius="72%">
           <PolarGrid stroke="var(--chart-track)" />

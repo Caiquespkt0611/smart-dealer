@@ -78,7 +78,7 @@ export default function K2Page() {
       </div>
 
       {/* ── EVOLUÇÃO ── */}
-      <div className="card card-pad" style={{ minHeight: 340 }}>
+      <div className="card card-pad">
         <p className="section-label mb-3">Evolução mensal — MC do pós-vendas vs despesas operacionais</p>
         <K2Chart data={chartData} />
       </div>

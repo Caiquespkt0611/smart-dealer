@@ -8,9 +8,16 @@ export function DeckButton({ dados }: { dados: DeckDados }) {
   const [rotulo, setRotulo] = useState<string | null>(null)
 
   function gerar() {
-    const n = baixarDeckSmartDealer(dados)
-    setRotulo(`${n} slides ✓`)
-    setTimeout(() => setRotulo(null), 2400)
+    try {
+      const n = baixarDeckSmartDealer(dados)
+      setRotulo(`${n} slides ✓`)
+    } catch (e) {
+      // mostra o erro real em vez de falhar em silêncio (ajuda a diagnosticar)
+      console.error('[deck] falha ao gerar:', e)
+      alert(`Erro ao gerar o deck: ${e instanceof Error ? e.message : String(e)}\n\nRecarregue a página (Cmd+Shift+R) e tente de novo.`)
+      setRotulo('erro — ver console')
+    }
+    setTimeout(() => setRotulo(null), 3200)
   }
 
   return (

@@ -35,9 +35,9 @@ export function ShareDonut({ data }: { data: BrandSlice[] }) {
     fill: palette[d.marca] ?? others[i % others.length],
   }))
   return (
-    <ResponsiveContainer width="100%" height={240}>
+    <ResponsiveContainer width="100%" height={260}>
       <PieChart>
-        <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={62} outerRadius={92} paddingAngle={2} stroke="var(--bg-elevated)" strokeWidth={2}>
+        <Pie data={chartData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={68} outerRadius={100} paddingAngle={2} stroke="var(--bg-elevated)" strokeWidth={2}>
           {chartData.map((d, i) => <Cell key={i} fill={d.fill} />)}
         </Pie>
         <Tooltip content={<ShareTooltip />} />
@@ -81,11 +81,12 @@ function TrendTooltip({ active, payload, label }: any) {
 
 export function ShareTrendChart({ data }: { data: TrendPoint[] }) {
   return (
-    <ResponsiveContainer width="100%" height={280}>
-      <ComposedChart data={data} margin={{ top: 8, right: 4, left: -12, bottom: 0 }} barGap={2} barCategoryGap="22%">
+    <div className="w-full flex-1" style={{ minHeight: 320 }}>
+      <ResponsiveContainer width="100%" height="100%">
+      <ComposedChart data={data} margin={{ top: 8, right: 4, left: 0, bottom: 0 }} barGap={2} barCategoryGap="22%">
         <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-track)" vertical={false} />
         <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--chart-axis)', fontFamily: 'ui-monospace,monospace' }} axisLine={false} tickLine={false} />
-        <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={34} />
+        <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={44} />
         <YAxis yAxisId="right" orientation="right" domain={[0, 80]} tick={{ fontSize: 10, fill: YAMAHA }} axisLine={false} tickLine={false} width={34} unit="%" />
         <Tooltip content={<TrendTooltip />} cursor={{ fill: 'var(--border-strong)', fillOpacity: 0.12 }} />
         <Legend wrapperStyle={{ fontSize: 10, paddingTop: 8 }} formatter={(v) => LEGEND_LABELS[v] ?? v} />
@@ -98,6 +99,7 @@ export function ShareTrendChart({ data }: { data: TrendPoint[] }) {
         <Line yAxisId="right" type="monotone" dataKey="shareHonda" name="shareHonda" stroke={HONDA} strokeWidth={2} dot={{ r: 2.5, fill: HONDA }} />
         <Line yAxisId="right" type="monotone" dataKey="shareShineray" name="shareShineray" stroke={SHINERAY} strokeWidth={2} strokeDasharray="4 3" dot={{ r: 2.5, fill: SHINERAY }} />
       </ComposedChart>
-    </ResponsiveContainer>
+      </ResponsiveContainer>
+    </div>
   )
 }

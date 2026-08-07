@@ -36,7 +36,7 @@ function K2Tooltip({ active, payload, label }: any) {
 
 export function K2Chart({ data }: { data: Ponto[] }) {
   return (
-    <div className="w-full h-full min-h-[260px]">
+    <div className="w-full" style={{ height: 330 }}>
       <ResponsiveContainer width="100%" height="100%">
         <ComposedChart data={data} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-track)" vertical={false} />

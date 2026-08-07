@@ -20,7 +20,8 @@ interface ModeloComArte {
 }
 
 const MODELOS: ModeloComArte[] = [
-  { modelo: 'Crosser 150', match: m => m.includes('CROSSER'), demo: { estoqueTotal: 11, cobertura: 142 }, arte: { src: '/campanhas/crosser.jpeg', entrada: 'R$ 5.999', parcela: 'R$ 641' } },
+  // Arte nova 07/08: Crosser S com motoboy (formato feed 1080×1350) — pedido do Caique
+  { modelo: 'Crosser 150', match: m => m.includes('CROSSER'), demo: { estoqueTotal: 11, cobertura: 142 }, arte: { src: '/campanhas/crosser-motoboy.jpeg', entrada: 'R$ 5.999', parcela: 'R$ 641' } },
   { modelo: 'Factor 150 DX', match: m => m.includes('FACTOR') && m.includes('DX'), demo: { estoqueTotal: 8, cobertura: 110 }, arte: { src: '/campanhas/factor-dx.jpeg', entrada: 'R$ 4.999', parcela: 'R$ 572' } },
   { modelo: 'FZ15 ABS', match: m => m.replace(/[\s-]/g, '').includes('FZ15'), demo: { estoqueTotal: 6, cobertura: 72 }, arte: { src: '/campanhas/fz15.jpeg', entrada: 'R$ 6.490', parcela: 'R$ 597' } },
   { modelo: 'NMAX Connected ABS', match: m => m.includes('NMAX'), demo: { estoqueTotal: 5, cobertura: 64 }, arte: { src: '/campanhas/nmax.jpeg', entrada: 'R$ 9.886', parcela: '36x R$ 644' } },
