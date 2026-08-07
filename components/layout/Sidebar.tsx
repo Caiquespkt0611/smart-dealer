@@ -40,9 +40,10 @@ const navItems = [
   { href: '/leads',        label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
   { href: '/nps',          label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Operação' },
   { href: '/assistente',   label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO', 'VENDEDOR'],  group: 'Operação' },
+  { href: '/yamahaway',    label: 'Dossiê da Banca',    icon: Award,           roles: ['TITULAR', 'CONSULTOR'],                        group: 'Yamahaway' },
 ]
 
-const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Comercial', 'Operação']
+const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Comercial', 'Operação', 'Yamahaway']
 
 export function Sidebar() {
   const pathname = usePathname()
