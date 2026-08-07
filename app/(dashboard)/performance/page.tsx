@@ -1,5 +1,7 @@
 import { getPerformanceAnalise, gerarAcoesPDCA } from '@/lib/performance'
+import { getCampanhaAnalise } from '@/lib/campanha-vendas'
 import { PdcaButton } from '@/components/performance/PdcaButton'
+import { DeckButton } from '@/components/performance/DeckButton'
 import {
   TrendingUp, TrendingDown, Target, MapPin, ShieldAlert,
   Activity, Scale,
@@ -15,8 +17,10 @@ export default async function PerformancePage() {
   const a = await getPerformanceAnalise()
   const d = a.dash
   const acoes = gerarAcoesPDCA(a)
+  const campanha = await getCampanhaAnalise().catch(() => null)
   const hoje = new Date()
   const dataStr = `${String(hoje.getDate()).padStart(2, '0')}-${String(hoje.getMonth() + 1).padStart(2, '0')}-${hoje.getFullYear()}`
+  const dataBr = dataStr.replace(/-/g, '/')
   const subtitulo = `Base: varejo e emplacamento até ${a.mesFechadoNome} fechado · carta de ${d.nomeMesCorrente} · `
     + `mercado e share das áreas ${a.share.areas.join(' + ')} · comparação vs ${a.baseNome}`
 
@@ -35,7 +39,10 @@ export default async function PerformancePage() {
             Nippon Motos · {a.mesFechadoNome} fechado + carta de {d.nomeMesCorrente} · o mercado explicando o varejo
           </p>
         </div>
-        <PdcaButton acoes={acoes} subtitulo={subtitulo} arquivo={`PDCA_NIPPON-MOTOS_${dataStr}`} />
+        <div className="flex items-center gap-2 flex-wrap">
+          <PdcaButton acoes={acoes} subtitulo={subtitulo} arquivo={`PDCA_NIPPON-MOTOS_${dataStr}`} />
+          <DeckButton dados={{ analise: a, acoes, campanha, dataStr: dataBr }} />
+        </div>
       </div>
 
       {/* ── O MÊS: carta e ritmo ── */}

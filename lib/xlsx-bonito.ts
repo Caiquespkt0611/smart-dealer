@@ -25,7 +25,7 @@ const CRC32 = (() => {
 
 /* `mime` é opcional: um .pptx é o mesmo ZIP com outro conteúdo, e o escritor
    de PowerPoint reaproveita esta função em vez de ter a sua cópia. */
-function zipar(arquivos: Array<{nome: string; dados: string | Uint8Array}>, mime?: string){
+export function zipar(arquivos: Array<{nome: string; dados: string | Uint8Array}>, mime?: string){
   const enc = new TextEncoder();
   const partes: Uint8Array<ArrayBuffer>[] = [], central: Uint8Array<ArrayBuffer>[] = [];
   let offset = 0;
