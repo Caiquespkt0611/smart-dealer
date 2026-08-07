@@ -2,17 +2,19 @@
 
 import { useState } from 'react'
 import { Presentation } from 'lucide-react'
-import { baixarDeckSmartDealer, type DeckDados } from '@/lib/deck-performance'
+import type { DeckDados } from '@/lib/deck-pptxgen'
 
 export function DeckButton({ dados }: { dados: DeckDados }) {
   const [rotulo, setRotulo] = useState<string | null>(null)
 
-  function gerar() {
+  async function gerar() {
+    setRotulo('gerando…')
     try {
-      const n = baixarDeckSmartDealer(dados)
-      setRotulo(`${n} slides ✓`)
+      // import dinâmico: a pptxgenjs só carrega quando o botão é clicado
+      const { baixarDeck } = await import('@/lib/deck-pptxgen')
+      const n = await baixarDeck(dados)
+      setRotulo(`${n || ''} slides ✓`)
     } catch (e) {
-      // mostra o erro real em vez de falhar em silêncio (ajuda a diagnosticar)
       console.error('[deck] falha ao gerar:', e)
       alert(`Erro ao gerar o deck: ${e instanceof Error ? e.message : String(e)}\n\nRecarregue a página (Cmd+Shift+R) e tente de novo.`)
       setRotulo('erro — ver console')
