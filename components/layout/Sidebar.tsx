@@ -27,6 +27,7 @@ import {
   Gem,
   ClipboardList,
   Truck,
+  QrCode,
 } from 'lucide-react'
 
 const navItems = [
@@ -48,6 +49,7 @@ const navItems = [
   { href: '/consorcio',    label: 'Consórcio',          icon: PiggyBank,       roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Banco & Fidelização' },
   { href: '/premya',       label: 'Premya',             icon: Gem,             roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Banco & Fidelização' },
   { href: '/pos-vendas',   label: 'Pós-Vendas',         icon: CalendarClock,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Operação' },
+  { href: '/conexao',      label: 'Conexão WhatsApp',   icon: QrCode,          roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
   { href: '/estoque',      label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
   { href: '/distribuicao', label: 'Distribuição',       icon: Truck,           roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Operação' },
   { href: '/leads',        label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
