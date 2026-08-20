@@ -13,7 +13,8 @@ export async function GET() {
   )
   const { data, error } = await sb.storage.from(BUCKET_DADOS).download(ARQUIVO_PLANILHA)
   if (error || !data) {
-    return NextResponse.json({ erro: 'Planilha não encontrada no Storage' }, { status: 404 })
+    console.error('[planilha] download falhou:', error)
+    return NextResponse.json({ erro: `Planilha não disponível: ${error?.message ?? 'sem dados'}` }, { status: 404 })
   }
   return new NextResponse(await data.arrayBuffer(), {
     headers: {
