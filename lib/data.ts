@@ -81,6 +81,13 @@ export interface DashboardData {
   saltoCarta: number
   ritmoNecessario: number
   diasUteisMes: number
+  /** motos que faltam para a carta e ritmo diário para alcançá-la daqui em diante */
+  faltamParaMeta: number
+  diasUteisRestantes: number
+  ritmoParaMeta: number
+  ritmoAtual: number
+  /** dia do mês até onde a planilha reporta vendas (data do estoque) */
+  diaCorte: number
   estoqueAlertas: EstoqueAlerta[]
   tempoAtend: number
   tcaPct: number
@@ -167,16 +174,39 @@ export async function getDashboardData(loja: string): Promise<DashboardData> {
   const metas = metasRes.data ?? []
   const metaNippon = metas.find((m: { grupo: string }) => m.grupo === 'NIPPON MOTOS')?.carta ?? 160
 
-  const { diasUteis } = pesosPonderados(cal, ref.ano, ref.mesCorrente)
+  const { peso, diasUteis } = pesosPonderados(cal, ref.ano, ref.mesCorrente)
   const hoje = new Date()
   const diaHoje = hoje.getFullYear() === ref.ano && hoje.getMonth() + 1 === ref.mesCorrente ? hoje.getDate() : 31
 
+  // As vendas do mês vão até a data da planilha (data do estoque), não até hoje:
+  // projetar com o peso corrido de hoje subestimaria o fechamento.
+  const mCorte = ref.dataEstoque.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/)
+  const diaCorte = mCorte && Number(mCorte[2]) === ref.mesCorrente && Number(mCorte[1]) <= diaHoje
+    ? Number(mCorte[1])
+    : diaHoje
+
   // Largada: ainda não há venda do mês → a referência é o fechamento do mês anterior.
-  // Acompanhamento: projeção ponderada por dias úteis.
-  const projecao = modo === 'acompanhamento' ? calcProjecao(cal, vendasMes, ref.ano, ref.mesCorrente, diaHoje) : fechamentoAnterior
+  // Acompanhamento: projeção ponderada por dias úteis (estudo do Performance Concessionário).
+  const projecao = modo === 'acompanhamento' ? calcProjecao(cal, vendasMes, ref.ano, ref.mesCorrente, diaCorte) : fechamentoAnterior
   const pctAtingimento = Math.round((projecao / metaNippon) * 100)
   const saltoCarta = metaNippon - fechamentoAnterior
   const ritmoNecessario = Math.round((metaNippon / Math.max(diasUteis, 1)) * 10) / 10
+
+  // Quanto falta e qual ritmo diário fecha a carta daqui em diante
+  let diasUteisCorridos = 0
+  let diasUteisRestantes = 0
+  peso.forEach((p, dia) => {
+    if (p <= 0) return
+    if (dia <= diaCorte) diasUteisCorridos += 1
+    else diasUteisRestantes += 1
+  })
+  const faltamParaMeta = Math.max(0, metaNippon - vendasMes)
+  const ritmoParaMeta = diasUteisRestantes > 0
+    ? Math.round((faltamParaMeta / diasUteisRestantes) * 10) / 10
+    : faltamParaMeta
+  const ritmoAtual = diasUteisCorridos > 0
+    ? Math.round((vendasMes / diasUteisCorridos) * 10) / 10
+    : 0
 
   // Giro mensal por modelo (média dos últimos meses fechados)
   const giroMap = new Map<string, number>()
@@ -273,6 +303,7 @@ export async function getDashboardData(loja: string): Promise<DashboardData> {
     vendasMes, fechamentoAnterior,
     meta: metaNippon, projecao, pctAtingimento,
     saltoCarta, ritmoNecessario, diasUteisMes: diasUteis,
+    faltamParaMeta, diasUteisRestantes, ritmoParaMeta, ritmoAtual, diaCorte,
     estoqueAlertas,
     tempoAtend, tcaPct, lcrPct, referenciaLeads,
     npsVendas, npsPosvenda, referenciaNps,

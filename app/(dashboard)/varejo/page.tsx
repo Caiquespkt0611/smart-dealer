@@ -95,6 +95,45 @@ export default async function VarejoPage({
             </div>
           )}
         </div>
+
+        {/* O dia a dia até a carta (estudo de projeção do Performance Concessionário) */}
+        {data.modo === 'acompanhamento' && (
+          <div className="bg-white border border-slate-200 rounded-xl p-5 mt-4">
+            <div className="text-xs uppercase tracking-widest text-slate-600 mb-3">
+              O dia a dia até a carta · vendas registradas até {String(data.diaCorte).padStart(2, '0')}/{String(data.mesCorrente).padStart(2, '0')}
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <div className="text-2xl font-bold tabular-nums text-slate-900">{data.faltamParaMeta}</div>
+                <div className="text-xs text-slate-600">motos faltando para a carta</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold tabular-nums text-slate-900">{data.diasUteisRestantes}</div>
+                <div className="text-xs text-slate-600">dias úteis restantes</div>
+              </div>
+              <div>
+                <div
+                  className="text-2xl font-bold tabular-nums"
+                  style={{ color: data.ritmoParaMeta <= data.ritmoAtual ? '#10B981' : data.ritmoParaMeta <= data.ritmoAtual * 1.3 ? '#F59E0B' : '#EF4444' }}
+                >
+                  {data.ritmoParaMeta}
+                </div>
+                <div className="text-xs text-slate-600">motos/dia para bater a carta</div>
+              </div>
+              <div>
+                <div className="text-2xl font-bold tabular-nums text-slate-900">{data.ritmoAtual}</div>
+                <div className="text-xs text-slate-600">motos/dia no ritmo atual</div>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-slate-600">
+              {data.ritmoParaMeta <= data.ritmoAtual
+                ? 'O ritmo atual já fecha a carta — a disputa agora é a Supermeta 110%.'
+                : <>Para virar o mês é preciso subir de <span className="font-semibold text-slate-900">{data.ritmoAtual}</span> para{' '}
+                  <span className="font-semibold text-slate-900">{data.ritmoParaMeta} motos/dia</span> nos {data.diasUteisRestantes} dias úteis que restam
+                  — os dois últimos dias úteis pesam mais (2,2× e 1,7×) e podem decidir o fechamento.</>}
+            </p>
+          </div>
+        )}
       </section>
 
       {/* ── Modelo a Modelo ── */}
