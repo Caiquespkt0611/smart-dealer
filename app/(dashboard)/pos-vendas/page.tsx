@@ -1,6 +1,6 @@
 import { posVendasData } from '@/lib/posvendas-data'
 import { renovacaoData } from '@/lib/renovacao-data'
-import { recompraEstrategica } from '@/lib/recompra-data'
+import { recompraEstrategica, recompraTeste } from '@/lib/recompra-data'
 import { mensagemRevisao, mensagemRenovacao, mensagemRecompra } from '@/lib/mensagens'
 import { RevisaoButton } from '@/components/posvendas/RevisaoButton'
 import { RevisaoHistorico } from '@/components/posvendas/RevisaoHistorico'
@@ -102,6 +102,42 @@ export default function PosVendasPage() {
                   recompraEstrategica.modeloAtual,
                   recompraEstrategica.ofertaModelo,
                   fmtBRL(recompraEstrategica.voucherCampanha),
+                )}
+                rotulo="Oferecer Recompra"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Caique — card de teste do fluxo (remover depois da apresentação) */}
+        <div className="card card-pad" style={{ borderStyle: 'dashed' }}>
+          <div className="flex items-start gap-4 flex-wrap">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--bg-inset)' }}>
+              <Sparkles size={22} style={{ color: 'var(--text-tertiary)' }} />
+            </div>
+            <div className="flex-1 min-w-[220px]">
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Recompra — {recompraTeste.nome}</p>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: 'var(--bg-inset)', color: 'var(--text-tertiary)' }}>TESTE</span>
+              </div>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                {recompraTeste.modeloAtual} ({recompraTeste.anoCompra}) · faltam {recompraTeste.parcelasRestantes} parcelas ·
+                super avaliação da usada como entrada · campanha {recompraTeste.ofertaModelo}: {fmtBRL(recompraTeste.voucherCampanha)}.
+              </p>
+              <p className="text-[11px] mt-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)' }}>
+                <Phone size={11} /> +{recompraTeste.telefone} · valide o fluxo aqui antes da demo
+              </p>
+            </div>
+            <div className="self-center">
+              <RevisaoButton
+                id={2002}
+                nome={recompraTeste.nome}
+                telefone={recompraTeste.telefone}
+                mensagem={mensagemRecompra(
+                  recompraTeste.nome,
+                  recompraTeste.modeloAtual,
+                  recompraTeste.ofertaModelo,
+                  fmtBRL(recompraTeste.voucherCampanha),
                 )}
                 rotulo="Oferecer Recompra"
               />

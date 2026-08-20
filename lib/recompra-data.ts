@@ -12,3 +12,15 @@ export const recompraEstrategica = {
   ofertaModelo: 'Fazer 250 ABS',
   voucherCampanha: 1000,
 } as const
+
+// Card de TESTE do Caique — mesmo fluxo da recompra, para validar o disparo
+// sem tocar nos números da demo (Lander: campanha CA-MTC031-26, R$ 1.000).
+export const recompraTeste = {
+  nome: 'Caique',
+  telefone: '5511981562536',
+  modeloAtual: 'Crosser 150 Z ABS',
+  anoCompra: 2023,
+  parcelasRestantes: 2,
+  ofertaModelo: 'Lander 250 ABS',
+  voucherCampanha: 1000,
+} as const
