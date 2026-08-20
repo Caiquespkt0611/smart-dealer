@@ -1,6 +1,6 @@
 // Captura telas reais do Smart Dealer logado, em alta resolução.
 import { chromium } from '@playwright/test'
-const OUT = '/private/tmp/claude-501/-Users-caiqueoliveira-Documents-MEUS-PROJETOS--YamahaWay/6c23b1ff-3e4d-4676-b818-144f986d95aa/scratchpad/shots'
+const OUT = '_NOVAS MELHORIAS/deck-assets'
 const BASE = 'http://localhost:3000'
 const PAGES = [
   ['dashboard', '/dashboard'],
