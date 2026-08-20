@@ -48,7 +48,7 @@ export default async function PerformancePage() {
             style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>
             Gerar PDCA (.xlsx)
           </a>
-          <a href="/arquivos/Deck_NIPPON-MOTOS_19-08-2026.pptx" download
+          <a href="/arquivos/Deck-Semana_NIPPON-MOTOS_19-08-2026.pptx" download
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
             style={{ backgroundColor: 'var(--yamaha-blue, #003087)', color: '#fff' }}>
             Gerar Deck (.pptx)
