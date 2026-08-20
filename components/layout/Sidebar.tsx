@@ -21,6 +21,11 @@ import {
   Wallet,
   Ticket,
   MessageCircle,
+  Landmark,
+  Shield,
+  PiggyBank,
+  Gem,
+  ClipboardList,
 } from 'lucide-react'
 
 const navItems = [
@@ -37,15 +42,20 @@ const navItems = [
   { href: '/atendimento',  label: 'Atendimento Diário', icon: MessageCircle,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Comercial' },
   { href: '/campanhas',    label: 'Campanhas IA',       icon: Megaphone,       roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
   { href: '/playbook',     label: 'Playbook de Vendas', icon: BookOpen,        roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial' },
+  { href: '/banco',        label: 'Banco Yamaha',       icon: Landmark,        roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Banco & Fidelização' },
+  { href: '/seguros',      label: 'Seguros',            icon: Shield,          roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Banco & Fidelização' },
+  { href: '/consorcio',    label: 'Consórcio',          icon: PiggyBank,       roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Banco & Fidelização' },
+  { href: '/premya',       label: 'Premya',             icon: Gem,             roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Banco & Fidelização' },
   { href: '/pos-vendas',   label: 'Pós-Vendas',         icon: CalendarClock,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Operação' },
   { href: '/estoque',      label: 'Estoque',            icon: Package,         roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
   { href: '/leads',        label: 'Leads',              icon: Users,           roles: ['TITULAR', 'GERENTE'],                          group: 'Operação' },
   { href: '/nps',          label: 'NPS',                icon: Star,            roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Operação' },
   { href: '/assistente',   label: 'Assistente Técnico', icon: Wrench,          roles: ['TITULAR', 'GERENTE', 'MECANICO', 'VENDEDOR'],  group: 'Operação' },
+  { href: '/pesquisa',     label: 'Voz do Cliente',     icon: ClipboardList,   roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Yamahaway' },
   { href: '/yamahaway',    label: 'Dossiê da Banca',    icon: Award,           roles: ['TITULAR', 'CONSULTOR'],                        group: 'Yamahaway' },
 ]
 
-const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Comercial', 'Operação', 'Yamahaway']
+const GROUP_ORDER = ['Visão Geral', 'Inteligência', 'Comercial', 'Banco & Fidelização', 'Operação', 'Yamahaway']
 
 export function Sidebar() {
   const pathname = usePathname()

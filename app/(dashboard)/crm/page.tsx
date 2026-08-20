@@ -1,4 +1,5 @@
 import { crmData } from '@/lib/crm-data'
+import Link from 'next/link'
 import {
   Users, Target, DollarSign, TrendingUp,
   Megaphone, Search, Globe, UserPlus, Store, Trophy,
@@ -50,8 +51,13 @@ export default function CrmPage() {
             Pipeline comercial · origem dos leads · performance da equipe
           </p>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}>
-          <Users size={13} /> {d.totalLeads} leads ativos no mês
+        <div className="flex items-center gap-2 flex-wrap">
+          <Link href="/crm/configuracao" className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold border" style={{ borderColor: 'var(--accent)', color: 'var(--accent)' }}>
+            ⚙ Configuração &amp; Governança
+          </Link>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold" style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}>
+            <Users size={13} /> {d.totalLeads} leads ativos no mês
+          </div>
         </div>
       </div>
 

@@ -3,6 +3,7 @@ import { renovacaoData } from '@/lib/renovacao-data'
 import { mensagemRevisao, mensagemRenovacao } from '@/lib/mensagens'
 import { RevisaoButton } from '@/components/posvendas/RevisaoButton'
 import { RevisaoHistorico } from '@/components/posvendas/RevisaoHistorico'
+import { PainelRevisoes } from '@/components/posvendas/PainelRevisoes'
 import {
   CalendarClock, AlertTriangle, CheckCircle2, Bike,
   Gift, Sparkles, MessageCircle, Phone,
@@ -39,6 +40,9 @@ export default function PosVendasPage() {
           Régua de revisões automática · fila de contato do dia · renovação estratégica
         </p>
       </div>
+
+      {/* ── PAINEL R1–R4 (Periodic Inspection) ── */}
+      <PainelRevisoes />
 
       {/* ── DISPARO DE TESTE (Ribeiro) ── */}
       {ribeiro && (

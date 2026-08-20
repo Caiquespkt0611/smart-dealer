@@ -4,6 +4,7 @@ import { kaizenData } from '@/lib/kaizen-data'
 import { treinamentoData } from '@/lib/treinamento-data'
 import { getDashboardData, getEstoqueCompleto } from '@/lib/data'
 import { getShareData, type ShareData } from '@/lib/dados-vivos'
+import { circularesContexto } from '@/lib/circulares-data'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -86,6 +87,7 @@ ${buildVarejoContext(d, estoque)}
 ${buildShareContext(share)}
 ${buildKaizenContext()}
 ${buildTreinoContext()}
+${circularesContexto}
 
 Responda de forma direta e prática. Use no máximo 3 parágrafos curtos.
 Quando perguntarem "o que posso melhorar", priorize por impacto: market share em segmentos de alto volume, pontos do Kaizen na mesa e pendências de treinamento.
