@@ -528,16 +528,17 @@ async function deckBanca() {
 
   /* ════ 01 · PESQUISA (4) ════ */
 
-  /* 1.1 análises externas */
+  /* 1.1 análises externas — o mercado de ferramentas */
   {
-    const sl = slideItem(p, '01 · Pesquisa', 1, 4, 'Análises externas foram devidamente realizadas', 'O mercado, medido na fonte')
-    kpiCards(sl, 2.1, [
-      { tag: 'Mercado Jan–Jul', val: '5.346', sub: 'motos emplacadas nas áreas da Nippon (Amparo + Ouro Fino)' },
-      { tag: 'Share Yamaha', val: '20,0%', sub: 'Honda lidera com 63,7% — o tamanho da disputa' },
-      { tag: 'Nippon na Yamaha', val: '83,6%', sub: '893 motos — o peso do grupo na marca regional' },
-      { tag: 'Áreas mapeadas', val: '13', sub: 'toda a regional, cidade a cidade' },
-    ], 1.5)
-    browserFrame(p, sl, (W - 5.9) / 2, 3.62, 5.9, 'marketshare.png')
+    const sl = slideItem(p, '01 · Pesquisa', 1, 4, 'Análises externas foram devidamente realizadas', 'O que existe no mercado de ferramentas — e o que falta')
+    cardGrid(sl, 2.1, 4, [
+      { tag: 'DMS da loja', titulo: 'Opera, não analisa', corpo: 'Nota fiscal, OS e estoque. Nenhuma leitura de carta, share ou campanha — e já está pago.' },
+      { tag: 'CRM genérico', titulo: 'Funil sem regra Yamaha', corpo: 'R$ 800–2.500/mês. Gerencia leads, mas não conhece circular, Kaizen nem carta varejo.' },
+      { tag: 'Planilhas e BI', titulo: 'Manual e atrasado', corpo: '"Grátis" que custa horas de digitação — o indicador chega depois da decisão.' },
+      { tag: 'Painéis da montadora', titulo: 'Cada um numa senha', corpo: 'Liberacred, Seguros, Periodic Inspection: dados ricos, isolados, sem virar ação na loja.' },
+    ], 2.35)
+    callout(sl, 4.85, 'A lacuna que a análise revelou',
+      'Nenhuma ferramenta une as pontas — e nenhuma fala "Yamaha": carta, Kaizen, K2, Premya, circulares. A concessionária opera cega entre sistemas que não conversam. Essa lacuna é exatamente a oportunidade do Smart Dealer.', 1.25)
   }
 
   /* 1.2 concorrentes */
@@ -576,20 +577,22 @@ async function deckBanca() {
       'A vantagem competitiva é o método Yamaha codificado — o software é só o veículo. Nenhum concorrente carrega carta, Kaizen, K2, Premya e circulares dentro do produto.', 1.05)
   }
 
-  /* 1.3 análises suficientes */
+  /* 1.3 análises suficientes — a dor quantificada */
   {
-    const sl = slideItem(p, '01 · Pesquisa', 3, 4, 'Pesquisas e análises de mercado foram suficientes', 'Cada análise ancorada numa fonte oficial')
-    const linhas: [string, string, string][] = [
-      ['Share por segmento e cidade', 'Base de emplacamento Yamaha', 'tela Market Share'],
-      ['Decomposição mercado × share', 'Emplacamento + metodologia própria', 'tela Performance + PDCA'],
-      ['Absorção do pós-vendas (K2)', 'DRE oficial BMI', 'tela K2 · Absorção'],
-      ['Campanhas e prêmios', 'Circulares CA-MTC 028–033 e 080', 'telas Campanhas + robô'],
-      ['Fidelidade ao Banco Yamaha', 'Folder oficial Premya 3ª edição', 'tela Premya + simulador'],
-      ['Concorrentes nomeados', 'Receita Federal / BrasilAPI', 'tela Market Share'],
-      ['Voz do cliente', 'Pesquisa própria (32 respostas)', 'tela Voz do Cliente'],
-    ]
-    tabela(sl, 2.1, ['A análise', 'A fonte', 'Onde vive no sistema'], linhas.map(l => [{ t: l[0] }, { t: l[1], bold: false }, { t: l[2], cor: C.azul, bold: false }]), [4.3, 4.0, 3.33], 10.5, 0.52)
-    sl.addText('Rastreabilidade total: na banca, qualquer número desta apresentação abre ao vivo na tela que o gerou.', { x: MG, y: 6.15, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+    const sl = slideItem(p, '01 · Pesquisa', 3, 4, 'Pesquisas e análises de mercado foram suficientes', 'A dor, medida dentro da operação real')
+    kpiCards(sl, 2.1, [
+      { tag: 'Sistemas isolados', val: '9+', sub: 'CRM, Banco, Consórcio, Seguros, NPS, DMS, planilhas...', cor: C.verm },
+      { tag: 'Tempo por análise', val: '30min–3h', sub: 'abrir, cruzar e analisar manualmente', cor: C.verm },
+      { tag: 'Leads no limbo', val: '32%', sub: 'morriam sem resposta antes do piloto', cor: C.verm },
+      { tag: '1ª resposta ao lead', val: '3h47', sub: 'o cliente de 2026 não espera — compara com Amazon e Nubank', cor: C.verm },
+    ], 1.5)
+    cardGrid(sl, 3.9, 3, [
+      { titulo: 'Crédito recusado', corpo: 'nunca mais procurado — mesmo com o Liberacred aprovando de novo' },
+      { titulo: 'Contrato quitando', corpo: 'cliente volta ao mercado em silêncio — o concorrente chama primeiro' },
+      { titulo: 'Revisão vencida', corpo: 'a oficina não avisa — e a absorção fica no papel' },
+    ], 1.25)
+    callout(sl, 5.4, 'Análise suficiente para fundamentar a solução — e para dimensionar o prêmio',
+      'Todos os dados existiam; a oportunidade passava despercebida. O valor deixado na mesa foi quantificado: ~R$ 1,1 milhão/ano em uma única concessionária.', 1.05, C.verdeBg)
   }
 
   /* 1.4 hipóteses */
@@ -604,6 +607,39 @@ async function deckBanca() {
       y += 1.45
     })
     sl.addText('H1 já tem resultado: SLA de 10 min subiu de 22% para 81% — e a conversão foi de 8,1% para 13,9%.', { x: MG, y: y + 0.12, w: COL, h: 0.32, fontSize: 12, italic: true, color: C.verde, align: 'center', fontFace: F })
+  }
+
+  /* 1.c conclusão da pesquisa: a solução */
+  {
+    const sl = slideBranco(p, '01 · Pesquisa · a conclusão', 'A resposta: o Centro de Inteligência da Rede Yamaha',
+      'Da lacuna do mercado nasceu o Smart Dealer — a plataforma que une as pontas e fala Yamaha.')
+    const fontes = ['Vendas', 'Leads', 'Banco Yamaha', 'Consórcio', 'Seguros', 'Pós-venda', 'NPS', 'Campanhas', 'Estoque', 'Kaizen']
+    const cw = 2.05, ch = 0.5
+    fontes.forEach((f2, i) => {
+      const col = i % 2, row = Math.floor(i / 2)
+      const x = MG + col * (cw + 0.14), y = 2.15 + row * (ch + 0.13)
+      sl.addShape('roundRect' as never, { x, y, w: cw, h: ch, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.04 })
+      sl.addText(f2, { x, y, w: cw, h: ch, fontSize: 10, bold: true, color: C.slate, align: 'center', valign: 'middle', fontFace: F, shrinkText: true })
+    })
+    sl.addText('→', { x: MG + 4.45, y: 3.9, w: 0.55, h: 0.5, fontSize: 24, bold: true, color: C.azulClaro, align: 'center', fontFace: F })
+    sl.addShape('roundRect' as never, { x: MG + 5.15, y: 3.05, w: 2.75, h: 2.2, fill: { color: C.navy }, line: { type: 'none' }, rectRadius: 0.08, shadow: { type: 'outer', color: 'B8CDEA', blur: 16, offset: 0, angle: 90, opacity: 0.55 } })
+    sl.addText('SMART\nDEALER', { x: MG + 5.15, y: 3.35, w: 2.75, h: 1.0, fontSize: 21, bold: true, color: C.branco, align: 'center', fontFace: F, lineSpacing: 24 })
+    sl.addText('IA + regras Yamaha\ncodificadas', { x: MG + 5.15, y: 4.4, w: 2.75, h: 0.6, fontSize: 9.5, color: C.azulClaro, align: 'center', fontFace: F, lineSpacing: 12 })
+    sl.addText('→', { x: MG + 8.05, y: 3.9, w: 0.55, h: 0.5, fontSize: 24, bold: true, color: C.azulClaro, align: 'center', fontFace: F })
+    const saidas: [string, string][] = [
+      ['Oportunidades', 'identificadas sozinhas'],
+      ['Alertas', 'operacionais na hora'],
+      ['Jornada', 'completa do cliente'],
+      ['Decisão', 'recomendada com IA'],
+    ]
+    saidas.forEach((s2, i) => {
+      const y = 2.15 + i * 1.02
+      const x = MG + 8.75, w2 = COL - 8.75
+      sl.addShape('roundRect' as never, { x, y, w: w2, h: 0.88, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.04 })
+      sl.addText(s2[0], { x: x + 0.2, y: y + 0.12, w: w2 - 0.4, h: 0.3, fontSize: 12.5, bold: true, color: C.navy, fontFace: F })
+      sl.addText(s2[1], { x: x + 0.2, y: y + 0.44, w: w2 - 0.4, h: 0.3, fontSize: 10, color: C.slate, fontFace: F })
+    })
+    sl.addText('Em produção na Nippon Motos: 4 lojas, 25 módulos, pago pela própria CCY — daqui em diante, cada critério mostra a solução em ação.', { x: MG, y: 6.3, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, align: 'center', fontFace: F, shrinkText: true })
   }
 
   /* ════ 02 · PLANEJAMENTO E OBJETIVOS (6) ════ */
