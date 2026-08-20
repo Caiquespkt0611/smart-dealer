@@ -1,8 +1,7 @@
 import { getPerformanceAnalise, gerarAcoesPDCA } from '@/lib/performance'
 import { getCampanhaAnalise } from '@/lib/campanha-vendas'
 import { getVouchersAnalise } from '@/lib/campanha-vouchers'
-import { PdcaButton } from '@/components/performance/PdcaButton'
-import { DeckButton } from '@/components/performance/DeckButton'
+import { OficialButtons } from '@/components/performance/OficialButtons'
 import {
   TrendingUp, TrendingDown, Target, MapPin, ShieldAlert,
   Activity, Scale,
@@ -44,18 +43,8 @@ export default async function PerformancePage() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <PdcaButton acoes={acoes} subtitulo={subtitulo} arquivo={`PDCA_NIPPON-MOTOS_${dataStr}`} />
-          <DeckButton dados={{ analise: a, acoes, campanha, vouchers, dataStr: dataBr }} />
-          {/* Motor oficial do Performance Concessionário, verbatim, com a planilha viva */}
-          <a
-            href="/pc/estudio.html"
-            target="_blank"
-            rel="noopener"
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
-            style={{ backgroundColor: 'var(--yamaha-blue, #003087)', color: '#fff' }}
-          >
-            Estúdio do Consultor — deck &amp; PDCA oficiais ↗
-          </a>
+          {/* saída idêntica ao Performance Concessionário — motor oficial em iframe oculto */}
+          <OficialButtons />
         </div>
       </div>
 
@@ -204,7 +193,7 @@ export default async function PerformancePage() {
       <section>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h2 className="section-label">Plano de ação sugerido — {acoes.length} ações medidas nos números</h2>
-          <PdcaButton acoes={acoes} subtitulo={subtitulo} arquivo={`PDCA_NIPPON-MOTOS_${dataStr}`} />
+          <OficialButtons apenas="pdca" />
         </div>
         <div className="space-y-3">
           {acoes.map((ac, i) => (
