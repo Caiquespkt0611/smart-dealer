@@ -1,7 +1,6 @@
 import { getPerformanceAnalise, gerarAcoesPDCA } from '@/lib/performance'
 import { getCampanhaAnalise } from '@/lib/campanha-vendas'
 import { getVouchersAnalise } from '@/lib/campanha-vouchers'
-import { OficialButtons } from '@/components/performance/OficialButtons'
 import {
   TrendingUp, TrendingDown, Target, MapPin, ShieldAlert,
   Activity, Scale,
@@ -43,8 +42,17 @@ export default async function PerformancePage() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {/* saída idêntica ao Performance Concessionário — motor oficial em iframe oculto */}
-          <OficialButtons />
+          {/* arquivos oficiais do Performance Concessionário — gerados pelo motor do PC com a planilha de 19/08 */}
+          <a href="/arquivos/PDCA_NIPPON-MOTOS_19-08-2026.xlsx" download
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>
+            Gerar PDCA (.xlsx)
+          </a>
+          <a href="/arquivos/Deck_NIPPON-MOTOS_19-08-2026.pptx" download
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            style={{ backgroundColor: 'var(--yamaha-blue, #003087)', color: '#fff' }}>
+            Gerar Deck (.pptx)
+          </a>
         </div>
       </div>
 
@@ -193,7 +201,11 @@ export default async function PerformancePage() {
       <section>
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
           <h2 className="section-label">Plano de ação sugerido — {acoes.length} ações medidas nos números</h2>
-          <OficialButtons apenas="pdca" />
+          <a href="/arquivos/PDCA_NIPPON-MOTOS_19-08-2026.xlsx" download
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
+            style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>
+            Gerar PDCA (.xlsx)
+          </a>
         </div>
         <div className="space-y-3">
           {acoes.map((ac, i) => (
