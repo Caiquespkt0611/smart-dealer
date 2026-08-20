@@ -499,6 +499,23 @@ function slideItem(p: P, secao: string, item: number, total: number, requisito: 
   return sl
 }
 
+function divisorSecao(p: P, num: number, cr: typeof formulaDiagnostico[number]) {
+  const sl = p.addSlide()
+  sl.background = { color: C.navy }
+  sl.addImage({ path: `${ASSETS}/bg-fecho.png`, x: 0, y: 0, w: W, h: H })
+  sl.addText(String(num).padStart(2, '0'), { x: W - 6.3, y: 0.9, w: 5.8, h: 5.8, fontSize: 300, bold: true, color: '14304F', align: 'right', fontFace: F })
+  sl.addText(`CRITÉRIO ${String(num).padStart(2, '0')} · FÓRMULA DO SUCESSO`, { x: MG, y: 1.7, w: COL, h: 0.3, fontSize: 12, bold: true, color: C.ciano, charSpacing: 3, fontFace: F })
+  sl.addText(cr.criterio, { x: MG, y: 2.05, w: COL * 0.75, h: 0.95, fontSize: 44, bold: true, color: C.branco, fontFace: F, shrinkText: true })
+  sl.addText('O QUE VAMOS PROVAR', { x: MG, y: 3.25, w: COL, h: 0.26, fontSize: 10, bold: true, color: C.azulClaro, charSpacing: 2, fontFace: F })
+  cr.itens.forEach((it, i) => {
+    const y = 3.6 + i * 0.42
+    sl.addShape(p.ShapeType.ellipse, { x: MG + 0.02, y: y + 0.08, w: 0.11, h: 0.11, fill: { color: C.verde }, line: { type: 'none' } })
+    sl.addText(it.item, { x: MG + 0.3, y, w: COL * 0.68, h: 0.36, fontSize: 12, color: 'D9E6F7', fontFace: F, shrinkText: true })
+  })
+  PAG++
+  sl.addText(String(PAG).padStart(2, '0'), { x: W - MG - 0.5, y: H - 0.45, w: 0.5, h: 0.3, fontSize: 10, bold: true, color: '3D4F61', align: 'right', fontFace: F })
+}
+
 async function deckBanca() {
   const p = new pptxgen()
   p.defineLayout({ name: 'W', width: W, height: H })
@@ -525,6 +542,37 @@ async function deckBanca() {
     }))
     cardGrid(sl, 2.15, 3, itens, 1.75)
   }
+
+  /* radar da 1ª banca */
+  {
+    const sl = slideBranco(p, 'O diagnóstico', 'O radar da 1ª banca — e onde atacamos',
+      'As notas oficiais por critério, no formato do gráfico de aranha da avaliação — contra a meta da 2ª banca.')
+    const labels = formulaDiagnostico.map(c2 => c2.criterio.replace(' e Objetivos', '').replace('Pensar ', '').replace('Trabalho em ', '').replace(' e Impacto', ''))
+    sl.addChart(p.ChartType.radar, [
+      { name: '1ª banca', labels, values: formulaDiagnostico.map(c2 => c2.nota1aBanca) },
+      { name: 'Meta 2ª banca', labels, values: labels.map(() => 4.6) },
+    ] as never, {
+      x: MG, y: 2.0, w: 6.1, h: 4.5, radarStyle: 'filled',
+      chartColors: ['0365FE', '2ECC71'], chartColorsOpacity: 35,
+      showLegend: true, legendPos: 'b', legendFontSize: 10,
+      valAxisMinVal: 3, valAxisMaxVal: 5, valAxisLabelFontSize: 8, catAxisLabelFontSize: 10,
+    } as never)
+    const insights: [string, string][] = [
+      ['Equipe: a maior distância para o Top 3 (−0,11)', 'atacada com papéis explícitos e fala revezada — critério 05'],
+      ['Pesquisa: a menor nota (3,78)', 'virou o pitch de abertura: mercado de ferramentas + dor medida + hipóteses'],
+      ['Foco no Cliente: 2 itens estavam em branco', 'pesquisa própria com 32 clientes e fatores tabulados — critério 03'],
+      ['Fora da Caixa: nossa maior força (4,33)', 'sustentada com o caso real e o número-manchete — critério 04'],
+    ]
+    insights.forEach((it, i) => {
+      const y = 2.0 + i * 1.15
+      const x = MG + 6.5, w2 = COL - 6.5
+      sl.addShape('roundRect' as never, { x, y, w: w2, h: 1.0, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(it[0], { x: x + 0.2, y: y + 0.12, w: w2 - 0.4, h: 0.32, fontSize: 11, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addText(it[1], { x: x + 0.2, y: y + 0.46, w: w2 - 0.4, h: 0.44, fontSize: 9.5, color: C.slate, fontFace: F, lineSpacing: 13, shrinkText: true })
+    })
+  }
+
+  divisorSecao(p, 1, formulaDiagnostico[0])
 
   /* ════ 01 · PESQUISA (4) ════ */
 
@@ -644,6 +692,9 @@ async function deckBanca() {
 
   /* ════ 02 · PLANEJAMENTO E OBJETIVOS (6) ════ */
 
+  divisorSecao(p, 2, formulaDiagnostico[1])
+
+
   /* 2.1 objetivo claro */
   {
     const sl = slideItem(p, '02 · Planejamento e Objetivos', 1, 6, 'O objetivo do trabalho é claro e definido', 'Um objetivo. Uma frase. Sempre a mesma.')
@@ -665,12 +716,18 @@ async function deckBanca() {
       ['Meta 3 · Lead', '≤ 10 min', 'padrão de atendimento — hoje 81% dentro do SLA; era 22% antes do piloto'],
     ]
     const gap = 0.22, mw = (COL - gap * 2) / 3
+    const progresso = [90, 76, 81]  // carta 90/100 · absorção 49,4/65 · SLA 81%
     metas.forEach((m, i) => {
       const x = MG + i * (mw + gap)
       sl.addShape('roundRect' as never, { x, y: 2.3, w: mw, h: 2.5, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
       sl.addText(m[0].toUpperCase(), { x: x + 0.24, y: 2.55, w: mw - 0.48, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
-      sl.addText(m[1], { x: x + 0.24, y: 2.85, w: mw - 0.48, h: 0.65, fontSize: 34, bold: true, color: C.verde, fontFace: F })
-      sl.addText(m[2], { x: x + 0.24, y: 3.6, w: mw - 0.48, h: 1.05, fontSize: 10.5, color: C.slate, fontFace: F, valign: 'top', lineSpacing: 15, shrinkText: true })
+      sl.addText(m[1], { x: x + 0.24, y: 2.85, w: mw - 1.6, h: 0.65, fontSize: 30, bold: true, color: C.verde, fontFace: F, shrinkText: true })
+      sl.addChart(p.ChartType.doughnut, [{ name: m[0], labels: ['feito', 'falta'], values: [progresso[i], 100 - progresso[i]] }] as never, {
+        x: x + mw - 1.5, y: 2.5, w: 1.3, h: 1.3, holeSize: 68,
+        chartColors: ['2ECC71', 'E5EAF2'], showLegend: false, showValue: false, showTitle: false, dataBorder: { pt: 0, color: 'FFFFFF' },
+      } as never)
+      sl.addText(`${progresso[i]}%`, { x: x + mw - 1.5, y: 2.98, w: 1.3, h: 0.34, fontSize: 11, bold: true, color: C.navy, align: 'center', fontFace: F })
+      sl.addText(m[2], { x: x + 0.24, y: 3.75, w: mw - 0.48, h: 0.95, fontSize: 10, color: C.slate, fontFace: F, valign: 'top', lineSpacing: 14, shrinkText: true })
     })
     callout(sl, 5.15, 'O sistema mede as três, ao vivo',
       'A meta virou compromisso público, não promessa — convidamos a banca a cobrar o resultado na apresentação final.', 1.0)
@@ -749,6 +806,9 @@ async function deckBanca() {
 
   /* ════ 03 · FOCO NO CLIENTE (8) ════ */
 
+  divisorSecao(p, 3, formulaDiagnostico[2])
+
+
   /* 3.1 público-alvo */
   {
     const sl = slideItem(p, '03 · Foco no Cliente', 1, 8, 'O público alvo (cliente) foi claramente definido', 'Seis personas — cinco dentro da loja, uma na garupa')
@@ -826,15 +886,25 @@ async function deckBanca() {
       ['Prazo de entrega', 25, 'estoque real das 4 lojas na tela'],
       ['Test-ride antes de decidir', 22, 'agendamento na cadência do CRM'],
     ]
-    fatores.forEach((f2, i) => {
-      const y = 2.2 + i * 0.56
-      sl.addText(f2[0], { x: MG, y, w: 3.1, h: 0.4, fontSize: 11, bold: true, color: C.navy, fontFace: F, shrinkText: true })
-      sl.addShape('roundRect' as never, { x: MG + 3.25, y: y + 0.02, w: 4.6, h: 0.3, fill: { color: C.linha }, line: { type: 'none' }, rectRadius: 0.02 })
-      sl.addShape('roundRect' as never, { x: MG + 3.25, y: y + 0.02, w: 4.6 * f2[1] / 100, h: 0.3, fill: { color: C.azul }, line: { type: 'none' }, rectRadius: 0.02 })
-      sl.addText(`${f2[1]}%`, { x: MG + 7.95, y, w: 0.65, h: 0.34, fontSize: 11.5, bold: true, color: C.navy, fontFace: F })
-      sl.addText(f2[2], { x: MG + 8.65, y: y + 0.02, w: COL - 8.65, h: 0.34, fontSize: 9, color: C.slateClaro, fontFace: F, valign: 'middle', shrinkText: true })
+    sl.addChart(p.ChartType.bar, [{
+      name: '% dos respondentes',
+      labels: [...fatores].reverse().map(f2 => f2[0]),
+      values: [...fatores].reverse().map(f2 => f2[1]),
+    }] as never, {
+      x: MG, y: 2.1, w: 7.0, h: 4.15, barDir: 'bar',
+      chartColors: ['0365FE'], showValue: true, dataLabelPosition: 'outEnd', dataLabelColor: '091426', dataLabelFontSize: 10,
+      showLegend: false, showTitle: false, valAxisHidden: true, catAxisLabelFontSize: 10, barGapWidthPct: 60,
+      valAxisMaxVal: 85, catAxisLineShow: false, valGridLine: { style: 'none' },
+    } as never)
+    sl.addText('E O MÓDULO QUE ATENDE CADA FATOR', { x: MG + 7.45, y: 2.1, w: COL - 7.45, h: 0.26, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
+    fatores.slice(0, 5).forEach((f2, i) => {
+      const y = 2.5 + i * 0.76
+      const x = MG + 7.45, w2 = COL - 7.45
+      sl.addShape('roundRect' as never, { x, y, w: w2, h: 0.64, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(`${f2[1]}% · ${f2[0]}`, { x: x + 0.16, y: y + 0.08, w: w2 - 0.32, h: 0.26, fontSize: 9.5, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addText(f2[2], { x: x + 0.16, y: y + 0.34, w: w2 - 0.32, h: 0.26, fontSize: 8.5, color: C.slateClaro, fontFace: F, shrinkText: true })
     })
-    sl.addText('Múltipla escolha sobre os 32 respondentes da pesquisa Voz do Cliente — cada fator já ligado ao módulo que o atende.', { x: MG, y: 6.3, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+    sl.addText('Múltipla escolha sobre os 32 respondentes da pesquisa Voz do Cliente.', { x: MG, y: 6.35, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
   }
 
   /* 3.7 sete passos */
@@ -853,27 +923,26 @@ async function deckBanca() {
     const meio = (COL - 0.4) / 2
     // P1 satisfação
     sl.addText('P1 · "COMO FOI SER ATENDIDO?" (1–5)', { x: MG, y: 2.05, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
-    const dist: [string, number][] = [['5', 19], ['4', 10], ['3', 2], ['2', 1], ['1', 0]]
-    dist.forEach((d2, i) => {
-      const y = 2.38 + i * 0.34
-      sl.addText(d2[0], { x: MG, y, w: 0.3, h: 0.26, fontSize: 10, bold: true, color: C.slate, fontFace: F })
-      sl.addShape('roundRect' as never, { x: MG + 0.38, y: y + 0.02, w: Math.max((meio - 1.3) * d2[1] / 19, 0.03), h: 0.22, fill: { color: d2[0] >= '4' ? C.verde : d2[0] === '3' ? 'E8B04B' : C.verm }, line: { type: 'none' }, rectRadius: 0.02 })
-      sl.addText(String(d2[1]), { x: MG + meio - 0.8, y, w: 0.7, h: 0.26, fontSize: 10, bold: true, color: C.navy, align: 'right', fontFace: F })
-    })
+    sl.addChart(p.ChartType.bar, [{ name: 'respostas', labels: ['1', '2', '3', '4', '5'], values: [0, 1, 2, 10, 19] }] as never, {
+      x: MG, y: 2.34, w: meio - 0.2, h: 1.75, barDir: 'col',
+      chartColors: ['2ECC71'], showValue: true, dataLabelPosition: 'outEnd', dataLabelColor: '091426', dataLabelFontSize: 9,
+      showLegend: false, showTitle: false, valAxisHidden: true, catAxisLabelFontSize: 9, barGapWidthPct: 40,
+      catAxisLineShow: false, valGridLine: { style: 'none' },
+    } as never)
     sl.addText('média 4,5 · NPS da pesquisa 72', { x: MG, y: 4.15, w: meio, h: 0.26, fontSize: 10.5, bold: true, color: C.verde, fontFace: F })
     // P2 tempo
     const xr = MG + meio + 0.4
     sl.addText('P2 · "EM QUANTO TEMPO TE RESPONDERAM?"', { x: xr, y: 2.05, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
-    const tempos: [string, number, string][] = [['Na hora', 63, C.verde], ['Até 1 hora', 22, '84CC16'], ['No mesmo dia', 9, 'E8B04B'], ['Mais de um dia', 6, C.verm]]
-    let tx = xr
-    tempos.forEach(t => {
-      sl.addShape('roundRect' as never, { x: tx, y: 2.42, w: (meio) * t[1] / 100, h: 0.34, fill: { color: t[2] }, line: { type: 'none' }, rectRadius: 0.02 })
-      tx += (meio) * t[1] / 100
-    })
+    sl.addChart(p.ChartType.doughnut, [{ name: 'tempo', labels: ['Na hora 63%', 'Até 1 hora 22%', 'No mesmo dia 9%', 'Mais de um dia 6%'], values: [63, 22, 9, 6] }] as never, {
+      x: xr - 0.1, y: 2.3, w: 2.0, h: 1.95, holeSize: 60,
+      chartColors: ['2ECC71', '84CC16', 'E8B04B', 'FF5A5A'], showLegend: false, showValue: false, showTitle: false, dataBorder: { pt: 1, color: 'FFFFFF' },
+    } as never)
+    const tempos: [string, string][] = [['Na hora · 63%', C.verde], ['Até 1 hora · 22%', '5A9E16'], ['No mesmo dia · 9%', C.ambar], ['Mais de um dia · 6%', C.verm]]
     tempos.forEach((t, i) => {
-      sl.addText(`${t[0]} · ${t[1]}%`, { x: xr + (i % 2) * (meio / 2), y: 2.9 + Math.floor(i / 2) * 0.3, w: meio / 2, h: 0.26, fontSize: 9.5, color: C.slate, fontFace: F })
+      sl.addShape('roundRect' as never, { x: xr + 2.05, y: 2.42 + i * 0.34, w: 0.14, h: 0.14, fill: { color: t[1] === C.verde ? '2ECC71' : t[1] === C.ambar ? 'E8B04B' : t[1] === C.verm ? 'FF5A5A' : '84CC16' }, line: { type: 'none' }, rectRadius: 0.02 })
+      sl.addText(t[0], { x: xr + 2.28, y: 2.34 + i * 0.34, w: meio - 2.3, h: 0.28, fontSize: 9.5, color: C.slate, fontFace: F })
     })
-    sl.addText('81% respondidos em até 10 minutos — era 22% antes do piloto', { x: xr, y: 3.6, w: meio, h: 0.5, fontSize: 10.5, bold: true, color: C.verde, fontFace: F, lineSpacing: 14 })
+    sl.addText('81% em até 10 minutos — era 22% antes do piloto', { x: xr, y: 4.15, w: meio, h: 0.26, fontSize: 10.5, bold: true, color: C.verde, fontFace: F, shrinkText: true })
     // P3 voltar
     sl.addText('P3 · "O QUE FARIA VOCÊ VOLTAR?"', { x: MG, y: 4.6, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
     const volta: [string, number][] = [['Loja lembrar da revisão', 59], ['Contato pós-compra', 53], ['Oferta certa na troca', 44]]
@@ -897,17 +966,31 @@ async function deckBanca() {
 
   /* ════ 04 · PENSAR FORA DA CAIXA (5) ════ */
 
+  divisorSecao(p, 4, formulaDiagnostico[3])
+
+
   /* 4.1 muda comportamento do cliente */
   {
     const sl = slideItem(p, '04 · Pensar Fora da Caixa', 1, 5, 'O trabalho é revolucionário e capaz de mudar o comportamento do cliente', 'O cliente que voltou sem ninguém ligar para ele')
-    sl.addShape('roundRect' as never, { x: MG, y: 2.2, w: COL, h: 1.85, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.05 })
-    sl.addText('O caso A. Paulo — Bragança', { x: MG + 0.3, y: 2.4, w: COL - 0.6, h: 0.3, fontSize: 13, bold: true, color: C.navy, fontFace: F })
-    sl.addText('Comprou uma Fazer 250 em março. Em julho, a régua identificou a R1 vencendo e disparou o lembrete no WhatsApp — sem nenhum humano na fila. Ele agendou pelo link, fez a revisão (R$ 289 de receita) e respondeu a pesquisa: "voltar eu volto se vocês me avisarem da revisão. Da última vez passou do prazo e eu nem vi."', { x: MG + 0.3, y: 2.75, w: COL - 0.6, h: 1.2, fontSize: 11.5, color: C.slate, fontFace: F, lineSpacing: 17, shrinkText: true })
-    kpiCards(sl, 4.35, [
-      { tag: 'Recontato pós-venda', val: '18% → 74%', sub: 'clientes contatados após a compra', cor: C.verde },
-      { tag: 'Retorno à oficina', val: '+31%', sub: 'agendamentos de revisão vs. semestre anterior', cor: C.verde },
-      { tag: 'Comportamento novo', val: '59%', sub: 'dizem que voltam se a loja lembrar — e agora ela lembra', cor: C.verde },
-    ], 1.5)
+    sl.addShape('roundRect' as never, { x: MG, y: 2.15, w: 5.45, h: 2.55, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.05 })
+    sl.addText('O caso A. Paulo — Bragança', { x: MG + 0.25, y: 2.32, w: 4.95, h: 0.3, fontSize: 12.5, bold: true, color: C.navy, fontFace: F })
+    sl.addText('Comprou uma Fazer 250 em março. Em julho, a régua identificou a R1 vencendo e disparou o lembrete no WhatsApp — sem nenhum humano na fila. Ele agendou pelo link, fez a revisão (R$ 289 de receita) e respondeu a pesquisa: "voltar eu volto se vocês me avisarem da revisão."', { x: MG + 0.25, y: 2.65, w: 4.95, h: 1.95, fontSize: 10.5, color: C.slate, fontFace: F, lineSpacing: 15.5, shrinkText: true })
+    const stats: [string, string, string][] = [
+      ['Recontato pós-venda', '18% → 74%', 'clientes contatados após a compra'],
+      ['Retorno à oficina', '+31%', 'agendamentos de revisão vs. semestre anterior'],
+      ['Comportamento novo', '59%', 'dizem que voltam se a loja lembrar — e agora ela lembra'],
+    ]
+    stats.forEach((st, i) => {
+      const y = 4.9 + i * 0.62
+      sl.addShape('roundRect' as never, { x: MG, y, w: 5.45, h: 0.54, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(st[1], { x: MG + 0.18, y: y + 0.08, w: 1.55, h: 0.38, fontSize: 14, bold: true, color: C.verde, fontFace: F, shrinkText: true })
+      sl.addText([
+        { text: st[0] + '  ', options: { fontSize: 9.5, bold: true, color: C.navy } },
+        { text: st[2], options: { fontSize: 8.5, color: C.slateClaro } },
+      ], { x: MG + 1.8, y: y + 0.06, w: 3.55, h: 0.44, fontFace: F, valign: 'middle', shrinkText: true })
+    })
+    browserFrame(p, sl, MG + 5.75, 2.15, 5.98, 'posvendas.png')
+    sl.addText('A régua R1–R4 e a fila de disparo — a tela que fez o A. Paulo voltar.', { x: MG + 5.75, y: 6.12, w: 5.98, h: 0.35, fontSize: 9.5, color: C.slateClaro, fontFace: F })
   }
 
   /* 4.2 mudou o processo */
@@ -957,14 +1040,30 @@ async function deckBanca() {
     sl.addShape('roundRect' as never, { x: MG, y: 2.25, w: COL, h: 1.6, fill: { color: '0E2A1E' }, line: { color: C.verde, width: 1.5 }, rectRadius: 0.06 })
     sl.addText('~R$ 1,1 milhão/ano', { x: MG + 0.4, y: 2.45, w: COL - 0.8, h: 0.75, fontSize: 40, bold: true, color: C.branco, fontFace: F })
     sl.addText('potencial identificado pelo sistema em UMA concessionária — contra R$ 7.200/ano de custo da plataforma', { x: MG + 0.4, y: 3.25, w: COL - 0.8, h: 0.45, fontSize: 13, color: 'A7F3C9', fontFace: F, shrinkText: true })
-    kpiCards(sl, 4.15, [
-      { tag: 'Campanhas da montadora', val: 'R$ 400 mil', sub: 'prêmios + vouchers por disciplina de carta · R$ 73,5 mil já apurados em julho', cor: C.verde },
-      { tag: 'Gap do K2', val: 'R$ 490 mil', sub: 'margem de pós-vendas entre 49,4% e a meta de 65% de absorção', cor: C.verde },
-      { tag: 'Premya + Seguros + Consórcio', val: 'R$ 200 mil', sub: 'categoria Ouro + penetração de seguros + Bônus Quality', cor: C.verde },
-    ], 1.6)
+    sl.addChart(p.ChartType.doughnut, [{ name: 'composição', labels: ['Campanhas R$ 400 mil', 'Gap do K2 R$ 490 mil', 'Premya+Seg+Cons R$ 200 mil'], values: [400, 490, 200] }] as never, {
+      x: MG - 0.1, y: 4.1, w: 2.6, h: 2.6, holeSize: 58,
+      chartColors: ['0365FE', '2ECC71', 'E8B04B'], showLegend: false, showValue: false, showTitle: false, dataBorder: { pt: 1.5, color: 'FFFFFF' },
+    } as never)
+    const partes: [string, string, string, string][] = [
+      ['0365FE', 'Campanhas da montadora', 'R$ 400 mil', 'prêmios + vouchers por disciplina de carta · R$ 73,5 mil já apurados em julho'],
+      ['2ECC71', 'Gap do K2 (absorção)', 'R$ 490 mil', 'margem de pós-vendas entre 49,4% e a meta de 65%'],
+      ['E8B04B', 'Premya + Seguros + Consórcio', 'R$ 200 mil', 'categoria Ouro + penetração de seguros + Bônus Quality'],
+    ]
+    partes.forEach((pt, i) => {
+      const y = 4.2 + i * 0.82
+      const x = MG + 2.8, w2 = COL - 2.8
+      sl.addShape('roundRect' as never, { x, y, w: w2, h: 0.7, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addShape('roundRect' as never, { x: x + 0.18, y: y + 0.24, w: 0.2, h: 0.2, fill: { color: pt[0] }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(pt[1], { x: x + 0.52, y: y + 0.09, w: 4.4, h: 0.28, fontSize: 11, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addText(pt[3], { x: x + 0.52, y: y + 0.38, w: w2 - 2.2, h: 0.28, fontSize: 9, color: C.slateClaro, fontFace: F, shrinkText: true })
+      sl.addText(pt[2], { x: x + w2 - 1.75, y: y + 0.13, w: 1.55, h: 0.42, fontSize: 15, bold: true, color: C.verde, align: 'right', fontFace: F })
+    })
   }
 
   /* ════ 05 · TRABALHO EM EQUIPE (2) ════ */
+
+  divisorSecao(p, 5, formulaDiagnostico[4])
+
 
   /* 5.1 equipe do grupo */
   {
@@ -1000,6 +1099,9 @@ async function deckBanca() {
   }
 
   /* ════ 06 · VIABILIDADE E IMPACTO (2) ════ */
+
+  divisorSecao(p, 6, formulaDiagnostico[5])
+
 
   /* 6.1 viável em outras CCYs */
   {
