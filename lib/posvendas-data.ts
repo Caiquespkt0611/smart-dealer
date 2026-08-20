@@ -45,7 +45,7 @@ export const posVendasData = {
     {
       "id": 1,
       "nome": "Ribeiro",
-      "telefone": "5511981562536",
+      "telefone": "5511994234098",
       "modelo": "Fazer 250 ABS",
       "loja": "Bragança Paulista",
       "dataCompra": "2026-04-23",
@@ -270,5 +270,5 @@ export const posVendasData = {
     "emDia": 15,
     "total": 20
   },
-  "whatsappRibeiro": "5511981562536"
+  "whatsappRibeiro": "5511994234098"
 } as const
