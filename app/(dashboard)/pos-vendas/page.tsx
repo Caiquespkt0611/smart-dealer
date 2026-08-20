@@ -86,7 +86,7 @@ export default function PosVendasPage() {
               </div>
               <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
                 {recompraEstrategica.modeloAtual} ({recompraEstrategica.anoCompra}) · faltam {recompraEstrategica.parcelasRestantes} parcelas ·
-                usada avaliada em {fmtBRL(recompraEstrategica.avaliacaoUsada)} · campanha {recompraEstrategica.ofertaModelo}: {fmtBRL(recompraEstrategica.voucherCampanha)}.
+                super avaliação da usada como entrada · campanha {recompraEstrategica.ofertaModelo}: {fmtBRL(recompraEstrategica.voucherCampanha)}.
               </p>
               <p className="text-[11px] mt-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)' }}>
                 <Phone size={11} /> +{recompraEstrategica.telefone} · o sistema chega antes do cliente ir ao mercado
@@ -100,7 +100,6 @@ export default function PosVendasPage() {
                 mensagem={mensagemRecompra(
                   recompraEstrategica.nome,
                   recompraEstrategica.modeloAtual,
-                  fmtBRL(recompraEstrategica.avaliacaoUsada),
                   recompraEstrategica.ofertaModelo,
                   fmtBRL(recompraEstrategica.voucherCampanha),
                 )}
