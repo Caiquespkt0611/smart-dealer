@@ -1,6 +1,7 @@
 import { posVendasData } from '@/lib/posvendas-data'
 import { renovacaoData } from '@/lib/renovacao-data'
-import { mensagemRevisao, mensagemRenovacao } from '@/lib/mensagens'
+import { recompraEstrategica } from '@/lib/recompra-data'
+import { mensagemRevisao, mensagemRenovacao, mensagemRecompra } from '@/lib/mensagens'
 import { RevisaoButton } from '@/components/posvendas/RevisaoButton'
 import { RevisaoHistorico } from '@/components/posvendas/RevisaoHistorico'
 import { PainelRevisoes } from '@/components/posvendas/PainelRevisoes'
@@ -44,31 +45,71 @@ export default function PosVendasPage() {
       {/* ── PAINEL R1–R4 (Periodic Inspection) ── */}
       <PainelRevisoes />
 
-      {/* ── DISPARO DE TESTE (Ribeiro) ── */}
-      {ribeiro && (
-        <div className="card card-pad" style={{ borderColor: 'var(--accent)', borderWidth: 1.5 }}>
+      {/* ── DEMONSTRAÇÃO AO VIVO: dois clientes de bate-pronto ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Ribeiro — chamada de revisão */}
+        {ribeiro && (
+          <div className="card card-pad" style={{ borderColor: 'var(--accent)', borderWidth: 1.5 }}>
+            <div className="flex items-start gap-4 flex-wrap">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#25D36622' }}>
+                <MessageCircle size={22} style={{ color: '#25D366' }} />
+              </div>
+              <div className="flex-1 min-w-[220px]">
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Chamada de revisão — {ribeiro.nome}</p>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}>AO VIVO</span>
+                </div>
+                <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                  {ribeiro.modelo} · {ribeiro.kmEstimado.toLocaleString('pt-BR')} km · revisão dos {ribeiro.proximaRevisaoKm.toLocaleString('pt-BR')} km vencida há {Math.abs(ribeiro.diasParaRevisao)} dias.
+                </p>
+                <p className="text-[11px] mt-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)' }}>
+                  <Phone size={11} /> +{ribeiro.telefone} · chamada de revisão personalizada
+                </p>
+              </div>
+              <div className="self-center">
+                <RevisaoButton id={ribeiro.id} nome={ribeiro.nome} telefone={ribeiro.telefone} mensagem={mensagemRevisao(ribeiro.nome, ribeiro.modelo)} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Hélio — recompra estratégica */}
+        <div className="card card-pad" style={{ borderColor: 'var(--warn)', borderWidth: 1.5 }}>
           <div className="flex items-start gap-4 flex-wrap">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#25D36622' }}>
-              <MessageCircle size={22} style={{ color: '#25D366' }} />
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ backgroundColor: 'var(--warn-bg)' }}>
+              <Sparkles size={22} style={{ color: 'var(--warn)' }} />
             </div>
             <div className="flex-1 min-w-[220px]">
               <div className="flex items-center gap-2">
-                <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Disparo de revisão — {ribeiro.nome}</p>
-                <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}>DEMONSTRAÇÃO AO VIVO</span>
+                <p className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Recompra estratégica — {recompraEstrategica.nome}</p>
+                <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold" style={{ backgroundColor: 'var(--accent-bg)', color: 'var(--accent)' }}>AO VIVO</span>
               </div>
               <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-                {ribeiro.modelo} · {ribeiro.kmEstimado.toLocaleString('pt-BR')} km · revisão dos {ribeiro.proximaRevisaoKm.toLocaleString('pt-BR')} km vencida há {Math.abs(ribeiro.diasParaRevisao)} dias.
+                {recompraEstrategica.modeloAtual} ({recompraEstrategica.anoCompra}) · faltam {recompraEstrategica.parcelasRestantes} parcelas ·
+                usada avaliada em {fmtBRL(recompraEstrategica.avaliacaoUsada)} · campanha {recompraEstrategica.ofertaModelo}: {fmtBRL(recompraEstrategica.voucherCampanha)}.
               </p>
               <p className="text-[11px] mt-1.5 flex items-center gap-1.5" style={{ color: 'var(--text-tertiary)' }}>
-                <Phone size={11} /> +{ribeiro.telefone} · chamada de revisão personalizada
+                <Phone size={11} /> +{recompraEstrategica.telefone} · o sistema chega antes do cliente ir ao mercado
               </p>
             </div>
             <div className="self-center">
-              <RevisaoButton id={ribeiro.id} nome={ribeiro.nome} telefone={ribeiro.telefone} mensagem={mensagemRevisao(ribeiro.nome, ribeiro.modelo)} />
+              <RevisaoButton
+                id={2001}
+                nome={recompraEstrategica.nome}
+                telefone={recompraEstrategica.telefone}
+                mensagem={mensagemRecompra(
+                  recompraEstrategica.nome,
+                  recompraEstrategica.modeloAtual,
+                  fmtBRL(recompraEstrategica.avaliacaoUsada),
+                  recompraEstrategica.ofertaModelo,
+                  fmtBRL(recompraEstrategica.voucherCampanha),
+                )}
+                rotulo="Oferecer Recompra"
+              />
             </div>
           </div>
         </div>
-      )}
+      </div>
 
       {/* ── KPIs ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

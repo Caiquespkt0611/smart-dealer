@@ -14,6 +14,18 @@ export function mensagemRevisao(nome: string, modelo: string): string {
   )
 }
 
+/** Mensagem de recompra estratégica: financiamento quitando + usada avaliada + campanha ativa. */
+export function mensagemRecompra(nome: string, modeloAtual: string, avaliacaoUsada: string, ofertaModelo: string, voucher: string): string {
+  return (
+    `Olá, ${PRIMEIRO_NOME(nome)}! 🏍️\n` +
+    `Aqui é a equipe da *Nippon Motos* (Yamaha).\n\n` +
+    `Parabéns — seu financiamento da *${modeloAtual}* está chegando ao fim! 🎉\n\n` +
+    `E temos uma notícia boa: a sua moto está valorizada. Garantimos a recompra dela por *${avaliacaoUsada}* ` +
+    `e, aproveitando a campanha ativa da *${ofertaModelo}*, você ainda leva *${voucher}* de bônus na troca.\n\n` +
+    `Quer que eu monte a simulação do upgrade sem compromisso? É só responder aqui! 🚀`
+  )
+}
+
 /** Mensagem de oferta de renovação/upgrade. */
 export function mensagemRenovacao(nome: string, modeloAtual: string, ofertaModelo: string, voucher: string): string {
   return (

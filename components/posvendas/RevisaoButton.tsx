@@ -9,6 +9,8 @@ interface RevisaoButtonProps {
   telefone: string
   mensagem?: string
   compact?: boolean
+  /** rótulo do botão antes do envio (padrão: "Chamar para Revisão") */
+  rotulo?: string
 }
 
 const STORAGE_KEY = 'sd-revisoes-enviadas'
@@ -18,7 +20,7 @@ function lerEnviadas(): Record<string, string> {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') } catch { return {} }
 }
 
-export function RevisaoButton({ id, nome, telefone, mensagem = 'Revisão', compact }: RevisaoButtonProps) {
+export function RevisaoButton({ id, nome, telefone, mensagem = 'Revisão', compact, rotulo }: RevisaoButtonProps) {
   const [enviado, setEnviado] = useState<string | null>(null)
   const [showPreview, setShowPreview] = useState(false)
 
@@ -104,7 +106,7 @@ export function RevisaoButton({ id, nome, telefone, mensagem = 'Revisão', compa
         title="Ver mensagem e enviar via WhatsApp"
       >
         <MessageCircle size={13} />
-        {compact ? 'Revisão' : 'Chamar para Revisão'}
+        {rotulo ?? (compact ? 'Revisão' : 'Chamar para Revisão')}
       </button>
 
       {showPreview && (
