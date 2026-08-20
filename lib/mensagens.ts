@@ -20,7 +20,7 @@ export function mensagemRecompra(nome: string, modeloAtual: string, ofertaModelo
     `Olá, ${PRIMEIRO_NOME(nome)}! 🏍️\n` +
     `Aqui é a equipe da *Nippon Motos* (Yamaha).\n\n` +
     `Parabéns — seu financiamento da *${modeloAtual}* está chegando ao fim! 🎉\n\n` +
-    `E temos uma notícia boa: faremos uma *super avaliação* na sua moto para você ter uma *excelente entrada* ` +
+    `E temos uma notícia boa: nessas condições, podemos realizar uma *super avaliação* na sua moto para você ter uma *excelente entrada* ` +
     `na nova *${ofertaModelo}* — e, com a campanha ativa, você ainda leva *${voucher}* de bônus na troca.\n\n` +
     `Quer que eu monte a simulação do upgrade sem compromisso? É só responder aqui! 🚀`
   )
