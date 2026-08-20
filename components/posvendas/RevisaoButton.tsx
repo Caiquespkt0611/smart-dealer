@@ -28,26 +28,12 @@ export function RevisaoButton({ id, nome, telefone, mensagem = 'Revisão', compa
     setEnviado(lerEnviadas()[id] ?? null)
   }, [id])
 
-  async function confirmar() {
-    // 1º caminho: disparo real pelo número da loja (gateway pareado em /conexao).
-    // Sem gateway ou sem conversa aberta, cai no wa.me de quem clicou — a demo
-    // nunca trava.
-    let viaLoja = false
-    try {
-      const r = await fetch('/api/whatsapp/disparo', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ telefone, texto: mensagem }),
-      })
-      viaLoja = r.ok
-    } catch { /* gateway fora — segue no wa.me */ }
-
-    if (!viaLoja) {
-      const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`
-      window.open(url, '_blank', 'noopener')
-    }
+  function confirmar() {
+    // Contato ATIVO da loja: abre a conversa do cliente com a mensagem pronta —
+    // quem envia é o atendente, no WhatsApp logado (sem disparo automático).
+    const url = `https://wa.me/${telefone}?text=${encodeURIComponent(mensagem)}`
+    window.open(url, '_blank', 'noopener')
     const agora = new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
-      + (viaLoja ? ' · nº da loja' : '')
     const map = lerEnviadas()
     map[id] = agora
     localStorage.setItem(STORAGE_KEY, JSON.stringify(map))
@@ -208,7 +194,7 @@ function PreviewModal({ nome, telefone, mensagem, enviado, onClose, onConfirmar,
               style={{ backgroundColor: '#25D366' }}
             >
               <Send size={12} />
-              {enviado ? 'Reenviar mensagem' : 'Enviar agora'}
+              {enviado ? 'Reenviar no WhatsApp' : 'Enviar no WhatsApp'}
             </button>
           </div>
         </div>
