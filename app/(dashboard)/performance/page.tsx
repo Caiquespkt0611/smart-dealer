@@ -46,6 +46,16 @@ export default async function PerformancePage() {
         <div className="flex items-center gap-2 flex-wrap">
           <PdcaButton acoes={acoes} subtitulo={subtitulo} arquivo={`PDCA_NIPPON-MOTOS_${dataStr}`} />
           <DeckButton dados={{ analise: a, acoes, campanha, vouchers, dataStr: dataBr }} />
+          {/* Motor oficial do Performance Concessionário, verbatim, com a planilha viva */}
+          <a
+            href="/pc/estudio.html"
+            target="_blank"
+            rel="noopener"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90"
+            style={{ backgroundColor: 'var(--yamaha-blue, #003087)', color: '#fff' }}
+          >
+            Estúdio do Consultor — deck &amp; PDCA oficiais ↗
+          </a>
         </div>
       </div>
 
