@@ -486,44 +486,16 @@ async function deckDiretoria() {
 }
 
 /* ═══════════════════ DECK 2 · BANCA ═══════════════════
-   Espinha dorsal = a Fórmula do Sucesso: a agenda são os 6 critérios;
-   cada critério abre com sua tabela COMPLETA (todos os sub-itens de
-   lib/formula-sucesso) e os slides de conteúdo entram onde cabem. */
+   Um slide por requisito da Fórmula do Sucesso (27 sub-itens).
+   O slide não relata o status — ele É a entrega que preenche o requisito.
+   Chapéu = critério + item N de M · subtítulo = o texto exato do formulário. */
 
-// corta no fim de frase mais próximo do limite (célula sem picote)
-function ate(txt: string, max: number): string {
-  if (txt.length <= max) return txt
-  const corte = txt.slice(0, max)
-  const fim = Math.max(corte.lastIndexOf('. '), corte.lastIndexOf('; '), corte.lastIndexOf(' — '))
-  if (fim > max * 0.45) return corte.slice(0, fim + 1).trim()
-  return corte.slice(0, corte.lastIndexOf(' ')).trim().replace(/[,;:—-]$/, '') + '…'
-}
-
-const ST = {
-  temos: { rot: 'TEMOS', cor: C.verde, fill: 'E7F6EE' },
-  parcial: { rot: 'PARCIAL', cor: C.ambar, fill: 'FCF3E3' },
-  falta: { rot: 'FALTA', cor: C.verm, fill: 'FBEAEA' },
-} as const
-
-const porNome = (nome: string) => formulaDiagnostico.find(c => c.criterio === nome)!
-
-function tabelaCriterio(sl: Slide, y: number, cr: typeof formulaDiagnostico[number], maxOnde: number, fontSize: number, rowH: number) {
-  const rows: CelDef[][] = cr.itens.map(it => {
-    const st = ST[it.status as keyof typeof ST]
-    return [
-      { t: it.item },
-      { t: st.rot, cor: st.cor, bold: true, align: 'center' as const, fill: st.fill },
-      { t: ate(it.onde, maxOnde), cor: C.slate, bold: false },
-    ]
-  })
-  tabela(sl, y, ['Sub-item do formulário', 'Status', 'Onde está a prova'], rows, [3.9, 0.95, 6.78], fontSize, rowH)
-  return y + (cr.itens.length + 1) * rowH
-}
-
-function slideCriterio(p: P, chapeu: string, cr: typeof formulaDiagnostico[number], maxOnde: number, fontSize: number, rowH: number) {
-  const sl = slideBranco(p, chapeu, cr.criterio,
-    `Nota da 1ª banca: ${cr.nota1aBanca.toFixed(2).replace('.', ',')} · todos os ${cr.itens.length} sub-itens do formulário, um a um.`)
-  tabelaCriterio(sl, 2.05, cr, maxOnde, fontSize, rowH)
+function slideItem(p: P, secao: string, item: number, total: number, requisito: string, titulo: string): Slide {
+  const sl = slideBranco(p, `${secao} · item ${item} de ${total}`, titulo)
+  sl.addText([
+    { text: 'FÓRMULA DO SUCESSO:  ', options: { fontSize: 10, bold: true, color: C.azul, charSpacing: 1 } },
+    { text: `"${requisito}"`, options: { fontSize: 11.5, italic: true, color: C.slate } },
+  ], { x: MG, y: 1.56, w: COL, h: 0.32, fontFace: F, shrinkText: true })
   return sl
 }
 
@@ -535,85 +507,95 @@ async function deckBanca() {
   p.title = 'Smart Dealer — 2ª Banca YamahaWay 2026'
   PAG = 0
 
-  /* 1 · capa */
+  /* capa */
   capa(p, 'Yamaha Way 2026 · 2ª banca · Grupo 06 — Shogun Riders',
     ['Smart ', 'Dealer'],
-    'Como transformar dados em experiências memoráveis?\nA Fórmula do Sucesso, critério a critério — com a prova em cada item.',
+    'Como transformar dados em experiências memoráveis?\nA Fórmula do Sucesso, requisito a requisito — cada slide preenche um item.',
     'Piloto real: Nippon Motos · Bragança Paulista, Atibaia, Amparo e Extrema')
 
-  /* 2 · agenda = os 6 critérios */
+  /* agenda = os 6 critérios */
   {
     const sl = slideBranco(p, 'Agenda', 'A Fórmula do Sucesso é o roteiro',
-      'Seis critérios, 27 sub-itens — cada seção abre com o formulário completo e mostra a entrega que o preenche.')
+      'Seis critérios, 27 requisitos — um slide para cada um, com a entrega que o preenche.')
     const itens: Card[] = formulaDiagnostico.map((cr, i) => ({
       tag: String(i + 1).padStart(2, '0'),
       titulo: cr.criterio,
-      corpo: `nota 1ª banca ${cr.nota1aBanca.toFixed(2).replace('.', ',')} · ${cr.itens.length} sub-itens`,
+      corpo: `${cr.itens.length} requisitos do formulário`,
       corTag: 'B8CDEA',
     }))
     cardGrid(sl, 2.15, 3, itens, 1.75)
   }
 
-  /* 3 · diagnóstico resumo */
+  /* ════ 01 · PESQUISA (4) ════ */
+
+  /* 1.1 análises externas */
   {
-    const r = resumoDiagnostico()
-    const sl = slideBranco(p, 'O diagnóstico', 'Onde estamos, critério a critério',
-      `Os ${r.total} sub-itens auditados um a um. Da 1ª banca para cá: ${r.temos} fechados · ${r.parcial} parciais · ${r.falta} em branco.`)
-    let y = 2.2
-    formulaDiagnostico.forEach(cr => {
-      const t = cr.itens.filter(i => i.status === 'temos').length
-      const pa = cr.itens.filter(i => i.status === 'parcial').length
-      const fa = cr.itens.filter(i => i.status === 'falta').length
-      sl.addText(cr.criterio, { x: MG, y, w: 3.2, h: 0.34, fontSize: 12, bold: true, color: C.navy, fontFace: F, shrinkText: true })
-      sl.addText(`nota 1ª banca ${cr.nota1aBanca.toFixed(2).replace('.', ',')}`, { x: MG + 3.25, y: y + 0.02, w: 1.75, h: 0.3, fontSize: 9.5, color: C.slateClaro, fontFace: F })
-      const x0 = MG + 5.15, wTot = COL - 5.15 - 1.3, n = cr.itens.length
-      let x = x0
-      const seg = (qtd: number, cor: string) => {
-        if (!qtd) return
-        const w2 = wTot * qtd / n
-        sl.addShape('roundRect' as never, { x, y: y + 0.05, w: w2 - 0.04, h: 0.26, fill: { color: cor }, line: { type: 'none' }, rectRadius: 0.02 })
-        x += w2
-      }
-      seg(t, C.verde); seg(pa, 'E8B04B'); seg(fa, C.verm)
-      sl.addText(`${t} · ${pa} · ${fa}`, { x: W - MG - 1.25, y: y + 0.02, w: 1.25, h: 0.3, fontSize: 10.5, bold: true, color: C.slate, align: 'right', fontFace: F })
-      y += 0.56
-    })
-    y += 0.15
-    const legenda: [string, string][] = [['temos', C.verde], ['parcial', 'E8B04B'], ['em branco', C.verm]]
-    let lx = MG + 5.15
-    legenda.forEach(([rot, cor]) => {
-      sl.addShape('roundRect' as never, { x: lx, y: y + 0.05, w: 0.18, h: 0.18, fill: { color: cor }, line: { type: 'none' }, rectRadius: 0.02 })
-      sl.addText(rot, { x: lx + 0.24, y, w: 1.1, h: 0.28, fontSize: 10, color: C.slate, fontFace: F })
-      lx += 1.35
-    })
-    callout(sl, y + 0.4, 'Os 6 itens que estavam EM BRANCO na 1ª banca foram fechados',
-      'Pesquisa com clientes · fatores de compra · hipóteses · objetivo mensurável · posicionamento · 7 passos. Nas próximas seções, cada critério aberto item a item.', 1.0, C.verdeBg)
+    const sl = slideItem(p, '01 · Pesquisa', 1, 4, 'Análises externas foram devidamente realizadas', 'O mercado, medido na fonte')
+    kpiCards(sl, 2.1, [
+      { tag: 'Mercado Jan–Jul', val: '5.346', sub: 'motos emplacadas nas áreas da Nippon (Amparo + Ouro Fino)' },
+      { tag: 'Share Yamaha', val: '20,0%', sub: 'Honda lidera com 63,7% — o tamanho da disputa' },
+      { tag: 'Nippon na Yamaha', val: '83,6%', sub: '893 motos — o peso do grupo na marca regional' },
+      { tag: 'Áreas mapeadas', val: '13', sub: 'toda a regional, cidade a cidade' },
+    ], 1.5)
+    browserFrame(p, sl, (W - 5.9) / 2, 3.62, 5.9, 'marketshare.png')
   }
 
-  /* 4 · o sistema, ao vivo */
+  /* 1.2 concorrentes */
   {
-    const sl = p.addSlide()
-    sl.background = { color: C.navy }
-    sl.addImage({ path: `${ASSETS}/bg-produto.png`, x: 0, y: 0, w: W, h: H })
-    sl.addText('O DIAGNÓSTICO', { x: MG, y: 0.55, w: COL, h: 0.26, fontSize: 11, bold: true, color: C.ciano, charSpacing: 1.5, fontFace: F })
-    sl.addText('A prova mora no sistema — em produção', { x: MG, y: 0.85, w: COL, h: 0.62, fontSize: 30, bold: true, color: C.branco, fontFace: F, shrinkText: true })
-    sl.addText('Telas reais, dados reais da Nippon — na banca, a demonstração é ao vivo, trocando de login por papel.', { x: MG, y: 1.55, w: COL, h: 0.3, fontSize: 13, color: C.azulClaro, fontFace: F })
-    browserFrame(p, sl, MG, 2.25, 5.72, 'dashboard.png')
-    browserFrame(p, sl, MG + 5.95, 2.25, 5.72, 'pesquisa.png')
-    sl.addText('Dashboard do titular — carta, ritmo, ranking e Kaizen', { x: MG, y: 6.05, w: 5.72, h: 0.3, fontSize: 9.5, color: C.slateClaro, fontFace: F })
-    sl.addText('Voz do Cliente — a pesquisa própria virou módulo do sistema', { x: MG + 5.95, y: 6.05, w: 5.72, h: 0.3, fontSize: 9.5, color: C.slateClaro, fontFace: F })
-    PAG++
-    sl.addText(String(PAG).padStart(2, '0'), { x: W - MG - 0.5, y: H - 0.45, w: 0.5, h: 0.3, fontSize: 10, bold: true, color: '3D4F61', align: 'right', fontFace: F })
+    const sl = slideItem(p, '01 · Pesquisa', 2, 4, 'Análises dos concorrentes foram realizadas', 'Concorrentes do mercado — e da solução')
+    const meio = (COL - 0.4) / 2
+    sl.addText('DO MERCADO (quem vende moto)', { x: MG, y: 2.1, w: meio, h: 0.26, fontSize: 10, bold: true, color: C.azul, charSpacing: 1, fontFace: F })
+    const mkt: [string, string][] = [
+      ['230 CNPJs concorrentes mapeados', '175 nomeados via Receita Federal / BrasilAPI'],
+      ['Invasão de território por CNPJ', 'quem emplaca dentro da área da Nippon, loja a loja'],
+      ['Honda decomposta por segmento', 'onde ela é imbatível e onde a Yamaha disputa de igual'],
+    ]
+    mkt.forEach((m, i) => {
+      const y = 2.45 + i * 1.02
+      sl.addShape('roundRect' as never, { x: MG, y, w: meio, h: 0.9, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(m[0], { x: MG + 0.2, y: y + 0.12, w: meio - 0.4, h: 0.32, fontSize: 11.5, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addText(m[1], { x: MG + 0.2, y: y + 0.46, w: meio - 0.4, h: 0.36, fontSize: 10, color: C.slate, fontFace: F, shrinkText: true })
+    })
+    const xr = MG + meio + 0.4
+    sl.addText('DA SOLUÇÃO (quem disputa a gestão da CCY)', { x: xr, y: 2.1, w: meio, h: 0.26, fontSize: 10, bold: true, color: C.azul, charSpacing: 1, fontFace: F })
+    const rows: CelDef[][] = [
+      [{ t: 'Regras Yamaha codificadas' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
+      [{ t: 'PDCA oficial em 1 clique' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
+      [{ t: 'Liberacred / Premya / circulares' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
+      [{ t: 'Custo mensal' }, { t: 'R$ 800–2.500', align: 'center' }, { t: 'já pago', align: 'center' }, { t: 'R$ 600', cor: C.verde, bold: true, align: 'center' }],
+    ]
+    const head = ['', 'CRM genérico', 'DMS', 'Smart Dealer'].map(h => ({
+      text: h.toUpperCase(), options: { fill: { color: C.navy2 }, color: C.branco, bold: true, fontSize: 8.5, valign: 'middle', fontFace: F, margin: [0.04, 0.08, 0.04, 0.08] },
+    }))
+    const body = rows.map((r, ri) => r.map((c2, ci) => ({
+      text: c2.t,
+      options: { fill: { color: ri % 2 ? C.card : C.branco }, color: c2.cor ?? (ci === 0 ? C.navy : C.slate), bold: c2.bold ?? ci === 0, fontSize: 9, valign: 'middle', align: c2.align ?? 'left', fontFace: F, margin: [0.04, 0.08, 0.04, 0.08] },
+    })))
+    sl.addTable([head, ...body] as never, { x: xr, y: 2.45, w: meio, colW: [2.15, 1.25, 1.0, 1.32], border: { pt: 0.75, color: C.branco }, rowH: 0.52, autoPage: false })
+    callout(sl, 5.75, 'A resposta à pergunta da 1ª banca ("qual a exclusividade?")',
+      'A vantagem competitiva é o método Yamaha codificado — o software é só o veículo. Nenhum concorrente carrega carta, Kaizen, K2, Premya e circulares dentro do produto.', 1.05)
   }
 
-  /* ── 01 · PESQUISA ── */
-  slideCriterio(p, '01 · Pesquisa · o formulário', porNome('Pesquisa'), 210, 10, 0.88)
-
-  /* 01 · hipóteses */
+  /* 1.3 análises suficientes */
   {
-    const sl = slideBranco(p, '01 · Pesquisa', 'Três hipóteses testáveis — e a medida de cada uma',
-      'Fecha o sub-item "hipóteses claras a partir das análises": formato "se X, então Y — medido por Z".')
-    let y = 2.1
+    const sl = slideItem(p, '01 · Pesquisa', 3, 4, 'Pesquisas e análises de mercado foram suficientes', 'Cada análise ancorada numa fonte oficial')
+    const linhas: [string, string, string][] = [
+      ['Share por segmento e cidade', 'Base de emplacamento Yamaha', 'tela Market Share'],
+      ['Decomposição mercado × share', 'Emplacamento + metodologia própria', 'tela Performance + PDCA'],
+      ['Absorção do pós-vendas (K2)', 'DRE oficial BMI', 'tela K2 · Absorção'],
+      ['Campanhas e prêmios', 'Circulares CA-MTC 028–033 e 080', 'telas Campanhas + robô'],
+      ['Fidelidade ao Banco Yamaha', 'Folder oficial Premya 3ª edição', 'tela Premya + simulador'],
+      ['Concorrentes nomeados', 'Receita Federal / BrasilAPI', 'tela Market Share'],
+      ['Voz do cliente', 'Pesquisa própria (32 respostas)', 'tela Voz do Cliente'],
+    ]
+    tabela(sl, 2.1, ['A análise', 'A fonte', 'Onde vive no sistema'], linhas.map(l => [{ t: l[0] }, { t: l[1], bold: false }, { t: l[2], cor: C.azul, bold: false }]), [4.3, 4.0, 3.33], 10.5, 0.52)
+    sl.addText('Rastreabilidade total: na banca, qualquer número desta apresentação abre ao vivo na tela que o gerou.', { x: MG, y: 6.15, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 1.4 hipóteses */
+  {
+    const sl = slideItem(p, '01 · Pesquisa', 4, 4, 'As hipóteses do trabalho foram claras a partir das análises realizadas', 'Três hipóteses testáveis — e a medida de cada uma')
+    let y = 2.15
     materiaisProntos.hipoteses.itens.forEach(h2 => {
       const [hip, medida] = h2.split(' Medida: ')
       sl.addShape('roundRect' as never, { x: MG, y, w: COL, h: 1.28, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
@@ -621,31 +603,26 @@ async function deckBanca() {
       sl.addText('MEDIDA: ' + (medida ?? ''), { x: MG + 0.26, y: y + 0.85, w: COL - 0.52, h: 0.34, fontSize: 10, bold: true, color: C.azul, fontFace: F, shrinkText: true })
       y += 1.45
     })
-    sl.addText('H1 já tem resultado: SLA ≤10 min subiu de 22% para 81% — e a conversão foi de 8,1% para 13,9%.', { x: MG, y: y + 0.15, w: COL, h: 0.32, fontSize: 12, italic: true, color: C.verde, align: 'center', fontFace: F })
+    sl.addText('H1 já tem resultado: SLA de 10 min subiu de 22% para 81% — e a conversão foi de 8,1% para 13,9%.', { x: MG, y: y + 0.12, w: COL, h: 0.32, fontSize: 12, italic: true, color: C.verde, align: 'center', fontFace: F })
   }
 
-  /* 01 · benchmark */
+  /* ════ 02 · PLANEJAMENTO E OBJETIVOS (6) ════ */
+
+  /* 2.1 objetivo claro */
   {
-    const sl = slideBranco(p, '01 · Pesquisa', 'Concorrentes da solução: o que só o Smart Dealer tem',
-      'Fecha o sub-item "análises dos concorrentes" — a vantagem competitiva é o método Yamaha codificado; o software é o veículo.')
-    tabela(sl, 2.2, ['', 'CRM genérico', 'DMS da loja', 'Planilhas', 'Smart Dealer'], [
-      [{ t: 'Regras Yamaha (carta, Kaizen, K2, circular)' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'manual', align: 'center' }, { t: 'codificadas', cor: C.verde, bold: true, align: 'center' }],
-      [{ t: 'PDCA no formato oficial da regional' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'horas', align: 'center' }, { t: 'um clique', cor: C.verde, bold: true, align: 'center' }],
-      [{ t: 'Liberacred: recusa vira oportunidade' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'automático', cor: C.verde, bold: true, align: 'center' }],
-      [{ t: 'Premya acompanhado em curso' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'simulador', cor: C.verde, bold: true, align: 'center' }],
-      [{ t: 'Circulares no assistente de IA' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'no robô', cor: C.verde, bold: true, align: 'center' }],
-      [{ t: 'Custo mensal por concessionária' }, { t: 'R$ 800–2.500', align: 'center' }, { t: 'já pago, não analisa', align: 'center' }, { t: '"grátis" e caro', align: 'center' }, { t: 'R$ 600', cor: C.verde, bold: true, align: 'center' }],
-    ], [4.4, 1.75, 1.85, 1.7, 1.93], 10.5, 0.52)
+    const sl = slideItem(p, '02 · Planejamento e Objetivos', 1, 6, 'O objetivo do trabalho é claro e definido', 'Um objetivo. Uma frase. Sempre a mesma.')
+    sl.addShape('roundRect' as never, { x: MG, y: 2.7, w: COL, h: 1.9, fill: { color: C.navy }, line: { type: 'none' }, rectRadius: 0.06 })
+    sl.addText(`"${materiaisProntos.objetivo.texto}"`, { x: MG + 0.5, y: 2.7, w: COL - 1.0, h: 1.9, fontSize: 19, bold: true, italic: true, color: C.branco, align: 'center', valign: 'middle', fontFace: F, lineSpacing: 27, shrinkText: true })
+    cardGrid(sl, 5.0, 3, [
+      { titulo: 'Com verbo e alvo', corpo: 'aumentar carta e absorção — não "melhorar a gestão"' },
+      { titulo: 'Repetida em todo material', corpo: 'slides, sistema, dossiê — a mesma frase' },
+      { titulo: 'Medida por 3 metas públicas', corpo: 'o próximo slide as declara com número e prazo' },
+    ], 1.15)
   }
 
-  /* ── 02 · PLANEJAMENTO E OBJETIVOS ── */
-  slideCriterio(p, '02 · Planejamento e Objetivos · o formulário', porNome('Planejamento e Objetivos'), 165, 9.5, 0.7)
-
-  /* 02 · objetivo + metas */
+  /* 2.2 mensurável */
   {
-    const sl = slideBranco(p, '02 · Planejamento e Objetivos', 'Um objetivo. Três metas públicas. Sempre as mesmas.',
-      'Fecha "objetivo claro e definido" e "objetivo mensurável" — o sistema mede as três ao vivo.')
-    callout(sl, 2.0, 'O objetivo do trabalho — uma frase, repetida em todo material', materiaisProntos.objetivo.texto, 1.1)
+    const sl = slideItem(p, '02 · Planejamento e Objetivos', 2, 6, 'O objetivo do trabalho é mensurável', 'Três metas públicas, com número e prazo')
     const metas: [string, string, string][] = [
       ['Meta 1 · Carta', '≥ 100%', 'em setembro/2026 — julho fechou em 90,0% e o prêmio da campanha está em jogo'],
       ['Meta 2 · Absorção', '65%', 'até dezembro/2026 — saímos de 30% e já estamos em 49,4% (K2 lido do DRE)'],
@@ -654,162 +631,373 @@ async function deckBanca() {
     const gap = 0.22, mw = (COL - gap * 2) / 3
     metas.forEach((m, i) => {
       const x = MG + i * (mw + gap)
-      sl.addShape('roundRect' as never, { x, y: 3.4, w: mw, h: 2.15, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
-      sl.addText(m[0].toUpperCase(), { x: x + 0.24, y: 3.6, w: mw - 0.48, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
-      sl.addText(m[1], { x: x + 0.24, y: 3.87, w: mw - 0.48, h: 0.6, fontSize: 30, bold: true, color: C.verde, fontFace: F })
-      sl.addText(m[2], { x: x + 0.24, y: 4.53, w: mw - 0.48, h: 0.9, fontSize: 10.5, color: C.slate, fontFace: F, valign: 'top', lineSpacing: 14, shrinkText: true })
+      sl.addShape('roundRect' as never, { x, y: 2.3, w: mw, h: 2.5, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(m[0].toUpperCase(), { x: x + 0.24, y: 2.55, w: mw - 0.48, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
+      sl.addText(m[1], { x: x + 0.24, y: 2.85, w: mw - 0.48, h: 0.65, fontSize: 34, bold: true, color: C.verde, fontFace: F })
+      sl.addText(m[2], { x: x + 0.24, y: 3.6, w: mw - 0.48, h: 1.05, fontSize: 10.5, color: C.slate, fontFace: F, valign: 'top', lineSpacing: 15, shrinkText: true })
     })
-    sl.addText('A meta virou compromisso público, não promessa — convidamos a banca a cobrar o resultado na final.', { x: MG, y: 5.9, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+    callout(sl, 5.15, 'O sistema mede as três, ao vivo',
+      'A meta virou compromisso público, não promessa — convidamos a banca a cobrar o resultado na apresentação final.', 1.0)
   }
 
-  /* ── 03 · FOCO NO CLIENTE ── */
-  slideCriterio(p, '03 · Foco no Cliente · o formulário', porNome('Foco no Cliente'), 130, 9, 0.56)
-
-  /* 03 · voz do cliente */
+  /* 2.3 no prazo */
   {
-    const sl = slideBranco(p, '03 · Foco no Cliente', 'Pesquisa Voz do Cliente — feita pelo grupo, com clientes reais',
-      'Fecha "pesquisas com clientes": 28/07 a 14/08 · WhatsApp + presencial · 32 respostas (52% de adesão).')
-    kpiCards(sl, 2.15, [
-      { tag: 'Amostra', val: '32', sub: '18 compraram · 14 não compraram' },
-      { tag: 'Satisfação', val: '4,5 / 5', sub: 'era 3,6 antes do piloto', cor: C.verde },
-      { tag: 'NPS da pesquisa', val: '72', sub: 'promotores − detratores', cor: C.verde },
-      { tag: 'Respondido em 10 min', val: '81%', sub: 'era 22% — confirmado pelo cliente', cor: C.verde },
-    ], 1.5)
-    const falas = [
-      ['"Me responderam em uns cinco minutos. Na outra loja eu esperei dois dias e desisti."', 'C. Eduardo · Bragança · comprou'],
-      ['"Meu crédito não passou e ninguém mais me procurou. Se tivessem uma segunda opção eu tinha fechado."', 'J. Vitor · Extrema · não comprou'],
-      ['"O que me convenceu foi a parcela. O vendedor já veio com a simulação pronta, nem precisei pedir."', 'M. Aparecida · Amparo · comprou'],
+    const sl = slideItem(p, '02 · Planejamento e Objetivos', 3, 6, 'O objetivo foi atingido no prazo', 'As entregas, com data — tudo dentro do cronograma')
+    const marcos: [string, string, string][] = [
+      ['Jun/26', 'Fundação', 'dashboard, varejo, estoque, NPS e leads no ar'],
+      ['21/06', 'Inteligência', 'Market Share, Kaizen e Treinamento'],
+      ['22/06', 'Comercial', 'CRM, campanhas IA, playbook e pós-vendas'],
+      ['06/08', 'Performance', 'decomposição mercado × share + PDCA em 1 clique + K2'],
+      ['07/08', 'Campanhas', 'vouchers por modelo + Campeões de Vendas codificados'],
+      ['20/08', 'Banco & cliente', 'Liberacred, Premya, Seguros, Consórcio, Voz do Cliente'],
     ]
-    const fw = (COL - 0.44) / 3
-    falas.forEach((f2, i) => {
-      const x = MG + i * (fw + 0.22)
-      sl.addShape('roundRect' as never, { x, y: 4.05, w: fw, h: 1.95, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.03 })
-      sl.addText(f2[0], { x: x + 0.22, y: 4.25, w: fw - 0.44, h: 1.25, fontSize: 11, italic: true, color: C.navy, fontFace: F, valign: 'top', lineSpacing: 15, shrinkText: true })
-      sl.addText(f2[1], { x: x + 0.22, y: 5.6, w: fw - 0.44, h: 0.28, fontSize: 9.5, bold: true, color: C.azul, fontFace: F, shrinkText: true })
+    const gap2 = 0.18, fw = (COL - gap2 * 5) / 6
+    sl.addShape(p.ShapeType.line, { x: MG + 0.2, y: 2.75, w: COL - 0.4, h: 0, line: { color: C.linha, width: 1.5 } })
+    marcos.forEach((m, i) => {
+      const x = MG + i * (fw + gap2)
+      sl.addShape(p.ShapeType.ellipse, { x: x + fw / 2 - 0.08, y: 2.67, w: 0.16, h: 0.16, fill: { color: C.verde }, line: { color: C.branco, width: 1.5 } })
+      sl.addText(m[0], { x, y: 2.25, w: fw, h: 0.3, fontSize: 10.5, bold: true, color: C.navy, align: 'center', fontFace: F })
+      sl.addShape('roundRect' as never, { x, y: 3.1, w: fw, h: 1.95, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.04 })
+      sl.addText(m[1], { x: x + 0.1, y: 3.25, w: fw - 0.2, h: 0.3, fontSize: 11, bold: true, color: C.navy, align: 'center', fontFace: F, shrinkText: true })
+      sl.addText(m[2], { x: x + 0.12, y: 3.6, w: fw - 0.24, h: 1.35, fontSize: 9, color: C.slate, align: 'center', fontFace: F, valign: 'top', lineSpacing: 12.5, shrinkText: true })
     })
-    sl.addText('43% dos que não compraram travaram no crédito — exatamente o público que o módulo Liberacred devolve à mesa.', { x: MG, y: 6.25, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+    sl.addText('25 módulos em produção em 10 semanas — metodologia ágil com PDCA sobre o próprio projeto.', { x: MG, y: 5.5, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, align: 'center', fontFace: F })
   }
 
-  /* 03 · fatores + retorno + posicionamento */
+  /* 2.4 KPIs alinhados */
   {
-    const sl = slideBranco(p, '03 · Foco no Cliente', 'O que decide a compra — e o que faz o cliente voltar',
-      'Fecha "fatores de compra" e "posicionamento": medidos na pesquisa, cada fator ligado ao módulo que o atende.')
+    const sl = slideItem(p, '02 · Planejamento e Objetivos', 4, 6, 'Os KPIs estão alinhados com os objetivos', 'Cada KPI tem meta — e cada meta tem tela')
+    tabela(sl, 2.1, ['KPI', 'Meta', 'Hoje', 'Onde vive'], [
+      [{ t: 'Atingimento da carta varejo' }, { t: '≥ 100%', bold: false }, { t: '90,0% (jul)', cor: C.ambar, bold: false }, { t: 'Dashboard + Varejo', cor: C.azul, bold: false }],
+      [{ t: 'Absorção do pós-vendas (K2)' }, { t: '65%', bold: false }, { t: '49,4%', cor: C.ambar, bold: false }, { t: 'K2 · Absorção', cor: C.azul, bold: false }],
+      [{ t: 'Tempo de 1ª resposta ao lead' }, { t: '≤ 10 min', bold: false }, { t: '8 min · 81% no SLA', cor: C.verde, bold: false }, { t: 'Atendimento Diário', cor: C.azul, bold: false }],
+      [{ t: 'NPS Vendas / Pós-vendas' }, { t: '93 / 87', bold: false }, { t: '94,5 / 87,7', cor: C.verde, bold: false }, { t: 'NPS', cor: C.azul, bold: false }],
+      [{ t: 'Pontos Kaizen' }, { t: '19', bold: false }, { t: '15 (LCR e NPS a recuperar)', cor: C.ambar, bold: false }, { t: 'Kaizen', cor: C.azul, bold: false }],
+      [{ t: 'Índice de Fidelidade Premya' }, { t: 'Ouro (85%)', bold: false }, { t: 'Bronze · 71,6%', cor: C.ambar, bold: false }, { t: 'Premya + simulador', cor: C.azul, bold: false }],
+    ], [4.6, 1.7, 3.3, 2.73], 10.5, 0.54)
+    sl.addText('Verde = meta batida · âmbar = em curso. Nenhum KPI decorativo: todos ligados às 3 metas públicas.', { x: MG, y: 6.05, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 2.5 plano de ação */
+  {
+    const sl = slideItem(p, '02 · Planejamento e Objetivos', 5, 6, 'O plano de ação está alinhado com os objetivos', 'O plano nasce dos números — PDCA oficial em um clique')
+    const passos: [string, string][] = [
+      ['1 · O sistema decompõe', 'mercado × share: o desvio é demanda da praça ou execução nossa?'],
+      ['2 · Aponta onde agir', 'segmento em disputa, cidade em queda, invasão de território'],
+      ['3 · Escreve o PDCA', 'no formato oficial Yamaha, pronto para a regional'],
+      ['4 · Cobra a execução', 'ação com dono e prazo — reaberta no mês seguinte'],
+    ]
+    passos.forEach((ps, i) => {
+      const y = 2.15 + i * 1.05
+      sl.addShape('roundRect' as never, { x: MG, y, w: 5.3, h: 0.92, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(ps[0], { x: MG + 0.2, y: y + 0.12, w: 4.9, h: 0.3, fontSize: 11.5, bold: true, color: C.navy, fontFace: F })
+      sl.addText(ps[1], { x: MG + 0.2, y: y + 0.45, w: 4.9, h: 0.4, fontSize: 10, color: C.slate, fontFace: F, shrinkText: true })
+    })
+    browserFrame(p, sl, MG + 5.7, 2.15, 6.03, 'performance.png')
+    sl.addText('Momento mais forte da demonstração: o PDCA gerado ao vivo, na frente da banca.', { x: MG + 5.7, y: 6.15, w: 6.03, h: 0.4, fontSize: 9.5, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 2.6 objetivo ↔ resultados */
+  {
+    const sl = slideItem(p, '02 · Planejamento e Objetivos', 6, 6, 'O objetivo está relacionado aos resultados', 'O que o piloto já produziu')
+    kpiCards(sl, 2.15, [
+      { tag: 'Campanha Campeões', val: 'R$ 7.500', sub: 'garantidos em julho (90,0% da carta) + R$ 15 mil recuperáveis', cor: C.verde },
+      { tag: 'Vouchers por modelo', val: 'R$ 66 mil', sub: 'apurados em julho; com Campeões, R$ 73,5 mil', cor: C.verde },
+      { tag: 'Absorção', val: '+19 p.p.', sub: 'de 30% para 49,4% — a caminho da meta de 65%', cor: C.verde },
+      { tag: 'Conversão de leads', val: '8,1 → 13,9%', sub: 'com o SLA de 10 minutos governado', cor: C.verde },
+    ], 1.6)
+    callout(sl, 4.2, 'Potencial anual identificado pelo sistema: cerca de R$ 1,1 milhão',
+      'Prêmios de campanha (~R$ 400 mil) + gap de absorção do K2 (~R$ 490 mil) + Premya, Seguros e Consórcio (~R$ 200 mil) — em uma única concessionária.', 1.25, C.verdeBg)
+    sl.addText('Setembro fecha a campanha e a Meta 1 — o resultado estará na tela, ao vivo, na apresentação final.', { x: MG, y: 5.7, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* ════ 03 · FOCO NO CLIENTE (8) ════ */
+
+  /* 3.1 público-alvo */
+  {
+    const sl = slideItem(p, '03 · Foco no Cliente', 1, 8, 'O público alvo (cliente) foi claramente definido', 'Seis personas — cinco dentro da loja, uma na garupa')
+    cardGrid(sl, 2.15, 3, [
+      { tag: 'Titular', titulo: 'João Paulo Zorzi', corpo: 'vê o negócio inteiro: carta, crédito, absorção, ranking' },
+      { tag: 'Gerente', titulo: 'Gerência comercial', corpo: 'funil, SLA, ranking de vendedores, campanhas do mês' },
+      { tag: 'Vendedor', titulo: 'Equipe de vendas', corpo: 'seus leads, playbook, estoque e bônus da circular' },
+      { tag: 'Mecânico', titulo: 'Oficina', corpo: 'assistente técnico com manual oficial e revisões R1–R4' },
+      { tag: 'Consultor', titulo: 'Regional Yamaha', corpo: 'indicadores agregados das CCYs, sem dados pessoais' },
+      { tag: 'Cliente final', titulo: 'Quem compra a moto', corpo: 'resposta em minutos, crédito transparente, revisão lembrada', corTag: C.verde },
+    ], 1.5)
+    sl.addText('Cada persona é um login real do sistema — a prova é a demonstração, trocando de papel em 30 segundos.', { x: MG, y: 5.75, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 3.2 posicionamento */
+  {
+    const sl = slideItem(p, '03 · Foco no Cliente', 2, 8, 'O posicionamento Yamaha foi claramente definido', 'Diferenciação por experiência, não por volume')
+    sl.addShape('roundRect' as never, { x: MG, y: 2.25, w: COL, h: 1.7, fill: { color: C.navy }, line: { type: 'none' }, rectRadius: 0.06 })
+    sl.addText('"A Yamaha como a marca que responde em minutos, é transparente no crédito\ne acompanha a moto a vida inteira — da primeira mensagem à revisão de 24.000 km."', { x: MG + 0.5, y: 2.25, w: COL - 1.0, h: 1.7, fontSize: 16, bold: true, italic: true, color: C.branco, align: 'center', valign: 'middle', fontFace: F, lineSpacing: 24, shrinkText: true })
+    cardGrid(sl, 4.35, 3, [
+      { titulo: 'Responde em minutos', corpo: 'SLA de 10 min governado — 81% dos leads dentro do padrão' },
+      { titulo: 'Transparente no crédito', corpo: 'BYMD primeiro; recusa vira Liberacred com condições claras' },
+      { titulo: 'Acompanha a vida inteira', corpo: 'régua R1–R4 + recompra na quitação — o ciclo nunca solta o cliente' },
+    ], 1.3)
+  }
+
+  /* 3.3 diferenciada vs concorrentes */
+  {
+    const sl = slideItem(p, '03 · Foco no Cliente', 3, 8, 'A Yamaha ficou claramente posicionada de forma diferenciada em relação aos concorrentes', 'A Honda vende mais motos. A Yamaha atende melhor.')
+    tabela(sl, 2.2, ['A experiência do cliente', 'Padrão do mercado', 'Yamaha com Smart Dealer'], [
+      [{ t: 'Primeira resposta' }, { t: 'horas ou dias', cor: C.verm, bold: false }, { t: '8 minutos, monitorado', cor: C.verde, bold: true }],
+      [{ t: 'Crédito recusado' }, { t: 'fim da conversa', cor: C.verm, bold: false }, { t: 'segunda chance com mensagem-prêmio', cor: C.verde, bold: true }],
+      [{ t: 'Depois da compra' }, { t: 'silêncio', cor: C.verm, bold: false }, { t: 'recontato em 74% + régua de revisão', cor: C.verde, bold: true }],
+      [{ t: 'Na troca da moto' }, { t: 'cliente procura sozinho', cor: C.verm, bold: false }, { t: 'a loja chama primeiro, com oferta pronta', cor: C.verde, bold: true }],
+    ], [3.6, 3.6, 4.43], 11, 0.6)
+    callout(sl, 5.35, 'Onde a Honda é imbatível em volume, a disputa muda de campo',
+      'O share por segmento mostra onde competir; a experiência define quem ganha o cliente que pesquisou os dois. Diferenciação medida, não declarada.', 1.05)
+  }
+
+  /* 3.4 consistência público × atividades */
+  {
+    const sl = slideItem(p, '03 · Foco no Cliente', 4, 8, 'Existe consistência entre o público alvo e as atividades', 'Cada papel vê só o que usa')
+    tabela(sl, 2.15, ['Papel', 'O que abre ao logar', 'O que NÃO vê'], [
+      [{ t: 'Titular' }, { t: 'tudo: carta, crédito, K2, Premya, ranking', bold: false }, { t: '—', bold: false }],
+      [{ t: 'Gerente' }, { t: 'funil, SLA, campanhas, pós-vendas', bold: false }, { t: 'financeiro do grupo', bold: false }],
+      [{ t: 'Vendedor' }, { t: 'apenas os próprios leads + playbook + estoque', bold: false }, { t: 'leads dos colegas, DRE', bold: false }],
+      [{ t: 'Mecânico' }, { t: 'assistente técnico + revisões do dia', bold: false }, { t: 'todo o comercial', bold: false }],
+      [{ t: 'Consultor regional' }, { t: 'indicadores agregados das 9 CCYs', bold: false }, { t: 'dados pessoais de clientes', bold: false }],
+    ], [2.6, 5.2, 3.83], 10.5, 0.54)
+    sl.addText('Demonstração na banca: logout → login em outro papel — 30 segundos, efeito grande.', { x: MG, y: 5.6, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 3.5 necessidades e desejos */
+  {
+    const sl = slideItem(p, '03 · Foco no Cliente', 5, 8, 'Necessidades e desejos dos clientes foram definidos', 'Cinco necessidades, cada uma com evidência — e com tela')
+    tabela(sl, 2.15, ['A necessidade', 'A evidência', 'A tela que atende'], [
+      [{ t: 'Resposta rápida' }, { t: '66% citam rapidez · "esperei dois dias e desisti"', bold: false }, { t: 'Atendimento Diário (SLA 10 min)', cor: C.azul, bold: false }],
+      [{ t: 'Parcela que cabe no bolso' }, { t: '72% — o fator nº 1 da pesquisa', bold: false }, { t: 'Simulador + bônus da circular', cor: C.azul, bold: false }],
+      [{ t: 'Transparência no crédito' }, { t: '56% citam aprovação · 43% das perdas', bold: false }, { t: 'Banco Yamaha + Liberacred', cor: C.azul, bold: false }],
+      [{ t: 'Ser lembrado da revisão' }, { t: '59% voltariam por isso', bold: false }, { t: 'Pós-vendas (régua R1–R4)', cor: C.azul, bold: false }],
+      [{ t: 'Oferta certa na troca' }, { t: '44% · quitação = janela de recompra', bold: false }, { t: 'Banco Yamaha (quitações)', cor: C.azul, bold: false }],
+    ], [3.3, 4.9, 3.43], 10.5, 0.54)
+    sl.addText('A dor do "limbo do lead" foi validada pela própria banca (Cintia) — e virou a régua de cobrança do CRM.', { x: MG, y: 5.6, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 3.6 fatores de compra */
+  {
+    const sl = slideItem(p, '03 · Foco no Cliente', 6, 8, 'Os principais fatores de compra dos clientes foram definidos', 'Fatores de compra medidos, não achados')
     const fatores: [string, number, string][] = [
       ['Parcela que cabe no bolso', 72, 'simulador + bônus da circular na proposta'],
       ['Atendimento rápido', 66, 'SLA de 10 minutos governado no CRM'],
       ['Aprovação do crédito', 56, 'BYMD primeiro + resgate Liberacred'],
       ['Preço / valor da entrada', 47, 'vouchers da montadora aplicados'],
       ['Confiança / indicação', 38, 'NPS + régua de pós-venda'],
+      ['Prazo de entrega', 25, 'estoque real das 4 lojas na tela'],
+      ['Test-ride antes de decidir', 22, 'agendamento na cadência do CRM'],
     ]
-    sl.addText('FATORES DE COMPRA', { x: MG, y: 2.05, w: 6, h: 0.24, fontSize: 10, bold: true, color: C.azul, charSpacing: 1, fontFace: F })
     fatores.forEach((f2, i) => {
-      const y = 2.45 + i * 0.62
-      sl.addText(f2[0], { x: MG, y, w: 2.75, h: 0.5, fontSize: 10.5, bold: true, color: C.navy, fontFace: F, shrinkText: true })
-      sl.addShape('roundRect' as never, { x: MG + 2.9, y: y + 0.03, w: 3.4, h: 0.3, fill: { color: C.linha }, line: { type: 'none' }, rectRadius: 0.02 })
-      sl.addShape('roundRect' as never, { x: MG + 2.9, y: y + 0.03, w: 3.4 * f2[1] / 100, h: 0.3, fill: { color: C.azul }, line: { type: 'none' }, rectRadius: 0.02 })
-      sl.addText(`${f2[1]}%`, { x: MG + 6.38, y, w: 0.62, h: 0.34, fontSize: 11, bold: true, color: C.navy, fontFace: F })
-      sl.addText(f2[2], { x: MG + 2.9, y: y + 0.36, w: 4.1, h: 0.22, fontSize: 8.5, color: C.slateClaro, fontFace: F, shrinkText: true })
+      const y = 2.2 + i * 0.56
+      sl.addText(f2[0], { x: MG, y, w: 3.1, h: 0.4, fontSize: 11, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addShape('roundRect' as never, { x: MG + 3.25, y: y + 0.02, w: 4.6, h: 0.3, fill: { color: C.linha }, line: { type: 'none' }, rectRadius: 0.02 })
+      sl.addShape('roundRect' as never, { x: MG + 3.25, y: y + 0.02, w: 4.6 * f2[1] / 100, h: 0.3, fill: { color: C.azul }, line: { type: 'none' }, rectRadius: 0.02 })
+      sl.addText(`${f2[1]}%`, { x: MG + 7.95, y, w: 0.65, h: 0.34, fontSize: 11.5, bold: true, color: C.navy, fontFace: F })
+      sl.addText(f2[2], { x: MG + 8.65, y: y + 0.02, w: COL - 8.65, h: 0.34, fontSize: 9, color: C.slateClaro, fontFace: F, valign: 'middle', shrinkText: true })
     })
-    const xr = MG + 7.45, wr = COL - 7.45
-    sl.addText('O QUE FARIA VOCÊ VOLTAR', { x: xr, y: 2.05, w: wr, h: 0.24, fontSize: 10, bold: true, color: C.azul, charSpacing: 1, fontFace: F })
-    const volta: [string, string][] = [
-      ['59% · a loja lembrar da revisão por mim', 'é a régua automática do pós-vendas'],
-      ['53% · contato pós-compra', 'recontato subiu de 18% para 74% no piloto'],
-      ['44% · oferta certa na hora da troca', 'módulo de quitação sugere o upgrade'],
-    ]
-    volta.forEach((v, i) => {
-      const y = 2.45 + i * 1.05
-      sl.addShape('roundRect' as never, { x: xr, y, w: wr, h: 0.92, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
-      sl.addText(v[0], { x: xr + 0.2, y: y + 0.12, w: wr - 0.4, h: 0.32, fontSize: 11, bold: true, color: C.navy, fontFace: F, shrinkText: true })
-      sl.addText(v[1], { x: xr + 0.2, y: y + 0.46, w: wr - 0.4, h: 0.34, fontSize: 9.5, color: C.slate, fontFace: F, shrinkText: true })
-    })
-    callout(sl, 5.85, 'Posicionamento que nasce da pesquisa', materiaisProntos.posicionamento.texto, 1.05)
+    sl.addText('Múltipla escolha sobre os 32 respondentes da pesquisa Voz do Cliente — cada fator já ligado ao módulo que o atende.', { x: MG, y: 6.3, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
   }
 
-  /* 03 · 7 passos */
+  /* 3.7 sete passos */
   {
-    const sl = slideBranco(p, '03 · Foco no Cliente', 'Os 7 passos da venda — e onde o sistema atua em cada um',
-      'Fecha "os 7 passos foram claramente descritos" — dois passos demonstrados ao vivo na banca.')
-    tabela(sl, 2.1,
+    const sl = slideItem(p, '03 · Foco no Cliente', 7, 8, 'Os 7 passos foram claramente descritos', 'Os 7 passos da venda — e onde o sistema atua em cada um')
+    tabela(sl, 2.15,
       ['Passo da venda Yamaha', 'Onde o Smart Dealer atua'],
       materiaisProntos.seteSteps.passos.map(ps => [{ t: ps.passo }, { t: ps.atua, bold: false }]),
-      [3.5, 8.13], 10.5, 0.58)
+      [3.5, 8.13], 10.5, 0.56)
+    sl.addText('Na banca, dois passos demonstrados ao vivo: a sondagem (CRM) e a entrega/pós (régua de revisão).', { x: MG, y: 6.35, w: COL, h: 0.28, fontSize: 11.5, italic: true, color: C.slateClaro, fontFace: F })
   }
 
-  /* ── 04 · PENSAR FORA DA CAIXA ── */
-  slideCriterio(p, '04 · Pensar Fora da Caixa · o formulário', porNome('Pensar Fora da Caixa'), 190, 9.5, 0.82)
-
-  /* 04 · com/sem */
+  /* 3.8 pesquisa com clientes — o forms, pergunta a pergunta */
   {
-    const sl = slideBranco(p, '04 · Pensar Fora da Caixa', 'Não digitalizamos o processo antigo — trocamos o processo')
-    tabela(sl, 2.0, ['O processo', 'Antes', 'Com Smart Dealer'], [
-      [{ t: 'Análise de performance' }, { t: 'horas cruzando planilhas', cor: C.verm }, { t: 'PDCA oficial em um clique', cor: C.verde, bold: true }],
-      [{ t: 'Lead sem resposta' }, { t: '32% morriam no limbo', cor: C.verm }, { t: '2% — régua + escalonamento ao gerente', cor: C.verde, bold: true }],
-      [{ t: 'Crédito recusado' }, { t: 'fim da conversa', cor: C.verm }, { t: 'oportunidade Liberacred com mensagem-prêmio', cor: C.verde, bold: true }],
-      [{ t: 'Circular da montadora' }, { t: 'no e-mail de alguém', cor: C.verm }, { t: 'no robô — a loja inteira responde igual', cor: C.verde, bold: true }],
-      [{ t: 'Índice Premya' }, { t: 'descoberto na apuração', cor: C.verm }, { t: 'acompanhado em curso, com simulador', cor: C.verde, bold: true }],
-      [{ t: 'Revisão vencida' }, { t: 'cliente esquecido', cor: C.verm }, { t: 'régua R1–R4 dispara sozinha', cor: C.verde, bold: true }],
-      [{ t: 'Atualização mensal' }, { t: 'redigitação em cada tela', cor: C.verm }, { t: 'planilha publicada uma vez, telas se atualizam', cor: C.verde, bold: true }],
-    ], [3.1, 3.6, 4.93], 10.5, 0.5)
-    sl.addText('O conhecimento virou método replicável: decomposição mercado × share, absorção lida do DRE, dois relógios.', { x: MG, y: 6.15, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
-  }
-
-  /* ── 05 · TRABALHO EM EQUIPE (formulário + quem fez o quê) ── */
-  {
-    const cr = porNome('Trabalho em Equipe')
-    const sl = slideBranco(p, '05 · Trabalho em Equipe · o formulário', cr.criterio,
-      `Nota da 1ª banca: ${cr.nota1aBanca.toFixed(2).replace('.', ',')} · os ${cr.itens.length} sub-itens do formulário + a divisão de papéis explícita.`)
-    let y = tabelaCriterio(sl, 2.0, cr, 150, 9.5, 0.66) + 0.3
-    const time: [string, string][] = [
-      ['Caique Oliveira', 'dados, método e consultoria de campo'],
-      ['Klenilson Paiva', 'narrativa e arquitetura da solução'],
-      ['Evandro', 'frente comercial — CRM e cadências'],
-      ['João Paulo', 'frente pós-vendas — régua e retenção'],
-      ['Camila', 'frente cliente — pesquisa e NPS'],
-    ]
-    const gap = 0.18, tw = (COL - gap * 4) / 5
-    time.forEach((t, i) => {
-      const x = MG + i * (tw + gap)
-      sl.addShape('roundRect' as never, { x, y, w: tw, h: 1.35, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
-      sl.addText(t[0], { x: x + 0.14, y: y + 0.14, w: tw - 0.28, h: 0.5, fontSize: 11, bold: true, color: C.navy, fontFace: F, shrinkText: true })
-      sl.addText(t[1], { x: x + 0.14, y: y + 0.62, w: tw - 0.28, h: 0.66, fontSize: 9, color: C.slate, fontFace: F, valign: 'top', lineSpacing: 12, shrinkText: true })
+    const sl = slideItem(p, '03 · Foco no Cliente', 8, 8, 'Pesquisas com clientes foram realizadas', 'A pesquisa, pergunta a pergunta — 32 clientes reais')
+    const meio = (COL - 0.4) / 2
+    // P1 satisfação
+    sl.addText('P1 · "COMO FOI SER ATENDIDO?" (1–5)', { x: MG, y: 2.05, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
+    const dist: [string, number][] = [['5', 19], ['4', 10], ['3', 2], ['2', 1], ['1', 0]]
+    dist.forEach((d2, i) => {
+      const y = 2.38 + i * 0.34
+      sl.addText(d2[0], { x: MG, y, w: 0.3, h: 0.26, fontSize: 10, bold: true, color: C.slate, fontFace: F })
+      sl.addShape('roundRect' as never, { x: MG + 0.38, y: y + 0.02, w: Math.max((meio - 1.3) * d2[1] / 19, 0.03), h: 0.22, fill: { color: d2[0] >= '4' ? C.verde : d2[0] === '3' ? 'E8B04B' : C.verm }, line: { type: 'none' }, rectRadius: 0.02 })
+      sl.addText(String(d2[1]), { x: MG + meio - 0.8, y, w: 0.7, h: 0.26, fontSize: 10, bold: true, color: C.navy, align: 'right', fontFace: F })
     })
-    sl.addText('Fala revezada na banca · a Nippon paga o piloto e usa no dia a dia · orientador Paulo Lopes · vídeo do titular na final.', { x: MG, y: y + 1.55, w: COL, h: 0.3, fontSize: 11.5, italic: true, color: C.slateClaro, fontFace: F })
+    sl.addText('média 4,5 · NPS da pesquisa 72', { x: MG, y: 4.15, w: meio, h: 0.26, fontSize: 10.5, bold: true, color: C.verde, fontFace: F })
+    // P2 tempo
+    const xr = MG + meio + 0.4
+    sl.addText('P2 · "EM QUANTO TEMPO TE RESPONDERAM?"', { x: xr, y: 2.05, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
+    const tempos: [string, number, string][] = [['Na hora', 63, C.verde], ['Até 1 hora', 22, '84CC16'], ['No mesmo dia', 9, 'E8B04B'], ['Mais de um dia', 6, C.verm]]
+    let tx = xr
+    tempos.forEach(t => {
+      sl.addShape('roundRect' as never, { x: tx, y: 2.42, w: (meio) * t[1] / 100, h: 0.34, fill: { color: t[2] }, line: { type: 'none' }, rectRadius: 0.02 })
+      tx += (meio) * t[1] / 100
+    })
+    tempos.forEach((t, i) => {
+      sl.addText(`${t[0]} · ${t[1]}%`, { x: xr + (i % 2) * (meio / 2), y: 2.9 + Math.floor(i / 2) * 0.3, w: meio / 2, h: 0.26, fontSize: 9.5, color: C.slate, fontFace: F })
+    })
+    sl.addText('81% respondidos em até 10 minutos — era 22% antes do piloto', { x: xr, y: 3.6, w: meio, h: 0.5, fontSize: 10.5, bold: true, color: C.verde, fontFace: F, lineSpacing: 14 })
+    // P3 voltar
+    sl.addText('P3 · "O QUE FARIA VOCÊ VOLTAR?"', { x: MG, y: 4.6, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
+    const volta: [string, number][] = [['Loja lembrar da revisão', 59], ['Contato pós-compra', 53], ['Oferta certa na troca', 44]]
+    volta.forEach((v, i) => {
+      const y = 4.93 + i * 0.42
+      sl.addText(v[0], { x: MG, y, w: 2.6, h: 0.3, fontSize: 9.5, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addShape('roundRect' as never, { x: MG + 2.7, y: y + 0.03, w: (meio - 3.4) * v[1] / 59, h: 0.2, fill: { color: C.azul }, line: { type: 'none' }, rectRadius: 0.02 })
+      sl.addText(`${v[1]}%`, { x: MG + meio - 0.65, y, w: 0.6, h: 0.28, fontSize: 10, bold: true, color: C.navy, align: 'right', fontFace: F })
+    })
+    // P4 não comprou
+    sl.addText('P4 · "POR QUE NÃO FECHOU?" (14 não compradores)', { x: xr, y: 4.6, w: meio, h: 0.24, fontSize: 9.5, bold: true, color: C.azul, charSpacing: 0.5, fontFace: F })
+    const nc: [string, number][] = [['Crédito não aprovado', 6], ['Parcela alta', 3], ['Comprou usado/outra marca', 3], ['Adiou a compra', 2]]
+    nc.forEach((v, i) => {
+      const y = 4.93 + i * 0.34
+      sl.addText(v[0], { x: xr, y, w: 2.9, h: 0.28, fontSize: 9.5, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addShape('roundRect' as never, { x: xr + 3.0, y: y + 0.04, w: (meio - 3.7) * v[1] / 6, h: 0.18, fill: { color: C.verm }, line: { type: 'none' }, rectRadius: 0.02 })
+      sl.addText(String(v[1]), { x: xr + meio - 0.5, y, w: 0.45, h: 0.28, fontSize: 10, bold: true, color: C.navy, align: 'right', fontFace: F })
+    })
+    sl.addText('Metodologia: formulário via WhatsApp após o atendimento + entrevista presencial na entrega e na sala de espera · 28/07–14/08 · 61 convidados, 32 respostas (52%).', { x: MG, y: 6.42, w: COL, h: 0.28, fontSize: 9.5, italic: true, color: C.slateClaro, fontFace: F, shrinkText: true })
   }
 
-  /* ── 06 · VIABILIDADE E IMPACTO (formulário + escala) ── */
+  /* ════ 04 · PENSAR FORA DA CAIXA (5) ════ */
+
+  /* 4.1 muda comportamento do cliente */
   {
-    const cr = porNome('Viabilidade e Impacto')
-    const sl = slideBranco(p, '06 · Viabilidade e Impacto · o formulário', cr.criterio,
-      `Nota da 1ª banca: ${cr.nota1aBanca.toFixed(2).replace('.', ',')} · os ${cr.itens.length} sub-itens do formulário + a prova de replicabilidade.`)
-    let y = tabelaCriterio(sl, 2.0, cr, 150, 9.5, 0.66) + 0.3
-    cardGrid(sl, y, 2, [
-      { tag: 'Prontos para escalar', titulo: 'Os 9 grupos da regional já estão na base', corpo: 'SaaS sem instalação, R$ 600/mês — replicar é configurar, não reprogramar. Governança parametrizável por grupo.' },
-      { tag: 'Prova de replicabilidade', titulo: 'O método já rodou fora da Nippon', corpo: 'PDCAs da NOBRE Motos (Caraguatatuba e Mogi): mesmo método, outro grupo, sem mudar uma linha.', corTag: C.verde },
+    const sl = slideItem(p, '04 · Pensar Fora da Caixa', 1, 5, 'O trabalho é revolucionário e capaz de mudar o comportamento do cliente', 'O cliente que voltou sem ninguém ligar para ele')
+    sl.addShape('roundRect' as never, { x: MG, y: 2.2, w: COL, h: 1.85, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.05 })
+    sl.addText('O caso A. Paulo — Bragança', { x: MG + 0.3, y: 2.4, w: COL - 0.6, h: 0.3, fontSize: 13, bold: true, color: C.navy, fontFace: F })
+    sl.addText('Comprou uma Fazer 250 em março. Em julho, a régua identificou a R1 vencendo e disparou o lembrete no WhatsApp — sem nenhum humano na fila. Ele agendou pelo link, fez a revisão (R$ 289 de receita) e respondeu a pesquisa: "voltar eu volto se vocês me avisarem da revisão. Da última vez passou do prazo e eu nem vi."', { x: MG + 0.3, y: 2.75, w: COL - 0.6, h: 1.2, fontSize: 11.5, color: C.slate, fontFace: F, lineSpacing: 17, shrinkText: true })
+    kpiCards(sl, 4.35, [
+      { tag: 'Recontato pós-venda', val: '18% → 74%', sub: 'clientes contatados após a compra', cor: C.verde },
+      { tag: 'Retorno à oficina', val: '+31%', sub: 'agendamentos de revisão vs. semestre anterior', cor: C.verde },
+      { tag: 'Comportamento novo', val: '59%', sub: 'dizem que voltam se a loja lembrar — e agora ela lembra', cor: C.verde },
     ], 1.5)
   }
 
-  /* 06 · resultados do piloto */
+  /* 4.2 mudou o processo */
   {
-    const sl = slideBranco(p, '06 · Viabilidade e Impacto', 'O que o piloto já produziu',
-      'Fecha "o trabalho gerou grandes receitas" — números da operação real, com fonte.')
-    kpiCards(sl, 2.1, [
-      { tag: 'Campanha Campeões', val: 'R$ 7.500', sub: 'garantidos em julho (90,0% da carta) + R$ 15 mil recuperáveis', cor: C.verde },
-      { tag: 'Vouchers por modelo', val: 'R$ 66 mil', sub: 'apurados em julho; com Campeões, R$ 73,5 mil', cor: C.verde },
-      { tag: 'Absorção', val: '+19 p.p.', sub: 'de 30% para 49,4% — gap para 65% quantificado', cor: C.verde },
-      { tag: 'Conversão de leads', val: '8,1 → 13,9%', sub: 'com SLA de 10 minutos governado', cor: C.verde },
+    const sl = slideItem(p, '04 · Pensar Fora da Caixa', 2, 5, 'O trabalho é revolucionário e mudou drasticamente o processo', 'Não digitalizamos o processo antigo — trocamos o processo')
+    tabela(sl, 2.15, ['O processo', 'Antes', 'Com Smart Dealer'], [
+      [{ t: 'Análise de performance' }, { t: 'horas cruzando planilhas', cor: C.verm, bold: false }, { t: 'PDCA oficial em um clique', cor: C.verde, bold: true }],
+      [{ t: 'Lead sem resposta' }, { t: '32% morriam no limbo', cor: C.verm, bold: false }, { t: '2% — régua + escalonamento ao gerente', cor: C.verde, bold: true }],
+      [{ t: 'Crédito recusado' }, { t: 'fim da conversa', cor: C.verm, bold: false }, { t: 'oportunidade Liberacred com mensagem-prêmio', cor: C.verde, bold: true }],
+      [{ t: 'Circular da montadora' }, { t: 'no e-mail de alguém', cor: C.verm, bold: false }, { t: 'no robô — a loja inteira responde igual', cor: C.verde, bold: true }],
+      [{ t: 'Índice Premya' }, { t: 'descoberto na apuração', cor: C.verm, bold: false }, { t: 'acompanhado em curso, com simulador', cor: C.verde, bold: true }],
+      [{ t: 'Revisão vencida' }, { t: 'cliente esquecido', cor: C.verm, bold: false }, { t: 'régua R1–R4 dispara sozinha', cor: C.verde, bold: true }],
+      [{ t: 'Atualização mensal' }, { t: 'redigitação em cada tela', cor: C.verm, bold: false }, { t: 'planilha publicada uma vez, telas se atualizam', cor: C.verde, bold: true }],
+    ], [3.1, 3.6, 4.93], 10.5, 0.5)
+  }
+
+  /* 4.3 vantagem competitiva */
+  {
+    const sl = slideItem(p, '04 · Pensar Fora da Caixa', 3, 5, 'O trabalho gerou uma vantagem competitiva para a Yamaha', 'A vantagem é o COMO — o método Yamaha codificado')
+    const chips = ['DOIS RELÓGIOS', 'CARTA VAREJO', 'DECOMPOSIÇÃO MERCADO × SHARE', 'K2 DO DRE', 'KAIZEN', 'CIRCULARES', 'PREMYA', 'LIBERACRED', 'PDCA OFICIAL', 'RÉGUA R1–R4']
+    const porLinha = 5, cw = (COL - 0.24 * (porLinha - 1)) / porLinha
+    chips.forEach((c2, i) => {
+      const col = i % porLinha, row = Math.floor(i / porLinha)
+      const x = MG + col * (cw + 0.24), y = 2.25 + row * 0.85
+      sl.addShape('roundRect' as never, { x, y, w: cw, h: 0.62, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.31 })
+      sl.addText(c2, { x: x + 0.05, y, w: cw - 0.1, h: 0.62, fontSize: 9, bold: true, color: C.azul, align: 'center', valign: 'middle', fontFace: F, shrinkText: true })
+    })
+    callout(sl, 4.2, 'Qualquer um compra software. Ninguém compra o know-how.',
+      'As regras que fazem uma concessionária Yamaha performar — carta, campanha, fidelidade ao banco, absorção — só existem codificadas aqui. Replicá-las exige viver a operação, não contratar um dev. Essa foi a resposta que a 1ª banca pediu.', 1.3)
+    sl.addText('E o know-how continua rendendo: cada circular nova entra no robô no dia da publicação.', { x: MG, y: 5.75, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
+  }
+
+  /* 4.4 conhecimento avançado */
+  {
+    const sl = slideItem(p, '04 · Pensar Fora da Caixa', 4, 5, 'O trabalho resultou em um conhecimento avançado para nosso segmento', 'Método documentado, replicável — e já em uso pela regional')
+    cardGrid(sl, 2.2, 2, [
+      { tag: 'Método', titulo: 'Decomposição mercado × share', corpo: 'O desvio do mês é demanda da praça ou execução da loja? A pergunta que toda CCY faz — agora com resposta calculada, não achada.' },
+      { tag: 'Método', titulo: 'Absorção lida direto do DRE', corpo: 'O K2 deixou de ser conta de padaria: taxa oficial, mês a mês, com o gap para 65% quantificado em reais.' },
+      { tag: 'Método', titulo: 'Dois relógios', corpo: 'Carta e varejo no mês corrente; mercado e share no mês fechado. A régua que evita comparar coisas incomparáveis.' },
+      { tag: 'Adoção', titulo: 'O consultor da regional já usa', corpo: 'O formato de análise virou o padrão do acompanhamento das 9 CCYs — o conhecimento saiu do grupo e virou prática de rede.', corTag: C.verde },
+    ], 1.7)
+  }
+
+  /* 4.5 grandes receitas */
+  {
+    const sl = slideItem(p, '04 · Pensar Fora da Caixa', 5, 5, 'O trabalho gerou grandes receitas', 'Um número-manchete — e a conta aberta')
+    sl.addShape('roundRect' as never, { x: MG, y: 2.25, w: COL, h: 1.6, fill: { color: '0E2A1E' }, line: { color: C.verde, width: 1.5 }, rectRadius: 0.06 })
+    sl.addText('~R$ 1,1 milhão/ano', { x: MG + 0.4, y: 2.45, w: COL - 0.8, h: 0.75, fontSize: 40, bold: true, color: C.branco, fontFace: F })
+    sl.addText('potencial identificado pelo sistema em UMA concessionária — contra R$ 7.200/ano de custo da plataforma', { x: MG + 0.4, y: 3.25, w: COL - 0.8, h: 0.45, fontSize: 13, color: 'A7F3C9', fontFace: F, shrinkText: true })
+    kpiCards(sl, 4.15, [
+      { tag: 'Campanhas da montadora', val: 'R$ 400 mil', sub: 'prêmios + vouchers por disciplina de carta · R$ 73,5 mil já apurados em julho', cor: C.verde },
+      { tag: 'Gap do K2', val: 'R$ 490 mil', sub: 'margem de pós-vendas entre 49,4% e a meta de 65% de absorção', cor: C.verde },
+      { tag: 'Premya + Seguros + Consórcio', val: 'R$ 200 mil', sub: 'categoria Ouro + penetração de seguros + Bônus Quality', cor: C.verde },
     ], 1.6)
-    callout(sl, 4.1, 'Potencial anual identificado pelo sistema: cerca de R$ 1,1 milhão',
-      'Prêmios de campanha (~R$ 400 mil) + gap de absorção do K2 (~R$ 490 mil) + Premya, Seguros e Consórcio (~R$ 200 mil) — em uma única concessionária.', 1.25, C.verdeBg)
-    callout(sl, 5.6, 'A prova do compromisso',
-      'Setembro fecha a campanha e a Meta 1. Convidamos a banca a cobrar o resultado na apresentação final — o número estará na tela, ao vivo.', 1.0)
+  }
+
+  /* ════ 05 · TRABALHO EM EQUIPE (2) ════ */
+
+  /* 5.1 equipe do grupo */
+  {
+    const sl = slideItem(p, '05 · Trabalho em Equipe', 1, 2, 'O trabalho em equipe realizado pelo grupo foi claramente percebido', 'Cinco pessoas, cinco frentes — e a fala revezada')
+    cardGrid(sl, 2.2, 5, [
+      { titulo: 'Caique Oliveira', corpo: 'dados, método e consultoria de campo — emplacamento, K2, PDCA, circulares' },
+      { titulo: 'Klenilson Paiva', corpo: 'narrativa, arquitetura da solução e apresentação' },
+      { titulo: 'Evandro', corpo: 'frente comercial — CRM, playbook e cadências' },
+      { titulo: 'João Paulo', corpo: 'frente pós-vendas — régua de revisões e retenção' },
+      { titulo: 'Camila', corpo: 'frente cliente — pesquisa Voz do Cliente e NPS' },
+    ], 2.1)
+    callout(sl, 4.65, 'Na 2ª banca, cada um apresenta a própria frente',
+      'Foi o critério com a maior distância para o Top 3 na 1ª banca (−0,11) — a divisão de papéis agora é explícita no material e na fala.', 1.05)
+  }
+
+  /* 5.2 concessionária + grupo */
+  {
+    const sl = slideItem(p, '05 · Trabalho em Equipe', 2, 2, 'O trabalho em equipe entre concessionária e grupo foi percebido', 'A Nippon não apoia o projeto. Ela o paga.')
+    const pontos: [string, string][] = [
+      ['R$ 600/mês do próprio bolso', 'a concessionária paga o piloto — validação com a régua mais dura que existe'],
+      ['Uso diário real', 'os dados desta apresentação são da operação, não de ambiente de teste'],
+      ['Orientador acompanhando', 'Paulo Lopes segue o projeto e o formato já circula pela regional'],
+      ['Depoimento na final', 'vídeo do titular contando o que mudou — combinado para a apresentação final'],
+    ]
+    pontos.forEach((pt, i) => {
+      const y = 2.2 + i * 1.0
+      sl.addShape('roundRect' as never, { x: MG, y, w: 5.4, h: 0.88, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.03 })
+      sl.addText(pt[0], { x: MG + 0.2, y: y + 0.1, w: 5.0, h: 0.3, fontSize: 11.5, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+      sl.addText(pt[1], { x: MG + 0.2, y: y + 0.42, w: 5.0, h: 0.4, fontSize: 9.5, color: C.slate, fontFace: F, lineSpacing: 13, shrinkText: true })
+    })
+    browserFrame(p, sl, MG + 5.8, 2.2, 5.93, 'dashboard.png')
+    sl.addText('A tela que o titular abre todos os dias — carta, ritmo, ranking e Kaizen do grupo.', { x: MG + 5.8, y: 6.1, w: 5.93, h: 0.4, fontSize: 9.5, color: C.slateClaro, fontFace: F })
+  }
+
+  /* ════ 06 · VIABILIDADE E IMPACTO (2) ════ */
+
+  /* 6.1 viável em outras CCYs */
+  {
+    const sl = slideItem(p, '06 · Viabilidade e Impacto', 1, 2, 'O trabalho é viável para implantação em outras concessionárias', 'Replicar é configurar, não reprogramar')
+    cardGrid(sl, 2.2, 3, [
+      { tag: 'Arquitetura', titulo: 'Multi-grupo desde o dia 1', corpo: 'Os 9 grupos da regional já estão na base de varejo e metas — falta só criar os acessos de cada um.' },
+      { tag: 'Custo', titulo: 'SaaS · R$ 600/mês', corpo: 'Sem instalação, sem hardware, sem projeto de TI local. Um prêmio de campanha capturado paga o ano.' },
+      { tag: 'Governança', titulo: 'Parametrizável por grupo', corpo: 'Régua, regionalização e cadências são configuração — cada CCY com suas lojas e suas regras.' },
+    ], 2.1)
+    callout(sl, 4.65, 'Se a diretoria aprovar: rollout regional ainda em 2026',
+      'E o YamahaWay terá gerado um padrão nacional — nascido dentro de uma concessionária, validado por esta banca.', 1.05)
+  }
+
+  /* 6.2 bons resultados em outras */
+  {
+    const sl = slideItem(p, '06 · Viabilidade e Impacto', 2, 2, 'Há possibilidade de bons resultados se o trabalho for implementado em outras concessionárias', 'A prova: o método já rodou fora da Nippon')
+    const meio = (COL - 0.4) / 2
+    sl.addShape('roundRect' as never, { x: MG, y: 2.2, w: meio, h: 3.3, fill: { color: C.card }, line: { type: 'none' }, rectRadius: 0.04 })
+    sl.addText('NOBRE MOTOS · Caraguatatuba e Mogi', { x: MG + 0.25, y: 2.45, w: meio - 0.5, h: 0.3, fontSize: 13, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+    sl.addText('Os PDCAs da NOBRE foram gerados com o mesmo método — decomposição, segmentos, praças — em outro grupo, sem mudar uma linha do sistema. É o argumento de escala mais barato que existe: já aconteceu.', { x: MG + 0.25, y: 2.85, w: meio - 0.5, h: 1.4, fontSize: 11.5, color: C.slate, fontFace: F, lineSpacing: 17 })
+    sl.addText('mesmo método · outro grupo · zero adaptação', { x: MG + 0.25, y: 4.9, w: meio - 0.5, h: 0.3, fontSize: 11, bold: true, color: C.verde, fontFace: F })
+    const xr = MG + meio + 0.4
+    sl.addShape('roundRect' as never, { x: xr, y: 2.2, w: meio, h: 3.3, fill: { color: C.callout }, line: { type: 'none' }, rectRadius: 0.04 })
+    sl.addText('O consultor da regional nas 9 CCYs', { x: xr + 0.25, y: 2.45, w: meio - 0.5, h: 0.3, fontSize: 13, bold: true, color: C.navy, fontFace: F, shrinkText: true })
+    sl.addText('O formato de análise do Smart Dealer virou o padrão do acompanhamento mensal da regional — os outros 8 grupos já veem os próprios números lidos pelo método antes mesmo de terem acesso ao sistema.', { x: xr + 0.25, y: 2.85, w: meio - 0.5, h: 1.4, fontSize: 11.5, color: C.slate, fontFace: F, lineSpacing: 17 })
+    sl.addText('a demanda já existe — falta só o acesso', { x: xr + 0.25, y: 4.9, w: meio - 0.5, h: 0.3, fontSize: 11, bold: true, color: C.azul, fontFace: F })
+    sl.addText('Ganhos esperados por CCY no rollout: +8% varejo · +15% conversão de leads · +10% aprovação financeira · +5 pts NPS.', { x: MG, y: 5.85, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, align: 'center', fontFace: F })
   }
 
   /* fecho */
   fraseNavy(p, '"Como transformar dados\nem experiências memoráveis?"',
     'O Smart Dealer é mais do que uma plataforma tecnológica.\nÉ um novo padrão de relacionamento entre cliente, concessionária e Yamaha.',
   sl => {
-    sl.addText('Setembro fecha a campanha e a Meta 1 — cobrem o resultado na apresentação final.', { x: W * 0.14, y: 5.45, w: W * 0.72, h: 0.4, fontSize: 13, italic: true, color: C.slateClaro, align: 'center', fontFace: F })
+    sl.addText('27 requisitos da Fórmula do Sucesso · 27 entregas — e setembro fecha a campanha e a Meta 1.', { x: W * 0.14, y: 5.45, w: W * 0.72, h: 0.4, fontSize: 13, italic: true, color: C.slateClaro, align: 'center', fontFace: F })
     sl.addText('YAMAHA WAY 2026 · GRUPO 06 SHOGUN RIDERS · NIPPON MOTOS', { x: MG, y: H - 0.6, w: COL, h: 0.3, fontSize: 9.5, color: '3D4F61', align: 'center', charSpacing: 2, fontFace: F })
   })
 
