@@ -5,7 +5,6 @@ const BASE = 'http://localhost:3000'
 const PAGES = [
   ['dashboard', '/dashboard'],
   ['performance', '/performance'],
-  ['premya', '/premya'],
   ['banco', '/banco'],
   ['pesquisa', '/pesquisa'],
   ['crmconfig', '/crm/configuracao'],

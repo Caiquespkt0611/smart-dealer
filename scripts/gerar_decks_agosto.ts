@@ -221,7 +221,7 @@ async function deckDiretoria() {
   {
     const sl = slideBranco(p, 'A virada', 'A Yamaha já possui um patrimônio estratégico invisível',
       'Cada moto vendida, revisão feita e proposta analisada gera dado. A rede está sentada numa mina — sem escavadeira.')
-    const chips = ['VENDA', 'REVISÃO', 'FINANCIAMENTO', 'NPS', 'LCR', 'KAIZEN', 'ESTOQUE', 'OFICINA', 'CONSÓRCIO', 'SEGUROS', 'LEADS', 'CAMPANHA', 'INTERAÇÃO', 'BLU CLUB', 'EMPLACAMENTO', 'PREMYA', 'CIRCULARES', 'TREINAMENTO']
+    const chips = ['VENDA', 'REVISÃO', 'FINANCIAMENTO', 'NPS', 'LCR', 'KAIZEN', 'ESTOQUE', 'OFICINA', 'CONSÓRCIO', 'SEGUROS', 'LEADS', 'CAMPANHA', 'INTERAÇÃO', 'BLU CLUB', 'EMPLACAMENTO', 'CIRCULARES', 'TREINAMENTO']
     const porLinha = 6, cw = (COL - 0.24 * (porLinha - 1)) / porLinha
     chips.forEach((c2, i) => {
       const col = i % porLinha, row = Math.floor(i / porLinha)
@@ -375,32 +375,7 @@ async function deckDiretoria() {
     sl.addText('Aprovados não pagos e contratos quitando na mesma tela — cada um com ação sugerida.', { x: MG + 5.75, y: 6.1, w: 5.98, h: 0.5, fontSize: 9.5, color: C.slateClaro, fontFace: F, lineSpacing: 13 })
   }
 
-  /* 14 · em ação: premya */
-  {
-    const sl = slideBranco(p, 'A inteligência em ação', 'Premya: quanto vale a fidelidade, em reais',
-      'O folder oficial do Banco Yamaha codificado no sistema — o índice acompanhado em curso, não descoberto na apuração.')
-    const cats: [string, string, string, string][] = [
-      ['Diamante', '95–100%', '2,00% do liberado', ''],
-      ['Ouro', '85–94,9%', '1,50% do liberado', ''],
-      ['Prata', '75–84,9%', '1,00% do liberado', ''],
-      ['Bronze', '60–74,9%', '0,50% do liberado', '← Nippon hoje (71,6%)'],
-    ]
-    cats.forEach((c2, i) => {
-      const y = 2.1 + i * 0.62
-      sl.addShape('roundRect' as never, { x: MG, y, w: 5.35, h: 0.54, fill: { color: i === 3 ? C.ambarBg : C.card }, line: { type: 'none' }, rectRadius: 0.03 })
-      sl.addText(c2[0], { x: MG + 0.2, y: y + 0.12, w: 1.35, h: 0.3, fontSize: 11.5, bold: true, color: i === 3 ? C.ambar : C.navy, fontFace: F })
-      sl.addText(c2[1], { x: MG + 1.6, y: y + 0.13, w: 1.15, h: 0.28, fontSize: 10, color: C.slate, fontFace: F })
-      sl.addText(c2[2], { x: MG + 2.8, y: y + 0.13, w: 1.6, h: 0.28, fontSize: 10, color: C.slate, fontFace: F })
-      if (c2[3]) sl.addText(c2[3], { x: MG + 4.05, y: y + 0.13, w: 1.25, h: 0.28, fontSize: 8.5, bold: true, color: C.ambar, fontFace: F, shrinkText: true })
-    })
-    sl.addShape('roundRect' as never, { x: MG, y: 4.75, w: 5.35, h: 1.7, fill: { color: C.verdeBg }, line: { type: 'none' }, rectRadius: 0.03 })
-    sl.addText('Subir para Ouro vale ~R$ 148 mil/ano', { x: MG + 0.22, y: 4.92, w: 4.9, h: 0.3, fontSize: 12.5, bold: true, color: C.navy, fontFace: F })
-    sl.addText('Sem vender uma moto a mais: toda venda financiada submetida primeiro ao BYMD e nenhuma proposta aprovada fugindo para outro banco. O sistema alerta cada fuga e simula o ganho.', { x: MG + 0.22, y: 5.24, w: 4.9, h: 1.1, fontSize: 10, color: C.slate, fontFace: F, lineSpacing: 14, shrinkText: true })
-    browserFrame(p, sl, MG + 5.75, 2.15, 5.98, 'premya.png')
-    sl.addText('Simulador interativo: mexa nos números e veja a categoria — e os reais — mudarem na hora.', { x: MG + 5.75, y: 6.1, w: 5.98, h: 0.5, fontSize: 9.5, color: C.slateClaro, fontFace: F, lineSpacing: 13 })
-  }
-
-  /* 15 · em ação: seguros, consórcio, voz do cliente */
+  /* 14 · em ação: seguros, consórcio, voz do cliente */
   {
     const sl = slideBranco(p, 'A inteligência em ação', 'Seguros, Consórcio e a voz do cliente',
       'Receita recorrente que já é da casa — e a pesquisa que diz onde o cliente decide.')
@@ -413,7 +388,7 @@ async function deckDiretoria() {
       'J. Vitor, cliente que não comprou — 43% das vendas perdidas travaram no crédito. É exatamente o público que o Liberacred devolve à mesa.', 1.2)
   }
 
-  /* 16 · arquitetura */
+  /* 15 · arquitetura */
   {
     const sl = slideBranco(p, 'Arquitetura', 'Quatro pilares sustentam a plataforma')
     cardGrid(sl, 2.1, 4, [
@@ -433,7 +408,7 @@ async function deckDiretoria() {
     callout(sl, 5.85, 'SaaS multi-grupo desde o dia 1', 'Sem instalação, sem hardware, sem projeto de TI local — replicar para outra concessionária é configurar, não reprogramar.', 1.0)
   }
 
-  /* 17 · cronograma */
+  /* 16 · cronograma */
   {
     const sl = slideBranco(p, 'Cronograma', 'De janeiro ao rollout: o projeto no prazo',
       'Metodologia ágil com PDCA — as fases cumpridas em 2026 e a proposta para a rede.')
@@ -460,7 +435,7 @@ async function deckDiretoria() {
     sl.addText('Tudo até aqui foi entregue no prazo — a Fase 2 é a decisão desta reunião.', { x: MG, y: 5.6, w: COL, h: 0.32, fontSize: 12.5, italic: true, color: C.slateClaro, align: 'center', fontFace: F })
   }
 
-  /* 18 · payback */
+  /* 17 · payback */
   {
     const sl = slideBranco(p, 'Payback & viabilidade', 'Retorno mensurável para toda a cadeia')
     cardGrid(sl, 2.0, 3, [
@@ -468,12 +443,12 @@ async function deckDiretoria() {
       { tag: 'Economia gerada', titulo: 'Horas viram segundos', corpo: 'Menos retrabalho operacional, menor custo de captação, menos perda no funil de vendas.' },
       { tag: 'Ganhos esperados', titulo: '+8% varejo · +15% leads', corpo: '+10% aprovação financeira · +5 pts NPS e fidelização · escalabilidade nacional.' },
     ], 1.9)
-    callout(sl, 4.35, 'O piloto já quantificou: cerca de R$ 1,1 milhão por ano em uma única concessionária',
-      'Prêmios de campanha (~R$ 400 mil) + gap de absorção do K2 (~R$ 490 mil) + Premya, Seguros e Consórcio (~R$ 200 mil). Um único prêmio de campanha capturado paga o ano inteiro de plataforma.', 1.3, C.verdeBg)
+    callout(sl, 4.35, 'O piloto já quantificou: cerca de R$ 940 mil por ano em uma única concessionária',
+      'Prêmios de campanha (~R$ 400 mil) + gap de absorção do K2 (~R$ 490 mil) + Seguros e Consórcio (~R$ 50 mil). Um único prêmio de campanha capturado paga o ano inteiro de plataforma.', 1.3, C.verdeBg)
     sl.addText('Modelo com retorno comprovável e escalável para toda a rede Yamaha.', { x: MG, y: 5.95, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, align: 'center', fontFace: F })
   }
 
-  /* 19 · conclusão + pedido */
+  /* 18 · conclusão + pedido */
   fraseNavy(p, 'O pedido desta reunião: aprovar a Fase 2 —\nos 9 grupos da regional ainda em 2026.',
     'Operação inteligente · decisões melhores · experiências memoráveis · crescimento sustentável.',
   sl => {
@@ -586,7 +561,7 @@ async function deckBanca() {
       { tag: 'Painéis da montadora', titulo: 'Cada um numa senha', corpo: 'Liberacred, Seguros, Periodic Inspection: dados ricos, isolados, sem virar ação na loja.' },
     ], 2.35)
     callout(sl, 4.85, 'A lacuna que a análise revelou',
-      'Nenhuma ferramenta une as pontas — e nenhuma fala "Yamaha": carta, Kaizen, K2, Premya, circulares. A concessionária opera cega entre sistemas que não conversam. Essa lacuna é exatamente a oportunidade do Smart Dealer.', 1.25)
+      'Nenhuma ferramenta une as pontas — e nenhuma fala "Yamaha": carta, Kaizen, K2, circulares. A concessionária opera cega entre sistemas que não conversam. Essa lacuna é exatamente a oportunidade do Smart Dealer.', 1.25)
   }
 
   /* 1.2 concorrentes */
@@ -610,7 +585,7 @@ async function deckBanca() {
     const rows: CelDef[][] = [
       [{ t: 'Regras Yamaha codificadas' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
       [{ t: 'PDCA oficial em 1 clique' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
-      [{ t: 'Liberacred / Premya / circulares' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
+      [{ t: 'Liberacred / circulares' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'não', cor: C.verm, align: 'center' }, { t: 'sim', cor: C.verde, bold: true, align: 'center' }],
       [{ t: 'Custo mensal' }, { t: 'R$ 800–2.500', align: 'center' }, { t: 'já pago', align: 'center' }, { t: 'R$ 600', cor: C.verde, bold: true, align: 'center' }],
     ]
     const head = ['', 'CRM genérico', 'DMS', 'Smart Dealer'].map(h => ({
@@ -622,7 +597,7 @@ async function deckBanca() {
     })))
     sl.addTable([head, ...body] as never, { x: xr, y: 2.45, w: meio, colW: [2.15, 1.25, 1.0, 1.32], border: { pt: 0.75, color: C.branco }, rowH: 0.52, autoPage: false })
     callout(sl, 5.75, 'A resposta à pergunta da 1ª banca ("qual a exclusividade?")',
-      'A vantagem competitiva é o método Yamaha codificado — o software é só o veículo. Nenhum concorrente carrega carta, Kaizen, K2, Premya e circulares dentro do produto.', 1.05)
+      'A vantagem competitiva é o método Yamaha codificado — o software é só o veículo. Nenhum concorrente carrega carta, Kaizen, K2 e circulares dentro do produto.', 1.05)
   }
 
   /* 1.3 análises suficientes — a dor quantificada */
@@ -640,7 +615,7 @@ async function deckBanca() {
       { titulo: 'Revisão vencida', corpo: 'a oficina não avisa — e a absorção fica no papel' },
     ], 1.25)
     callout(sl, 5.4, 'Análise suficiente para fundamentar a solução — e para dimensionar o prêmio',
-      'Todos os dados existiam; a oportunidade passava despercebida. O valor deixado na mesa foi quantificado: ~R$ 1,1 milhão/ano em uma única concessionária.', 1.05, C.verdeBg)
+      'Todos os dados existiam; a oportunidade passava despercebida. O valor deixado na mesa foi quantificado: ~R$ 940 mil/ano em uma única concessionária.', 1.05, C.verdeBg)
   }
 
   /* 1.4 hipóteses */
@@ -742,7 +717,7 @@ async function deckBanca() {
       ['22/06', 'Comercial', 'CRM, campanhas IA, playbook e pós-vendas'],
       ['06/08', 'Performance', 'decomposição mercado × share + PDCA em 1 clique + K2'],
       ['07/08', 'Campanhas', 'vouchers por modelo + Campeões de Vendas codificados'],
-      ['20/08', 'Banco & cliente', 'Liberacred, Premya, Seguros, Consórcio, Voz do Cliente'],
+      ['20/08', 'Banco & cliente', 'Liberacred, Seguros, Consórcio, Voz do Cliente'],
     ]
     const gap2 = 0.18, fw = (COL - gap2 * 5) / 6
     sl.addShape(p.ShapeType.line, { x: MG + 0.2, y: 2.75, w: COL - 0.4, h: 0, line: { color: C.linha, width: 1.5 } })
@@ -766,7 +741,6 @@ async function deckBanca() {
       [{ t: 'Tempo de 1ª resposta ao lead' }, { t: '≤ 10 min', bold: false }, { t: '8 min · 81% no SLA', cor: C.verde, bold: false }, { t: 'Atendimento Diário', cor: C.azul, bold: false }],
       [{ t: 'NPS Vendas / Pós-vendas' }, { t: '93 / 87', bold: false }, { t: '94,5 / 87,7', cor: C.verde, bold: false }, { t: 'NPS', cor: C.azul, bold: false }],
       [{ t: 'Pontos Kaizen' }, { t: '19', bold: false }, { t: '15 (LCR e NPS a recuperar)', cor: C.ambar, bold: false }, { t: 'Kaizen', cor: C.azul, bold: false }],
-      [{ t: 'Índice de Fidelidade Premya' }, { t: 'Ouro (85%)', bold: false }, { t: 'Bronze · 71,6%', cor: C.ambar, bold: false }, { t: 'Premya + simulador', cor: C.azul, bold: false }],
     ], [4.6, 1.7, 3.3, 2.73], 10.5, 0.54)
     sl.addText('Verde = meta batida · âmbar = em curso. Nenhum KPI decorativo: todos ligados às 3 metas públicas.', { x: MG, y: 6.05, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
   }
@@ -799,8 +773,8 @@ async function deckBanca() {
       { tag: 'Absorção', val: '+19 p.p.', sub: 'de 30% para 49,4% — a caminho da meta de 65%', cor: C.verde },
       { tag: 'Conversão de leads', val: '8,1 → 13,9%', sub: 'com o SLA de 10 minutos governado', cor: C.verde },
     ], 1.6)
-    callout(sl, 4.2, 'Potencial anual identificado pelo sistema: cerca de R$ 1,1 milhão',
-      'Prêmios de campanha (~R$ 400 mil) + gap de absorção do K2 (~R$ 490 mil) + Premya, Seguros e Consórcio (~R$ 200 mil) — em uma única concessionária.', 1.25, C.verdeBg)
+    callout(sl, 4.2, 'Potencial anual identificado pelo sistema: cerca de R$ 940 mil',
+      'Prêmios de campanha (~R$ 400 mil) + gap de absorção do K2 (~R$ 490 mil) + Seguros e Consórcio (~R$ 50 mil) — em uma única concessionária.', 1.25, C.verdeBg)
     sl.addText('Setembro fecha a campanha e a Meta 1 — o resultado estará na tela, ao vivo, na apresentação final.', { x: MG, y: 5.7, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
   }
 
@@ -852,7 +826,7 @@ async function deckBanca() {
   {
     const sl = slideItem(p, '03 · Foco no Cliente', 4, 8, 'Existe consistência entre o público alvo e as atividades', 'Cada papel vê só o que usa')
     tabela(sl, 2.15, ['Papel', 'O que abre ao logar', 'O que NÃO vê'], [
-      [{ t: 'Titular' }, { t: 'tudo: carta, crédito, K2, Premya, ranking', bold: false }, { t: '—', bold: false }],
+      [{ t: 'Titular' }, { t: 'tudo: carta, crédito, K2, ranking', bold: false }, { t: '—', bold: false }],
       [{ t: 'Gerente' }, { t: 'funil, SLA, campanhas, pós-vendas', bold: false }, { t: 'financeiro do grupo', bold: false }],
       [{ t: 'Vendedor' }, { t: 'apenas os próprios leads + playbook + estoque', bold: false }, { t: 'leads dos colegas, DRE', bold: false }],
       [{ t: 'Mecânico' }, { t: 'assistente técnico + revisões do dia', bold: false }, { t: 'todo o comercial', bold: false }],
@@ -1001,7 +975,6 @@ async function deckBanca() {
       [{ t: 'Lead sem resposta' }, { t: '32% morriam no limbo', cor: C.verm, bold: false }, { t: '2% — régua + escalonamento ao gerente', cor: C.verde, bold: true }],
       [{ t: 'Crédito recusado' }, { t: 'fim da conversa', cor: C.verm, bold: false }, { t: 'oportunidade Liberacred com mensagem-prêmio', cor: C.verde, bold: true }],
       [{ t: 'Circular da montadora' }, { t: 'no e-mail de alguém', cor: C.verm, bold: false }, { t: 'no robô — a loja inteira responde igual', cor: C.verde, bold: true }],
-      [{ t: 'Índice Premya' }, { t: 'descoberto na apuração', cor: C.verm, bold: false }, { t: 'acompanhado em curso, com simulador', cor: C.verde, bold: true }],
       [{ t: 'Revisão vencida' }, { t: 'cliente esquecido', cor: C.verm, bold: false }, { t: 'régua R1–R4 dispara sozinha', cor: C.verde, bold: true }],
       [{ t: 'Atualização mensal' }, { t: 'redigitação em cada tela', cor: C.verm, bold: false }, { t: 'planilha publicada uma vez, telas se atualizam', cor: C.verde, bold: true }],
     ], [3.1, 3.6, 4.93], 10.5, 0.5)
@@ -1010,7 +983,7 @@ async function deckBanca() {
   /* 4.3 vantagem competitiva */
   {
     const sl = slideItem(p, '04 · Pensar Fora da Caixa', 3, 5, 'O trabalho gerou uma vantagem competitiva para a Yamaha', 'A vantagem é o COMO — o método Yamaha codificado')
-    const chips = ['DOIS RELÓGIOS', 'CARTA VAREJO', 'DECOMPOSIÇÃO MERCADO × SHARE', 'K2 DO DRE', 'KAIZEN', 'CIRCULARES', 'PREMYA', 'LIBERACRED', 'PDCA OFICIAL', 'RÉGUA R1–R4']
+    const chips = ['DOIS RELÓGIOS', 'CARTA VAREJO', 'DECOMPOSIÇÃO MERCADO × SHARE', 'K2 DO DRE', 'KAIZEN', 'CIRCULARES', 'LIBERACRED', 'PDCA OFICIAL', 'RÉGUA R1–R4']
     const porLinha = 5, cw = (COL - 0.24 * (porLinha - 1)) / porLinha
     chips.forEach((c2, i) => {
       const col = i % porLinha, row = Math.floor(i / porLinha)
@@ -1019,7 +992,7 @@ async function deckBanca() {
       sl.addText(c2, { x: x + 0.05, y, w: cw - 0.1, h: 0.62, fontSize: 9, bold: true, color: C.azul, align: 'center', valign: 'middle', fontFace: F, shrinkText: true })
     })
     callout(sl, 4.2, 'Qualquer um compra software. Ninguém compra o know-how.',
-      'As regras que fazem uma concessionária Yamaha performar — carta, campanha, fidelidade ao banco, absorção — só existem codificadas aqui. Replicá-las exige viver a operação, não contratar um dev. Essa foi a resposta que a 1ª banca pediu.', 1.3)
+      'As regras que fazem uma concessionária Yamaha performar — carta, campanha, crédito, absorção — só existem codificadas aqui. Replicá-las exige viver a operação, não contratar um dev. Essa foi a resposta que a 1ª banca pediu.', 1.3)
     sl.addText('E o know-how continua rendendo: cada circular nova entra no robô no dia da publicação.', { x: MG, y: 5.75, w: COL, h: 0.3, fontSize: 12, italic: true, color: C.slateClaro, fontFace: F })
   }
 
@@ -1038,16 +1011,16 @@ async function deckBanca() {
   {
     const sl = slideItem(p, '04 · Pensar Fora da Caixa', 5, 5, 'O trabalho gerou grandes receitas', 'Um número-manchete — e a conta aberta')
     sl.addShape('roundRect' as never, { x: MG, y: 2.25, w: COL, h: 1.6, fill: { color: '0E2A1E' }, line: { color: C.verde, width: 1.5 }, rectRadius: 0.06 })
-    sl.addText('~R$ 1,1 milhão/ano', { x: MG + 0.4, y: 2.45, w: COL - 0.8, h: 0.75, fontSize: 40, bold: true, color: C.branco, fontFace: F })
+    sl.addText('~R$ 940 mil/ano', { x: MG + 0.4, y: 2.45, w: COL - 0.8, h: 0.75, fontSize: 40, bold: true, color: C.branco, fontFace: F })
     sl.addText('potencial identificado pelo sistema em UMA concessionária — contra R$ 7.200/ano de custo da plataforma', { x: MG + 0.4, y: 3.25, w: COL - 0.8, h: 0.45, fontSize: 13, color: 'A7F3C9', fontFace: F, shrinkText: true })
-    sl.addChart(p.ChartType.doughnut, [{ name: 'composição', labels: ['Campanhas R$ 400 mil', 'Gap do K2 R$ 490 mil', 'Premya+Seg+Cons R$ 200 mil'], values: [400, 490, 200] }] as never, {
+    sl.addChart(p.ChartType.doughnut, [{ name: 'composição', labels: ['Campanhas R$ 400 mil', 'Gap do K2 R$ 490 mil', 'Seguros + Consórcio R$ 50 mil'], values: [400, 490, 50] }] as never, {
       x: MG - 0.1, y: 4.1, w: 2.6, h: 2.6, holeSize: 58,
       chartColors: ['0365FE', '2ECC71', 'E8B04B'], showLegend: false, showValue: false, showTitle: false, dataBorder: { pt: 1.5, color: 'FFFFFF' },
     } as never)
     const partes: [string, string, string, string][] = [
       ['0365FE', 'Campanhas da montadora', 'R$ 400 mil', 'prêmios + vouchers por disciplina de carta · R$ 73,5 mil já apurados em julho'],
       ['2ECC71', 'Gap do K2 (absorção)', 'R$ 490 mil', 'margem de pós-vendas entre 49,4% e a meta de 65%'],
-      ['E8B04B', 'Premya + Seguros + Consórcio', 'R$ 200 mil', 'categoria Ouro + penetração de seguros + Bônus Quality'],
+      ['E8B04B', 'Seguros + Consórcio', 'R$ 50 mil', 'penetração de seguros (33,6% → 45%) + Bônus Quality do consórcio'],
     ]
     partes.forEach((pt, i) => {
       const y = 4.2 + i * 0.82
