@@ -271,7 +271,7 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
       </section>
 
       {/* 2. a arte */}
-      <section className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,460px)] gap-8 items-start">
+      <section className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,420px)] gap-8 items-start">
         <div className="space-y-6">
           <h2 className="yh-title text-[clamp(28px,3vw,40px)]">Monte a <span className="yh-mute">arte</span></h2>
 
