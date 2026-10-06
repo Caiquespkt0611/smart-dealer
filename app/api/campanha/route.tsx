@@ -11,10 +11,11 @@ REGRAS DE MARCA YAMAHA:
 - Nunca inventar preço exato se não fornecido; usar "condições especiais" / "taxa zero" / "entrada facilitada".
 - Sempre incluir CTA claro para o cliente chamar no direct/WhatsApp.
 - Respeitar identidade Yamaha: confiança, tecnologia, performance, "Revs your Heart".
+- Nunca use travessão (—); use vírgula ou ponto.
 
 Responda SOMENTE com um JSON válido (sem markdown, sem comentários) neste formato exato:
 {
-  "headline": "frase de impacto curta (máx 8 palavras)",
+  "headline": "frase de impacto curta para a arte, até 6 palavras, SEM o nome do modelo (o modelo já aparece grande na arte)",
   "legenda": "legenda completa do post, 3-5 linhas, com quebras de linha \\n e emojis pontuais",
   "hashtags": ["#tag1", "#tag2", ...10 a 14 hashtags relevantes],
   "cta": "chamada de ação final curta",

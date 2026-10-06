@@ -25,7 +25,7 @@ export const navItems: NavItem[] = [
   { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Certificações por loja' },
   { href: '/crm',          label: 'CRM de Leads',       icon: Contact,         roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial',    hint: 'Funil de cada vendedor' },
   { href: '/atendimento',  label: 'Atendimento Diário', icon: MessageCircle,   roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Comercial',    hint: 'Quem atendeu, quanto demorou' },
-  { href: '/campanhas',    label: 'Campanhas IA',       icon: Megaphone,       roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial',    hint: 'Arte e texto em segundos' },
+  { href: '/campanhas',    label: 'Campanha no Instagram', icon: Megaphone,     roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial',    hint: 'Arte no padrão Yamaha e legenda com IA' },
   { href: '/playbook',     label: 'Playbook de Vendas', icon: BookOpen,        roles: ['TITULAR', 'GERENTE', 'VENDEDOR'],              group: 'Comercial',    hint: 'O roteiro que fecha venda' },
   { href: '/banco',        label: 'Banco Yamaha',       icon: Landmark,        roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Banco',        hint: 'Financiamento e recompra' },
   { href: '/seguros',      label: 'Seguros',            icon: Shield,          roles: ['TITULAR', 'GERENTE', 'VENDEDOR', 'CONSULTOR'], group: 'Banco',        hint: 'Renovação no tempo certo' },
@@ -66,7 +66,6 @@ export function fotoModelo(modelo: string): string | null {
     [/R15/, 'm-r15'],
     [/R3/, 'm-r3'],
     [/R7/, 'm-r7'],
-    [/T[EÉ]N[EÉ]R[EÉ]/, 'm-tenere'],
     [/TRACER/, 'm-tracer'],
   ]
   const hit = tabela.find(([re]) => re.test(m))

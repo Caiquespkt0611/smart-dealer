@@ -44,7 +44,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             style={{ objectPosition: s.pos ?? 'center', transform: k === i ? 'scale(1)' : 'scale(1.03)', transition: 'transform 1200ms ease-out' }} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(7,6,51,.90) 0%, rgba(7,6,51,.62) 40%, rgba(7,6,51,0) 75%)' }} />
           <div className="absolute inset-0 md:hidden" style={{ background: 'rgba(7,6,51,.45)' }} />
-          <div className="relative h-full flex flex-col justify-center px-6 md:px-24 max-w-[760px] text-white">
+          <div className="relative h-full flex flex-col justify-center px-6 md:px-24 max-w-[760px] text-white"
+            style={{ opacity: k === i ? 1 : 0, transform: k === i ? 'none' : 'translateY(8px)', transition: `opacity 280ms ease-out ${k === i ? '320ms' : '0ms'}, transform 280ms ease-out ${k === i ? '320ms' : '0ms'}` }}>
             <h2 className="yh-title text-white text-[clamp(38px,4.6vw,72px)]">{s.title}</h2>
             <p className="mt-4 text-[16px] md:text-[18px] leading-relaxed text-white/85 max-w-[520px]">{s.sub}</p>
             <Link href={s.href} tabIndex={k === i ? 0 : -1}
