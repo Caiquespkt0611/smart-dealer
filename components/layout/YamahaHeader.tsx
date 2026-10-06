@@ -92,7 +92,7 @@ function BuscaModulos({ itens }: { itens: NavItem[] }) {
   }
 
   return (
-    <div className="relative w-full max-w-[340px]">
+    <div className="relative w-full max-w-[340px] lg:max-w-[230px] 2xl:max-w-[340px]">
       <div className="yh-search flex items-center gap-2.5 h-12 rounded-full px-5">
         <input
           ref={ref}
@@ -286,7 +286,7 @@ export function YamahaHeader({ loja, onLojaChange }: { loja: string; onLojaChang
 
       {/* Barra principal */}
       <div className="yh-bar border-b" style={{ borderColor: 'var(--border)' }}>
-        <div className="mx-auto max-w-[1600px] h-[72px] md:h-[88px] px-4 md:px-10 flex items-center gap-6 xl:gap-10">
+        <div className="mx-auto max-w-[1600px] h-[72px] md:h-[88px] px-4 md:px-10 flex items-center gap-5 2xl:gap-10">
           <Link href="/dashboard" className="flex items-center gap-3 shrink-0" aria-label="Início">
             <img src="/yamaha/yamaha-logo.png" alt="Yamaha" className="h-9 w-auto yh-logo" />
             <span className="hidden sm:block h-8 w-px" style={{ background: 'var(--border-strong)' }} />
@@ -295,7 +295,7 @@ export function YamahaHeader({ loja, onLojaChange }: { loja: string; onLojaChang
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1 xl:gap-3 flex-1">
+          <nav className="hidden lg:flex items-center gap-0 xl:gap-1 2xl:gap-3 flex-1">
             {grupos.map(g => {
               const ativo = grupoAtual === g
               const aberto = mega === g
@@ -305,7 +305,7 @@ export function YamahaHeader({ loja, onLojaChange }: { loja: string; onLojaChang
                   onMouseEnter={() => abrirPorHover(g)}
                   onFocus={() => setMega(g)}
                   onClick={() => setMega(m => (m === g ? null : g))}
-                  className="yh-navlink relative px-2.5 py-2 yh-display text-[16px] uppercase tracking-[0.04em]"
+                  className="yh-navlink relative px-2 2xl:px-2.5 py-2 yh-display text-[15px] 2xl:text-[16px] uppercase tracking-[0.04em] whitespace-nowrap"
                   data-on={ativo || aberto ? '1' : undefined}
                   aria-expanded={aberto}
                 >
