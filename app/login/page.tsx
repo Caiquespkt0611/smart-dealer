@@ -1,135 +1,16 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { ArrowRight, LockKeyhole, CircleAlert, LoaderCircle } from 'lucide-react'
 
-const TERMINAL_LINES = [
-  'Iniciando Smart Dealer...',
-  'Conectando ao banco de dados...',
-  'Sincronizando indicadores de varejo...',
-  'Carregando análise de estoque...',
-  'Processando dados de leads...',
-  'Atualizando métricas de NPS...',
-  'Analisando desempenho regional...',
-  'IA pronta. Bem-vindo.',
-]
-
-function TerminalTypewriter() {
-  const [displayed, setDisplayed] = useState('')
-  const [lineIndex, setLineIndex] = useState(0)
-  const [charIndex, setCharIndex] = useState(0)
-  const [deleting, setDeleting] = useState(false)
-  const [blink, setBlink] = useState(true)
-
-  useEffect(() => {
-    const blinkTimer = setInterval(() => setBlink(b => !b), 530)
-    return () => clearInterval(blinkTimer)
-  }, [])
-
-  useEffect(() => {
-    const current = TERMINAL_LINES[lineIndex]
-    let delay: number
-
-    if (!deleting && charIndex < current.length) {
-      delay = 38 + Math.random() * 28
-      const t = setTimeout(() => {
-        setDisplayed(current.slice(0, charIndex + 1))
-        setCharIndex(c => c + 1)
-      }, delay)
-      return () => clearTimeout(t)
-    }
-
-    if (!deleting && charIndex === current.length) {
-      const t = setTimeout(() => setDeleting(true), 1800)
-      return () => clearTimeout(t)
-    }
-
-    if (deleting && charIndex > 0) {
-      delay = 18
-      const t = setTimeout(() => {
-        setDisplayed(current.slice(0, charIndex - 1))
-        setCharIndex(c => c - 1)
-      }, delay)
-      return () => clearTimeout(t)
-    }
-
-    if (deleting && charIndex === 0) {
-      setDeleting(false)
-      setLineIndex(i => (i + 1) % TERMINAL_LINES.length)
-    }
-  }, [charIndex, deleting, lineIndex])
-
-  return (
-    <div
-      className="rounded-xl px-4 py-3 font-mono text-[13px] leading-relaxed"
-      style={{ background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(96,165,250,0.15)' }}
-    >
-      <div className="flex items-center gap-2 mb-2 pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <span className="w-2.5 h-2.5 rounded-full bg-[#EF4444]/60" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#F59E0B]/60" />
-        <span className="w-2.5 h-2.5 rounded-full bg-[#10B981]/60" />
-        <span className="text-[#4B5563] text-[10px] ml-1 uppercase tracking-wider">smart-dealer · sistema</span>
-      </div>
-      <div className="flex items-center gap-1.5">
-        <span className="text-[#0066ff] select-none">›</span>
-        <span className="text-[#93c5fd]">{displayed}</span>
-        <span
-          className="inline-block w-[7px] h-[14px] ml-0.5"
-          style={{
-            background: '#60a5fa',
-            opacity: blink ? 1 : 0,
-            transition: 'opacity 0.1s',
-          }}
-        />
-      </div>
-    </div>
-  )
-}
-
-
-const features = [
-  {
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-      </svg>
-    ),
-    text: 'KPIs e projeção de varejo em tempo real',
-  },
-  {
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="3" />
-        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
-      </svg>
-    ),
-    text: 'IA analítica com recomendações automáticas',
-  },
-  {
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-        <polyline points="9 22 9 12 15 12 15 22" />
-      </svg>
-    ),
-    text: 'Controle de estoque e alertas de cobertura',
-  },
-  {
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-      </svg>
-    ),
-    text: 'Assistente técnico especializado em Yamaha',
-  },
-]
-
+// Cada perfil de demonstração é apresentado como um modelo da linha, igual à vitrine do site.
 const DEMO_ACCOUNTS = [
-  { label: 'Titular', email: 'titular@nippon.com', hint: 'vê tudo' },
-  { label: 'Gerente', email: 'gerente@nippon.com', hint: 'gestão' },
-  { label: 'Vendedor', email: 'vendedor@nippon.com', hint: 'comercial' },
-  { label: 'Consultor', email: 'consultor@yamaha.com', hint: 'analítico' },
-  { label: 'Mecânico', email: 'mecanico@nippon.com', hint: 'técnico' },
+  { label: 'Titular',   email: 'titular@nippon.com',   hint: 'Vê a loja inteira',          foto: '/yamaha/m-r7.png',      chip: 'Gestão' },
+  { label: 'Gerente',   email: 'gerente@nippon.com',   hint: 'Toca a operação do dia',     foto: '/yamaha/m-tracer.png',  chip: 'Gestão' },
+  { label: 'Vendedor',  email: 'vendedor@nippon.com',  hint: 'Leads, CRM e playbook',      foto: '/yamaha/m-nmax.png',    chip: 'Comercial' },
+  { label: 'Consultor', email: 'consultor@yamaha.com', hint: 'A visão da Yamaha na loja',  foto: '/yamaha/m-mt07.png',    chip: 'Yamaha' },
+  { label: 'Mecânico',  email: 'mecanico@nippon.com',  hint: 'Assistente técnico com IA',  foto: '/yamaha/m-lander.png',  chip: 'Oficina' },
 ]
 
 export default function LoginPage() {
@@ -143,237 +24,139 @@ export default function LoginPage() {
     setEmail(demoEmail)
     setPassword('yamaha2026')
     setError('')
+    document.getElementById('login-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError('')
-    const res = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
+    const res = await signIn('credentials', { email, password, redirect: false })
     setLoading(false)
-    if (res?.error) {
-      setError('Email ou senha inválidos')
-    } else {
-      router.push('/')
-    }
+    if (res?.error) setError('Email ou senha inválidos')
+    else router.push('/')
   }
 
+  const input =
+    'w-full h-12 rounded-full px-5 text-[15px] outline-none bg-[#fff] text-[#111] placeholder-[#8A929C] border border-[#D0D0D5] focus:border-[#2C2CFF] focus:ring-[3px] focus:ring-[#2C2CFF]/15'
+
   return (
-    <div className="min-h-screen flex bg-[#070A10]">
-      {/* ── LEFT PANEL ── */}
-      <div
-        className="hidden lg:flex lg:w-[52%] relative flex-col justify-center p-12 overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #001a52 0%, #003087 45%, #0a1a3a 100%)',
-        }}
-      >
-        {/* Decorative glow circles */}
-        <div
-          className="absolute top-[-120px] right-[-120px] w-[420px] h-[420px] rounded-full opacity-20 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #0066ff 0%, transparent 70%)' }}
-        />
-        <div
-          className="absolute bottom-[-80px] left-[-80px] w-[320px] h-[320px] rounded-full opacity-15 pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #0044c8 0%, transparent 70%)' }}
-        />
-
-        {/* Grid overlay */}
-        <div
-          className="absolute inset-0 opacity-[0.04] pointer-events-none"
-          style={{
-            backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
-          }}
-        />
-
-        {/* Headline */}
-        <div className="relative z-10">
-          <h1 className="text-4xl xl:text-5xl font-black text-white leading-tight mb-4">
-            Gestão inteligente{' '}
-            <span className="text-[#60a5fa]">começa</span>
-            <br />
-            com dados reais.
-          </h1>
-          <p className="text-[#93bce8] text-base leading-relaxed mb-10 max-w-sm">
-            Varejo, estoque, leads e NPS em um único cockpit. Com IA que interpreta
-            e recomenda ações concretas.
-          </p>
-
-          {/* Feature list */}
-          <ul className="space-y-3 mb-8">
-            {features.map((f, i) => (
-              <li key={i} className="flex items-center gap-3">
-                <span
-                  className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                  style={{ background: 'rgba(255,255,255,0.08)', color: '#60a5fa' }}
-                >
-                  {f.icon}
-                </span>
-                <span className="text-[#c6ddf5] text-sm">{f.text}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Terminal typewriter */}
-          <TerminalTypewriter />
-
-          {/* Quote */}
-          <div className="mt-8">
-            <div className="h-px w-12 bg-[#0066ff] mb-4" />
-            <p className="text-[#5a82b0] text-xs italic leading-relaxed max-w-xs">
-              "Quem controla os dados, controla o resultado."
-            </p>
-          </div>
+    <div className="min-h-[100dvh] bg-[#fff] text-[#111]" data-theme="light">
+      {/* Faixa azul-marinho do site */}
+      <div className="h-10 bg-[#070633]">
+        <div className="mx-auto max-w-[1600px] h-full px-4 md:px-10 flex items-center justify-between text-[13px] text-white/90">
+          <span>Um legado de paixão pelo motociclismo, agora com inteligência na gestão</span>
+          <span className="hidden md:flex items-center gap-2"><LockKeyhole size={13} /> Acesso restrito à rede</span>
         </div>
       </div>
 
-      {/* ── RIGHT PANEL ── */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 relative overflow-hidden">
-        {/* Profundidade: glows + grid sutil (espelha o lado esquerdo) */}
-        <div
-          className="absolute top-[-140px] right-[-100px] w-[460px] h-[460px] rounded-full opacity-[0.12] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #0066ff 0%, transparent 70%)' }}
-        />
-        <div
-          className="absolute bottom-[-120px] left-[-100px] w-[380px] h-[380px] rounded-full opacity-[0.08] pointer-events-none"
-          style={{ background: 'radial-gradient(circle, #003087 0%, transparent 70%)' }}
-        />
-        <div
-          className="absolute inset-0 opacity-[0.025] pointer-events-none"
-          style={{
-            backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
-            backgroundSize: '52px 52px',
-          }}
-        />
+      {/* Barra branca */}
+      <div className="border-b border-[#E4E4E7]">
+        <div className="mx-auto max-w-[1600px] h-[88px] px-4 md:px-10 flex items-center gap-3">
+          <img src="/yamaha/yamaha-logo.png" alt="Yamaha" className="h-9 w-auto" />
+          <span className="h-8 w-px bg-[#D0D0D5]" />
+          <span className="yh-display text-[17px] leading-none uppercase tracking-wide">Smart<br /><b>Dealer</b></span>
+        </div>
+      </div>
 
-        <div className="w-full max-w-[400px] relative z-10">
-          {/* Logo */}
-          <div className="flex justify-center mb-6">
-            <img
-              src="/logo-smart-dealer.png"
-              alt="Smart Dealer"
-              className="h-24 w-auto object-contain"
-            />
+      {/* Hero com a foto de corrida */}
+      <section className="relative overflow-hidden bg-[#070633]">
+        <img src="/yamaha/hero-racing.jpg" alt="" className="absolute inset-0 h-full w-full object-cover object-[70%_center]" />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(7,6,51,.92) 0%, rgba(7,6,51,.72) 38%, rgba(7,6,51,.10) 70%, rgba(7,6,51,0) 100%)' }} />
+
+        <div className="relative mx-auto max-w-[1600px] px-4 md:px-10 py-14 lg:py-0 lg:min-h-[calc(100dvh-128px)] grid lg:grid-cols-[1fr_440px] gap-10 items-center">
+          <div className="text-white yh-reveal">
+            <h1 className="yh-title text-[clamp(44px,6.4vw,96px)] text-white">
+              A concessionária<br />inteira <span className="text-white/55">numa tela</span>
+            </h1>
+            <p className="mt-6 max-w-[520px] text-[17px] leading-relaxed text-white/85">
+              Varejo, estoque, leads, NPS e pós-vendas com os dados reais da loja.
+              A IA lê os números e diz qual é a próxima ação.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-[15px] text-white/85">
+              <span><b className="yh-display text-[28px] text-white mr-1.5">25</b>módulos</span>
+              <span><b className="yh-display text-[28px] text-white mr-1.5">5</b>perfis de acesso</span>
+              <span><b className="yh-display text-[28px] text-white mr-1.5">60 s</b>para ler a planilha nova</span>
+            </div>
           </div>
 
-          {/* Card glass */}
-          <div
-            className="rounded-2xl p-7 sm:p-8"
-            style={{
-              background: 'rgba(255,255,255,0.035)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              boxShadow: '0 24px 60px -12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
-              backdropFilter: 'blur(12px)',
-            }}
-          >
-            <h2 className="text-2xl font-bold text-white mb-1">Bem-vindo de volta</h2>
-            <p className="text-[#7B8AA0] text-sm mb-7">
-              Entre para acompanhar sua concessionária
-            </p>
+          <div id="login-card" className="yh-reveal rounded-2xl bg-[#fff] p-7 sm:p-9 shadow-[0_30px_80px_-20px_rgba(0,0,0,.55)]" style={{ animationDelay: '80ms' }}>
+            <h2 className="yh-title text-[34px]">Entrar no <span className="yh-mute">sistema</span></h2>
+            <p className="mt-2 text-[15px] text-[#596573]">Use o acesso da sua concessionária.</p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Email */}
-              <div>
-                <label className="block text-[11px] uppercase tracking-wider text-[#9CA3AF] mb-1.5 font-medium">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="titular@nippon.com"
-                  className="w-full bg-[#0B0F18] border border-[#212B3D] rounded-xl px-4 py-3 text-white placeholder-[#374151] text-sm focus:outline-none focus:border-[#3B6FE0] focus:ring-2 focus:ring-[#003087]/40 transition-all"
-                  required
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="mt-7 space-y-4">
+              <label className="block">
+                <span className="block text-[13px] font-medium text-[#495461] mb-1.5 pl-1">Email</span>
+                <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="titular@nippon.com" className={input} required />
+              </label>
+              <label className="block">
+                <span className="block text-[13px] font-medium text-[#495461] mb-1.5 pl-1">Senha</span>
+                <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" className={input} required />
+              </label>
 
-              {/* Password */}
-              <div>
-                <label className="block text-[11px] uppercase tracking-wider text-[#9CA3AF] mb-1.5 font-medium">
-                  Senha
-                </label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full bg-[#0B0F18] border border-[#212B3D] rounded-xl px-4 py-3 text-white placeholder-[#374151] text-sm focus:outline-none focus:border-[#3B6FE0] focus:ring-2 focus:ring-[#003087]/40 transition-all"
-                  required
-                />
-              </div>
-
-              {/* Error */}
               {error && (
-                <div className="flex items-center gap-2 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-xl px-4 py-3 text-[#F87171] text-sm">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-                  </svg>
-                  {error}
+                <div className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm bg-[#E40011]/[.07] text-[#C4000F]">
+                  <CircleAlert size={16} /> {error}
                 </div>
               )}
 
-              {/* Submit */}
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full font-semibold py-3 rounded-xl text-white text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group mt-1"
-                style={{ background: 'linear-gradient(135deg, #003087, #0044c8)', boxShadow: '0 8px 24px -6px rgba(0,68,200,0.5)' }}
+                className="w-full h-12 rounded-full bg-[#070633] text-white font-semibold text-[15px] flex items-center justify-center gap-2 disabled:opacity-60 hover:bg-[#15146B] active:scale-[.98]"
+                style={{ transition: 'background-color 150ms ease-out, transform 120ms ease-out' }}
               >
-                <span
-                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ background: 'linear-gradient(135deg, #0044c8, #0055e0)' }}
-                />
-                <span className="relative">
-                  {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" opacity=".25"/><path d="M21 12a9 9 0 00-9-9" />
-                      </svg>
-                      Entrando...
-                    </span>
-                  ) : (
-                    'Entrar'
-                  )}
-                </span>
+                {loading ? <><LoaderCircle size={17} className="animate-spin" /> Entrando</> : <>Entrar <ArrowRight size={17} /></>}
               </button>
             </form>
 
-            {/* Acesso de demonstração */}
-            <div className="mt-6 pt-5" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
-              <p className="text-[10px] uppercase tracking-wider text-[#5A6B85] mb-2.5 text-center">
-                Acesso de demonstração · 1 clique
-              </p>
-              <div className="flex flex-wrap justify-center gap-2">
+            <div className="mt-6 pt-5 border-t border-[#E4E4E7]">
+              <p className="text-[13px] text-[#596573] mb-2.5">Demonstração em um clique:</p>
+              <div className="flex flex-wrap gap-2">
                 {DEMO_ACCOUNTS.map(d => (
-                  <button
-                    key={d.email}
-                    type="button"
-                    onClick={() => fillDemo(d.email)}
-                    className="group flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-all"
-                    style={{ background: 'rgba(96,165,250,0.08)', border: '1px solid rgba(96,165,250,0.18)' }}
-                  >
-                    <span className="font-medium text-[#cfe0f5]">{d.label}</span>
-                    <span className="text-[10px] text-[#5A6B85] group-hover:text-[#93bce8]">{d.hint}</span>
+                  <button key={d.email} type="button" onClick={() => fillDemo(d.email)}
+                    className="px-3.5 py-1.5 rounded-full text-[13px] font-medium border"
+                    style={{
+                      borderColor: email === d.email ? '#2C2CFF' : '#D0D0D5',
+                      color: email === d.email ? '#2C2CFF' : '#495461',
+                      background: email === d.email ? 'rgba(44,44,255,.06)' : '#fff',
+                      transition: 'border-color 150ms ease-out, color 150ms ease-out',
+                    }}>
+                    {d.label}
                   </button>
                 ))}
               </div>
             </div>
           </div>
-
-          {/* Footer seguro */}
-          <div className="flex items-center justify-center gap-2 mt-5">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5A6B85" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0110 0v4" />
-            </svg>
-            <span className="text-[11px] text-[#5A6B85]">Conexão segura · Yamahaway 2026</span>
-          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Vitrine de perfis, no formato da vitrine de modelos */}
+      <section className="mx-auto max-w-[1600px] px-4 md:px-10 py-16">
+        <h2 className="yh-title text-center text-[clamp(34px,4vw,56px)]">Escolha o seu <span className="yh-mute">acesso</span></h2>
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {DEMO_ACCOUNTS.map(d => (
+            <button key={d.email} type="button" onClick={() => fillDemo(d.email)} className="yh-product group text-left p-4 pb-5">
+              <span className="yh-chip">{d.chip}</span>
+              <div className="aspect-[4/3] flex items-center justify-center overflow-hidden">
+                <img src={d.foto} alt="" className="yh-photo max-h-full w-auto object-contain" />
+              </div>
+              <p className="yh-display text-[20px] font-bold uppercase tracking-wide">{d.label}</p>
+              <div className="mt-1 flex items-center justify-between text-[14px] text-[#596573]">
+                <span>{d.hint}</span>
+                <ArrowRight size={16} className="text-[#2C2CFF] opacity-0 group-hover:opacity-100" style={{ transition: 'opacity 150ms ease-out' }} />
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <footer className="bg-[#070633] text-white/70 text-[13px]">
+        <div className="mx-auto max-w-[1600px] px-4 md:px-10 py-6 flex flex-wrap gap-3 justify-between">
+          <span>Smart Dealer · Yamahaway 2026</span>
+          <span>Conexão segura</span>
+        </div>
+      </footer>
     </div>
   )
 }
-

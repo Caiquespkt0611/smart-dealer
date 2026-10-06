@@ -133,15 +133,15 @@ export default function K2Page() {
           </div>
           <ul className="space-y-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
             <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>
-              A absorção saiu de ~30% no fim de 2025 para {fmtPct(atual.taxaAbsorcao)} em {MESES[atual.mes]}/{String(atual.ano).slice(2)} —
+              <span>A absorção saiu de ~30% no fim de 2025 para {fmtPct(atual.taxaAbsorcao)} em {MESES[atual.mes]}/{String(atual.ano).slice(2)} —
               o melhor mês foi {(() => { const m = [...meses].sort((a, b) => b.taxaAbsorcao - a.taxaAbsorcao)[0]; return `${MESES[m.mes]}/${String(m.ano).slice(2)} com ${fmtPct(m.taxaAbsorcao)}` })()}.
-            </li>
+            </span></li>
             <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>
-              Quando a absorção sobe, o ponto de equilíbrio despenca: em {(() => { const m = [...meses].sort((a, b) => a.pePctVendas - b.pePctVendas)[0]; return `${MESES[m.mes]}/${String(m.ano).slice(2)}` })()} bastavam {(() => { const m = [...meses].sort((a, b) => a.pePctVendas - b.pePctVendas)[0]; return `${fmtPct(m.pePctVendas)}` })()} das vendas de 0km para pagar a operação.
-            </li>
+              <span>Quando a absorção sobe, o ponto de equilíbrio despenca: em {(() => { const m = [...meses].sort((a, b) => a.pePctVendas - b.pePctVendas)[0]; return `${MESES[m.mes]}/${String(m.ano).slice(2)}` })()} bastavam {(() => { const m = [...meses].sort((a, b) => a.pePctVendas - b.pePctVendas)[0]; return `${fmtPct(m.pePctVendas)}` })()} das vendas de 0km para pagar a operação.
+            </span></li>
             <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>
-              Faltam {fmtBRL(faltaMC)} de MC de pós-vendas por mês para os 65% — cada R$ 1 de margem no balcão e na oficina desafoga a pressão sobre a venda de motos.
-            </li>
+              <span>Faltam {fmtBRL(faltaMC)} de MC de pós-vendas por mês para os 65% — cada R$ 1 de margem no balcão e na oficina desafoga a pressão sobre a venda de motos.
+            </span></li>
           </ul>
         </div>
 

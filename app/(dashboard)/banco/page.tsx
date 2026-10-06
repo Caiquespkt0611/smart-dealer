@@ -11,7 +11,7 @@ const fmtData = (iso: string) => { const [a, m, d] = iso.split('-'); return `${d
 
 const STATUS_OP = {
   novo:       { label: 'Novo',       c: 'var(--accent)',  bg: 'var(--accent-bg)' },
-  contatado:  { label: 'Contatado',  c: '#A855F7',        bg: '#A855F71A' },
+  contatado:  { label: 'Contatado',  c: '#5C5CFF',        bg: '#5C5CFF1A' },
   negociando: { label: 'Negociando', c: 'var(--warn)',    bg: 'var(--warn-bg)' },
   convertido: { label: 'Convertido', c: 'var(--ok)',      bg: 'var(--ok-bg)' },
 } as const
@@ -52,7 +52,7 @@ export default function BancoPage() {
         <Kpi icon={Trophy} accent="var(--ok)" label="Vendas resgatadas (Liberacred)" value={`${c.convertidos}`} sub={`${fmtBRL(c.receitaRecuperada)} recuperados`} />
         <Kpi icon={TrendingUp} accent="var(--accent)" label="Em jogo agora" value={fmtBRL(c.receitaEmJogo)} sub={`${d.oportunidades.length - c.convertidos} oportunidades abertas`} />
         <Kpi icon={AlertTriangle} accent="var(--warn)" label="Aprovados não pagos" value={fmtBRL(c.naoPagos)} sub={`${d.aprovadosNaoPagos.length} vendas já ganhas paradas`} />
-        <Kpi icon={Repeat} accent="#A855F7" label="Quitações chegando" value={`${c.recompra}`} sub="clientes voltando ao mercado" />
+        <Kpi icon={Repeat} accent="var(--accent)" label="Quitações chegando" value={`${c.recompra}`} sub="clientes voltando ao mercado" />
       </div>
 
       {/* Funil Liberacred */}

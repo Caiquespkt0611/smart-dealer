@@ -3,9 +3,11 @@ import { AlertaBanner } from '@/components/dashboard/AlertaBanner'
 import { ChatWidget } from '@/components/dashboard/ChatWidget'
 import { MetaRing } from '@/components/charts/MetaRing'
 import { VendasHistChart } from '@/components/charts/VendasHistChart'
+import { HeroCarousel, type HeroSlide } from '@/components/dashboard/HeroCarousel'
+import { fotoModelo } from '@/components/layout/nav'
 import {
   TrendingUp, Users, Star, Trophy,
-  CheckCircle, Clock, AlertTriangle, Zap,
+  CheckCircle, Clock, Zap, CircleCheck,
 } from 'lucide-react'
 
 function fmtBRL(v: number) {
@@ -39,7 +41,7 @@ function KpiCard({
 }) {
   const s = status ? statusStyle(status) : null
   return (
-    <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col gap-3">
+    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm flex flex-col gap-4">
       <div className="flex items-start justify-between">
         <p className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">{label}</p>
         <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${s ? s.bg : 'bg-blue-50'}`}>
@@ -48,7 +50,7 @@ function KpiCard({
       </div>
       <div>
         <div className="flex items-baseline gap-1">
-          <span className="text-3xl font-bold tabular-nums text-slate-900">{value}</span>
+          <span className="yh-display text-[44px] leading-none font-bold tabular-nums text-slate-900">{value}</span>
           {unit && <span className="text-sm text-slate-600">{unit}</span>}
         </div>
         <p className="text-xs text-slate-600 mt-1">{sub}</p>
@@ -88,20 +90,49 @@ export default async function DashboardPage({
   const kaizenTotal = kaizenLCR + kaizenNpsV + kaizenNpsP
 
   const critcos = data.estoqueAlertas.filter(e => e.status === 'CRITICO')
+  const piorEstoque = data.estoqueAlertas[0]
+
+  const slides: HeroSlide[] = [
+    data.modo === 'largada'
+      ? {
+          img: '/yamaha/hero-racing.jpg', pos: '70% center',
+          title: <>{data.ritmoNecessario} motos <span className="text-white/55">por dia</span></>,
+          sub: `É o ritmo que a carta de ${data.meta} pede em ${data.nomeMesCorrente.toLowerCase()}, com ${data.diasUteisMes} dias úteis. ${data.nomeMesFechado} fechou com ${data.fechamentoAnterior}.`,
+          href: '/varejo', cta: 'Ver o varejo',
+        }
+      : {
+          img: '/yamaha/hero-racing.jpg', pos: '70% center',
+          title: <>{data.vendasMes} motos <span className="text-white/55">vendidas</span></>,
+          sub: `A projeção de ${data.nomeMesCorrente.toLowerCase()} é ${data.projecao} motos, ${data.pctAtingimento}% da carta de ${data.meta}.`,
+          href: '/varejo', cta: 'Ver o varejo',
+        },
+    ...(piorEstoque ? [{
+      img: '/yamaha/hero-r7.webp', pos: '60% center',
+      title: <>{piorEstoque.modelo} <span className="text-white/55">com {piorEstoque.cobertura} dias</span></>,
+      sub: `${critcos.length > 0 ? `${critcos.length} modelo(s) com cobertura crítica. ` : ''}${piorEstoque.sugestaoCompra > 0 ? `Sugestão de compra: ${piorEstoque.sugestaoCompra} unidades.` : 'Estoque acompanhado modelo a modelo.'}`,
+      href: '/estoque', cta: 'Ver o estoque',
+    }] : []),
+    {
+      img: '/yamaha/hero-tracer.webp', pos: '80% center',
+      title: <>{data.rankingPos}º no <span className="text-white/55">ranking</span></>,
+      sub: `Entre ${data.rankingTotal} concessionárias da regional. Prêmio potencial de ${fmtBRL(data.premioPotencial)}.`,
+      href: '/performance', cta: 'Ver a performance',
+    },
+  ]
 
   return (
-    <div className="space-y-5 pb-24">
+    <div className="space-y-5 pb-24 yh-reveal">
+
+      <HeroCarousel slides={slides} />
 
       {(critcos.length > 0 || data.pctAtingimento < 80) && (
         <AlertaBanner estoqueAlertas={critcos} projecaoPct={data.pctAtingimento} />
       )}
 
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Dashboard</h1>
-        <p className="text-sm text-slate-600 mt-0.5">
-          {loja} · {data.nomeMesCorrente}/{data.ano} · carta {data.meta} motos
-          {data.modo === 'largada' && ` · aguardando primeiras vendas do mês`}
+      <div className="flex flex-wrap items-end justify-between gap-3 pt-6">
+        <h1>{loja} <span className="text-[var(--text-tertiary)]">em {data.nomeMesCorrente.toLowerCase()}</span></h1>
+        <p className="text-sm text-slate-600">
+          Carta de {data.meta} motos{data.modo === 'largada' && ' · aguardando as primeiras vendas do mês'}
         </p>
       </div>
 
@@ -239,43 +270,42 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      {/* Estoque Crítico */}
+      {/* Estoque: vitrine de modelos, como no site */}
       {data.estoqueAlertas.length > 0 && (
-        <section>
-          <div className="flex items-center gap-2 mb-3">
-            <AlertTriangle size={13} className="text-amber-500" />
-            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-slate-600">
-              Estoque — Alertas de Cobertura
-            </h2>
-            <span className="ml-auto text-[10px] text-slate-600">
+        <section className="pt-8">
+          <div className="flex flex-wrap items-end justify-between gap-3 mb-6">
+            <h2 className="yh-title text-[clamp(30px,3.4vw,48px)]">Estoque que pede <span className="yh-mute">atenção</span></h2>
+            <span className="text-sm text-slate-600">
               {data.estoqueAlertas.filter(e => e.status === 'CRITICO').length} crítico(s) ·{' '}
-              {data.estoqueAlertas.filter(e => e.status === 'ATENCAO').length} atenção
+              {data.estoqueAlertas.filter(e => e.status === 'ATENCAO').length} em atenção
             </span>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {data.estoqueAlertas.map(e => {
               const s = statusStyle(e.status as Status)
-              const pctCob = Math.min((e.cobertura / 45) * 100, 100)
+              const foto = fotoModelo(e.modelo)
               return (
-                <div key={e.modelo} className={`bg-white rounded-xl p-4 flex flex-col gap-2.5 border ${s.border}`}>
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="text-sm font-semibold text-slate-900 leading-tight">{e.modelo}</p>
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full shrink-0 tabular-nums ${s.bg} ${s.text}`}>
-                      {e.cobertura}d
-                    </span>
+                <div key={e.modelo} className="yh-product group p-4 pb-5 flex flex-col">
+                  <div className="flex items-center justify-between">
+                    <span className="yh-chip">{e.status === 'CRITICO' ? 'Crítico' : e.status === 'ATENCAO' ? 'Atenção' : 'OK'}</span>
+                    <span className={`text-xs font-bold tabular-nums ${s.text}`}>{e.cobertura} dias</span>
                   </div>
-                  <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full ${e.status === 'CRITICO' ? 'bg-red-400' : e.status === 'ATENCAO' ? 'bg-amber-400' : 'bg-emerald-400'}`}
-                      style={{ width: `${pctCob}%` }}
-                    />
+                  <div className="aspect-[16/11] flex items-center justify-center overflow-hidden my-2">
+                    {foto
+                      ? <img src={foto} alt={e.modelo} className="yh-photo max-h-full w-auto object-contain" />
+                      : <span className="yh-display text-[56px] font-bold text-slate-300">{e.modelo.slice(0, 2)}</span>}
                   </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-slate-600">
-                      Estoque: <span className="text-slate-700 font-medium">{e.estoqueTotal}</span> un
-                    </span>
+                  <p className="yh-display text-[19px] font-bold uppercase tracking-wide text-slate-900 leading-tight">{e.modelo}</p>
+                  <div className="mt-3 flex items-end justify-between gap-3">
+                    <div className="space-y-1 text-[13px] text-slate-600">
+                      <p className="flex items-center gap-1.5"><CircleCheck size={15} className="text-slate-500" /> {e.estoqueTotal} un em estoque</p>
+                      <p className="flex items-center gap-1.5"><CircleCheck size={15} className="text-slate-500" /> {e.cobertura} dias de cobertura</p>
+                    </div>
                     {e.sugestaoCompra > 0 && (
-                      <span className={`font-semibold ${s.text}`}>+ comprar {e.sugestaoCompra}</span>
+                      <div className="text-right shrink-0">
+                        <p className="text-[13px] text-slate-600">Comprar</p>
+                        <p className="yh-display text-[26px] leading-none font-bold tabular-nums" style={{ color: 'var(--yh-green)' }}>+{e.sugestaoCompra}</p>
+                      </div>
                     )}
                   </div>
                 </div>

@@ -2,96 +2,93 @@
 @import "./theme-overrides.css";
 
 /* ═══════════════════════════════════════════════════════════════
-   SMART DEALER — Design System
-   Dois temas (escuro/claro). Fonte única de variáveis.
+   SMART DEALER · Design System (identidade do yamaha-motor.com.br)
+   Claro é o padrão: fundo branco, card cinza sem borda, faixa
+   azul-marinho, título condensado em caixa alta, azul elétrico
+   para o que é ação. O escuro é a mesma marca à noite.
    Tudo (incluindo SVGs e gráficos) lê estas variáveis.
    ═══════════════════════════════════════════════════════════════ */
 
 :root,
-[data-theme="dark"] {
-  --yamaha-blue: #1E5FE8;
-  --yamaha-red: #E40521;
+[data-theme="light"] {
+  --yh-navy: #070633;
+  --yh-blue: #2C2CFF;
+  --yh-red: #E40011;
+  --yh-green: #2E9E52;
 
-  --bg-main: #080B12;
-  --bg-elevated: #121826;
-  --bg-elevated-2: #1A2233;
-  --bg-inset: #0C111B;
+  /* nomes antigos, usados pelas páginas */
+  --yamaha-blue: #070633;
+  --yamaha-red: #E40011;
 
-  --border: #283145;
-  --border-strong: #38435C;
+  --bg-main: #FFFFFF;
+  --bg-elevated: #F4F4F5;
+  --bg-elevated-2: #EAEAEC;
+  --bg-inset: #FFFFFF;
+  --bg-mega: #FAFAFA;
 
-  --text-primary: #FFFFFF;
-  --text-secondary: #C7CFE0;
-  --text-tertiary: #94A0B8;
+  --border: #E4E4E7;
+  --border-strong: #D0D0D5;
 
-  --ok: #2DD4A7;     --ok-bg: rgba(45,212,167,.14);     --ok-border: rgba(45,212,167,.40);
-  --warn: #FBBF24;   --warn-bg: rgba(251,191,36,.14);   --warn-border: rgba(251,191,36,.40);
-  --danger: #FB6B7E; --danger-bg: rgba(251,107,126,.14);--danger-border: rgba(251,107,126,.42);
-  --accent: #5B9DFF; --accent-bg: rgba(91,157,255,.14);
+  --text-primary: #111111;
+  --text-secondary: #495461;
+  --text-tertiary: #596573;
 
-  --chart-track: #1C2433;
-  --chart-grid: #1C2433;
-  --chart-axis: #94A0B8;
+  --ok: #1F8A43;     --ok-bg: rgba(46,158,82,.10);   --ok-border: rgba(46,158,82,.30);
+  --warn: #B86E00;   --warn-bg: rgba(230,145,0,.10); --warn-border: rgba(230,145,0,.32);
+  --danger: #D0101E; --danger-bg: rgba(228,0,17,.07);--danger-border: rgba(228,0,17,.28);
+  --accent: #2C2CFF; --accent-bg: rgba(44,44,255,.08);
 
-  --sidebar-bg: #0B0F18;
-  --sidebar-item: #9AA0B0;
-  --sidebar-icon: #6B748A;
-  --sidebar-muted: #5B677E;
-  --topbar-bg: rgba(11,15,24,.85);
+  --chart-track: #E6E6E9;
+  --chart-grid: #ECECEE;
+  --chart-axis: #7C8591;
 
-  --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0,0,0,0.45);
-  --app-glow-1: rgba(30,95,232,0.10);
-  --app-glow-2: rgba(30,95,232,0.06);
-  --logo-filter: brightness(0) invert(1);
+  --shadow-card: none;
+  --shadow-pop: 0 24px 60px -24px rgba(7,6,51,.30), 0 2px 6px rgba(7,6,51,.06);
+  --scrim: rgba(7,6,51,.28);
 }
 
-[data-theme="light"] {
-  --yamaha-blue: #003087;
-  --yamaha-red: #E40521;
+[data-theme="dark"] {
+  --yh-navy: #04031A;
+  --yh-blue: #8080FF;
+  --yh-red: #FF3B47;
+  --yh-green: #45C46E;
 
-  --bg-main: #EEF2F8;
-  --bg-elevated: #FFFFFF;
-  --bg-elevated-2: #F1F5F9;
-  --bg-inset: #F8FAFC;
+  --yamaha-blue: #3A3AFF;
+  --yamaha-red: #FF3B47;
 
-  --border: #E2E8F0;
-  --border-strong: #CBD5E1;
+  --bg-main: #0A0926;
+  --bg-elevated: #14133A;
+  --bg-elevated-2: #1D1C4A;
+  --bg-inset: #0E0D2E;
+  --bg-mega: #0E0D2E;
 
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-tertiary: #64748B;
+  --border: #24235A;
+  --border-strong: #33327A;
 
-  --ok: #059669;     --ok-bg: rgba(5,150,105,.10);   --ok-border: rgba(5,150,105,.32);
-  --warn: #D97706;   --warn-bg: rgba(217,119,6,.10); --warn-border: rgba(217,119,6,.32);
-  --danger: #DC2626; --danger-bg: rgba(220,38,38,.10);--danger-border: rgba(220,38,38,.32);
-  --accent: #2563EB; --accent-bg: rgba(37,99,235,.10);
+  --text-primary: #FFFFFF;
+  --text-secondary: #CACBE8;
+  --text-tertiary: #9A9CC4;
 
-  --chart-track: #E5EAF1;
-  --chart-grid: #EEF2F7;
-  --chart-axis: #94A3B8;
+  --ok: #45C46E;     --ok-bg: rgba(69,196,110,.14);  --ok-border: rgba(69,196,110,.38);
+  --warn: #FFB547;   --warn-bg: rgba(255,181,71,.14);--warn-border: rgba(255,181,71,.38);
+  --danger: #FF6B75; --danger-bg: rgba(255,107,117,.14);--danger-border: rgba(255,107,117,.40);
+  --accent: #8080FF; --accent-bg: rgba(128,128,255,.16);
 
-  --sidebar-bg: #FFFFFF;
-  --sidebar-item: #64748B;
-  --sidebar-icon: #94A3B8;
-  --sidebar-muted: #94A3B8;
-  --topbar-bg: rgba(255,255,255,.85);
+  --chart-track: #1E1D4A;
+  --chart-grid: #1E1D4A;
+  --chart-axis: #9A9CC4;
 
-  --shadow-card: 0 1px 2px rgba(15,23,42,0.05), 0 8px 24px rgba(15,23,42,0.07);
-  --app-glow-1: rgba(0,48,135,0.05);
-  --app-glow-2: rgba(0,48,135,0.03);
-  --logo-filter: none;
+  --shadow-card: none;
+  --shadow-pop: 0 24px 60px -20px rgba(0,0,0,.6);
+  --scrim: rgba(0,0,0,.5);
 }
 
 body {
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
-  background-image:
-    radial-gradient(900px 500px at 85% -10%, var(--app-glow-1), transparent 60%),
-    radial-gradient(700px 400px at -5% 110%, var(--app-glow-2), transparent 55%);
-  background-attachment: fixed;
-  transition: background-color .3s ease, color .3s ease;
+  transition: background-color .3s ease-out, color .3s ease-out;
 }
 
 * { box-sizing: border-box; }
@@ -100,20 +97,107 @@ body {
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; border: 2px solid var(--bg-main); }
 
+/* Em @layer components: as utilidades do Tailwind (text-white etc.) vencem quando aparecem juntas. */
+@layer components {
+/* ── Tipografia da marca ────────────────────────────────────── */
+.yh-display { font-family: var(--font-display), 'Arial Narrow', sans-serif; }
+.yh-display b, .yh-display strong { font-weight: 800; }
+
+/* Título de seção do site: "ESCOLHA A SUA SCOOTER", a última palavra em cinza */
+.yh-title {
+  font-family: var(--font-display), 'Arial Narrow', sans-serif;
+  font-weight: 800; text-transform: uppercase; letter-spacing: .005em;
+  line-height: .95; color: var(--text-primary);
+}
+.yh-title .yh-mute { color: var(--text-tertiary); }
+
+/* O h1 de toda página interna vira título condensado da marca */
+.yh-main h1 {
+  font-family: var(--font-display), 'Arial Narrow', sans-serif !important;
+  text-transform: uppercase;
+  font-weight: 800 !important;
+  font-size: clamp(30px, 3.2vw, 46px) !important;
+  line-height: .95 !important;
+  letter-spacing: .005em !important;
+  color: var(--text-primary) !important;
+}
+.yh-main h1 + p { margin-top: .6rem !important; font-size: 15px; }
+
 /* ── Componentes ────────────────────────────────────────────── */
 .card {
   background-color: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow-card);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  box-shadow: none;
 }
 .card-pad { padding: 1.25rem; }
 
 .section-label {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
-  text-transform: uppercase; color: var(--text-tertiary);
+  font-family: var(--font-display), 'Arial Narrow', sans-serif;
+  font-size: 15px; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--text-primary);
 }
 .kpi-value {
   font-variant-numeric: tabular-nums; font-weight: 700;
   color: var(--text-primary); letter-spacing: -0.02em;
+}
+
+/* Cabeçalho */
+.yh-bar { background: var(--bg-main); }
+.yh-search {
+  background: var(--bg-main);
+  border: 1px solid var(--border-strong);
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.yh-search:focus-within { border-color: var(--yh-blue); box-shadow: 0 0 0 3px var(--accent-bg); }
+.yh-search input::placeholder { color: var(--text-tertiary); }
+
+.yh-navlink { color: var(--text-secondary); transition: color 150ms ease-out; }
+.yh-navlink:hover, .yh-navlink[data-on] { color: var(--text-primary); }
+.yh-navlink::after {
+  content: ''; position: absolute; left: 10px; right: 10px; bottom: -2px; height: 2px;
+  background: var(--yh-blue); transform: scaleX(0); transform-origin: left;
+  transition: transform 200ms ease-out;
+}
+.yh-navlink[data-on]::after { transform: scaleX(1); }
+
+.yh-tile { background: var(--bg-elevated); transition: background-color 150ms ease-out; }
+.yh-tile:hover { background: var(--bg-elevated-2); }
+.yh-tile .yh-tile-icon { transition: transform 200ms ease-out; }
+.yh-tile:hover .yh-tile-icon { transform: translateY(-3px); }
+
+.yh-scrim { background: var(--scrim); animation: yh-fade 200ms ease-out; }
+.yh-mega { animation: yh-drop 220ms ease-out; }
+.yh-pop { animation: yh-pop 160ms ease-out; transform-origin: top right; }
+
+@keyframes yh-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes yh-drop { from { opacity: 0; transform: translateY(-8px) } to { opacity: 1; transform: none } }
+@keyframes yh-pop  { from { opacity: 0; transform: scale(.96) } to { opacity: 1; transform: none } }
+
+/* Botão redondo branco das setas do carrossel */
+.yh-arrow {
+  width: 52px; height: 52px; border-radius: 999px; background: #fff; color: #111;
+  display: grid; place-items: center;
+  box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  transition: transform 150ms ease-out;
+}
+.yh-arrow:active { transform: scale(.95); }
+
+/* Card de produto do site: cinza, chip branco, foto multiplicada no fundo */
+.yh-product { background: var(--bg-elevated); border-radius: 12px; }
+.yh-product img.yh-photo { mix-blend-mode: multiply; transition: transform 300ms ease-out; }
+[data-theme="dark"] .yh-product img.yh-photo { mix-blend-mode: normal; background: #F4F4F5; border-radius: 10px; }
+.yh-product:hover img.yh-photo { transform: scale(1.04); }
+.yh-chip {
+  background: var(--bg-main); color: var(--text-secondary);
+  font-size: 13px; padding: 4px 10px; border-radius: 8px;
+}
+
+.yh-reveal { animation: yh-drop 400ms ease-out both; }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yh-mega, .yh-pop, .yh-scrim, .yh-reveal { animation: none; }
+  .yh-product:hover img.yh-photo, .yh-tile:hover .yh-tile-icon { transform: none; }
 }

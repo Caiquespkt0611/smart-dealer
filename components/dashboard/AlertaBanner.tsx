@@ -19,15 +19,11 @@ export function AlertaBanner({ estoqueAlertas, projecaoPct }: Props) {
   if (msgs.length === 0) return null
 
   return (
-    <div className="rounded-xl border border-[#EF4444] bg-[#EF444410] px-4 py-3 flex items-center gap-3">
-      <div className="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse shrink-0" />
-      <div className="flex-1">
-        <span className="text-sm font-semibold text-[#EF4444]">ALERTA: </span>
-        <span className="text-sm text-[#FCA5A5]">{msgs.join(' · ')}</span>
-      </div>
-      <span className="text-xs text-[#EF4444] font-medium uppercase tracking-wide shrink-0">
-        Ação necessária
-      </span>
+    <div className="rounded-xl px-5 py-3.5 flex items-center gap-3" style={{ background: 'var(--danger-bg)' }}>
+      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: 'var(--yh-red)' }} />
+      <p className="flex-1 text-sm" style={{ color: 'var(--text-primary)' }}>
+        <b style={{ color: 'var(--danger)' }}>Ação necessária.</b> {msgs.join(' · ')}
+      </p>
     </div>
   )
 }

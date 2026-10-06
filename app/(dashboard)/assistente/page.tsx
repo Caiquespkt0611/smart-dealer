@@ -26,7 +26,7 @@ export default function AssistentePage() {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }, [msgs, loading])
 
   async function sendMessage(text: string) {
@@ -50,7 +50,7 @@ export default function AssistentePage() {
   }
 
   return (
-    <div className="flex flex-col gap-4" style={{ height: 'calc(100vh - 8rem)' }}>
+    <div className="flex flex-col gap-4" style={{ height: 'calc(100dvh - 12.5rem)', minHeight: 520 }}>
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Assistente Técnico</h1>
         <p className="text-sm text-slate-400 mt-0.5">

@@ -29,7 +29,7 @@ export default function PesquisaPage() {
         <Kpi icon={ClipboardList} accent="var(--accent)" label="Amostra" value={`${d.respostas}/${d.convidados}`} sub={`${d.compraram} compraram · ${d.naoCompraram} não compraram`} />
         <Kpi icon={Star} accent="var(--warn)" label="Satisfação média" value={`${d.satisfacao.media.toFixed(1).replace('.', ',')}/5`} sub="como foi ser atendido?" />
         <Kpi icon={TrendingUp} accent="var(--ok)" label="NPS da pesquisa" value={`${d.satisfacao.npsPesquisa}`} sub="promotores − detratores" />
-        <Kpi icon={Target} accent="#A855F7" label="Respondido em ≤10 min" value={`${d.comparativo.depois.respondidoEm10min}%`} sub={`era ${d.comparativo.antes.respondidoEm10min}% antes do piloto`} />
+        <Kpi icon={Target} accent="var(--accent)" label="Respondido em ≤10 min" value={`${d.comparativo.depois.respondidoEm10min}%`} sub={`era ${d.comparativo.antes.respondidoEm10min}% antes do piloto`} />
       </div>
 
       <p className="text-xs -mt-2" style={{ color: 'var(--text-tertiary)' }}>Metodologia: {d.metodologia}.</p>

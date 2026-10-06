@@ -85,7 +85,7 @@ export function ShareTrendChart({ data }: { data: TrendPoint[] }) {
       <ResponsiveContainer width="100%" height="100%">
       <ComposedChart data={data} margin={{ top: 8, right: 4, left: 0, bottom: 0 }} barGap={2} barCategoryGap="22%">
         <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-track)" vertical={false} />
-        <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--chart-axis)', fontFamily: 'ui-monospace,monospace' }} axisLine={false} tickLine={false} />
+        <XAxis dataKey="mes" tick={{ fontSize: 10, fill: 'var(--chart-axis)', fontFamily: 'var(--font-display)' }} axisLine={false} tickLine={false} />
         <YAxis yAxisId="left" tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={44} />
         <YAxis yAxisId="right" orientation="right" domain={[0, 80]} tick={{ fontSize: 10, fill: YAMAHA }} axisLine={false} tickLine={false} width={34} unit="%" />
         <Tooltip content={<TrendTooltip />} cursor={{ fill: 'var(--border-strong)', fillOpacity: 0.12 }} />

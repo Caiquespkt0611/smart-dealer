@@ -1,7 +1,6 @@
 'use client'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { Sidebar } from './Sidebar'
-import { Topbar } from './Topbar'
+import { YamahaHeader } from './YamahaHeader'
 import { Suspense } from 'react'
 
 function DashboardShellInner({ children }: { children: React.ReactNode }) {
@@ -17,14 +16,13 @@ function DashboardShellInner({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
-        <Topbar loja={loja} onLojaChange={handleLojaChange} />
-        <main className="flex-1 overflow-y-auto p-6" style={{ backgroundColor: 'transparent' }}>
+    <div className="flex flex-col h-[100dvh] overflow-hidden">
+      <YamahaHeader loja={loja} onLojaChange={handleLojaChange} />
+      <main className="yh-main flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-[1600px] px-4 md:px-10 py-8">
           {children}
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
   )
 }

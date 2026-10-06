@@ -15,7 +15,7 @@ function ptOnArc(angleDeg: number, cx: number, cy: number, r: number) {
 
 export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugeProps) {
   const isOk = score >= meta
-  const accent = isOk ? '#2DD4A7' : score >= meta - 3 ? '#FBBF24' : '#FB6B7E'
+  const accent = isOk ? 'var(--ok)' : score >= meta - 3 ? 'var(--warn)' : 'var(--danger)'
 
   // Geometria do arco (semicírculo 180°→0°)
   const cx = 100, cy = 100, r = 80
@@ -74,12 +74,12 @@ export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugePr
             style={{ filter: `drop-shadow(0 0 5px ${accent}55)` }}
           />
           {/* Marcador da meta */}
-          <line x1={metaOut.x} y1={metaOut.y} x2={metaIn.x} y2={metaIn.y} stroke="#FBBF24" strokeWidth={2.5} strokeLinecap="round" />
+          <line x1={metaOut.x} y1={metaOut.y} x2={metaIn.x} y2={metaIn.y} stroke="var(--warn)" strokeWidth={2.5} strokeLinecap="round" />
           {/* Marcador nacional */}
           <circle cx={nacPt.x} cy={nacPt.y} r={3} fill="var(--chart-axis)" stroke="var(--bg-main)" strokeWidth={1.5} />
 
           {/* Score central */}
-          <text x={cx} y={cy - 8} textAnchor="middle" fill="var(--text-primary)" fontSize={34} fontWeight="800" fontFamily="ui-monospace,monospace">
+          <text x={cx} y={cy - 8} textAnchor="middle" fill="var(--text-primary)" fontSize={34} fontWeight="800" fontFamily="var(--font-display)">
             {score}
           </text>
           <text x={cx} y={cy + 10} textAnchor="middle" fill={accent} fontSize={10} fontWeight="700" letterSpacing="0.05em">
@@ -95,7 +95,7 @@ export function NpsGauge({ score, meta, nacional, label, kaizenPts }: NpsGaugePr
       {/* Legenda compacta */}
       <div className="flex items-center justify-center gap-4 mt-1 text-[10px]" style={{ color: 'var(--text-tertiary)' }}>
         <span className="flex items-center gap-1.5">
-          <span className="h-2 w-0.5 rounded-full" style={{ backgroundColor: '#FBBF24' }} /> Meta {meta}
+          <span className="h-2 w-0.5 rounded-full" style={{ backgroundColor: 'var(--warn)' }} /> Meta {meta}
         </span>
         <span className="flex items-center gap-1.5">
           <span className="h-2 w-2 rounded-full" style={{ backgroundColor: '#94A0B8' }} /> Nacional {nacional}

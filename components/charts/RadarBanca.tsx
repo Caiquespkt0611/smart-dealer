@@ -20,7 +20,7 @@ function RadarTooltip({ active, payload }: any) {
     <div className="rounded-xl px-4 py-3" style={{ backgroundColor: 'var(--bg-elevated-2)', border: '1px solid var(--border-strong)', boxShadow: '0 8px 24px rgba(0,0,0,.5)' }}>
       <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: 'var(--chart-axis)' }}>{p.criterio}</p>
       <p className="text-sm font-bold tabular-nums" style={{ color: 'var(--accent)' }}>Grupo 6: {String(p.grupo6).replace('.', ',')}</p>
-      <p className="text-xs tabular-nums" style={{ color: '#2DD4A7' }}>Top 3: {String(p.top3).replace('.', ',')}</p>
+      <p className="text-xs tabular-nums" style={{ color: 'var(--ok)' }}>Top 3: {String(p.top3).replace('.', ',')}</p>
       <p className="text-xs tabular-nums" style={{ color: 'var(--text-tertiary)' }}>Média geral: {String(p.media).replace('.', ',')}</p>
     </div>
   )
@@ -38,7 +38,7 @@ export function RadarBanca({ data }: { data: Ponto[] }) {
           <Legend wrapperStyle={{ fontSize: 10, color: 'var(--chart-axis)' }}
             formatter={v => v === 'grupo6' ? 'Grupo 6 — Smart Dealer' : v === 'top3' ? 'Média Top 3' : 'Média dos grupos'} />
           <Radar name="media" dataKey="media" stroke="var(--text-tertiary)" fill="var(--text-tertiary)" fillOpacity={0.08} strokeWidth={1.5} />
-          <Radar name="top3" dataKey="top3" stroke="#2DD4A7" fill="#2DD4A7" fillOpacity={0.08} strokeWidth={1.5} strokeDasharray="5 3" />
+          <Radar name="top3" dataKey="top3" stroke="var(--ok)" fill="var(--ok)" fillOpacity={0.08} strokeWidth={1.5} strokeDasharray="5 3" />
           <Radar name="grupo6" dataKey="grupo6" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.22} strokeWidth={2.5} />
         </RadarChart>
       </ResponsiveContainer>

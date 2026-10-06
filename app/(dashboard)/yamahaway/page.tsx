@@ -39,15 +39,15 @@ export default async function YamahawayPage() {
             </div>
             <ul className="space-y-2 text-xs" style={{ color: 'var(--text-secondary)' }}>
               <li className="flex gap-2"><span style={{ color: 'var(--ok)' }}>•</span>
-                Acima da <b>média geral em todos os 6 critérios</b> — em Inovação, 4,33 contra 3,10.</li>
+                <span>Acima da <b>média geral em todos os 6 critérios</b> — em Inovação, 4,33 contra 3,10.</span></li>
               <li className="flex gap-2"><span style={{ color: 'var(--ok)' }}>•</span>
-                No nível do <b>Top 3</b>: {acimaTop3} de 6 critérios acima da média dos três melhores grupos
-                (Planejamento, Foco no Cliente e Inovação).</li>
+                <span>No nível do <b>Top 3</b>: {acimaTop3} de 6 critérios acima da média dos três melhores grupos
+                (Planejamento, Foco no Cliente e Inovação).</span></li>
               <li className="flex gap-2"><span style={{ color: 'var(--warn)' }}>•</span>
-                Maiores distâncias para o Top 3: Trabalho em Equipe (−0,11) e Pesquisa (−0,07) — margens pequenas,
-                fecháveis com a execução desta fase.</li>
+                <span>Maiores distâncias para o Top 3: Trabalho em Equipe (−0,11) e Pesquisa (−0,07) — margens pequenas,
+                fecháveis com a execução desta fase.</span></li>
               <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>
-                A banca: <i>“vocês já subiram a expectativa de toda a banca — agora a responsabilidade é grande”</i>.</li>
+                <span>A banca: <i>“vocês já subiram a expectativa de toda a banca — agora a responsabilidade é grande”</i>.</span></li>
             </ul>
           </div>
           {campanha && (

@@ -17,7 +17,7 @@ export function MetaRing({ pct, projecao, meta, metaEmDobro, premioPotencial, pr
   const r = 70, cx = 90, cy = 90
   const circ = 2 * Math.PI * r
   const dash = (Math.min(pct, 100) / 100) * circ
-  const color = pct >= 80 ? '#2DD4A7' : pct >= 60 ? '#FBBF24' : '#FB6B7E'
+  const color = pct >= 80 ? 'var(--ok)' : pct >= 60 ? 'var(--warn)' : 'var(--danger)'
   const faltam = Math.max(0, meta - projecao)
   const superMeta = Math.ceil(meta * 1.1)
 
@@ -38,7 +38,7 @@ export function MetaRing({ pct, projecao, meta, metaEmDobro, premioPotencial, pr
             transform={`rotate(-90 ${cx} ${cy})`}
             style={{ filter: `drop-shadow(0 0 8px ${color}55)`, transition: 'stroke-dasharray .6s ease' }}
           />
-          <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--text-primary)" fontSize={32} fontWeight="800" fontFamily="ui-monospace,monospace">
+          <text x={cx} y={cy - 6} textAnchor="middle" fill="var(--text-primary)" fontSize={32} fontWeight="800" fontFamily="var(--font-display)">
             {pct}%
           </text>
           <text x={cx} y={cy + 13} textAnchor="middle" fill="var(--chart-axis)" fontSize={11}>da carta</text>
@@ -51,8 +51,8 @@ export function MetaRing({ pct, projecao, meta, metaEmDobro, premioPotencial, pr
       <div className="w-full space-y-1">
         <Row label={projecaoLabel} value={`${projecao} motos`} strong />
         <Row label="Carta" value={`${meta} motos`} />
-        {faltam > 0 && <Row label="Faltam" value={`${faltam} motos`} color="#FB6B7E" />}
-        <Row label="Prêmio" value={fmtBRL(premioPotencial)} color="#FBBF24" />
+        {faltam > 0 && <Row label="Faltam" value={`${faltam} motos`} color="var(--danger)" />}
+        <Row label="Prêmio" value={fmtBRL(premioPotencial)} color="var(--warn)" />
         {metaEmDobro ? (
           <div className="mt-2 rounded-lg px-3 py-1.5 text-xs text-center font-semibold"
             style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>
@@ -72,7 +72,7 @@ function Row({ label, value, strong, color }: { label: string; value: string; st
   return (
     <div className="flex justify-between items-center py-1.5 border-b" style={{ borderColor: 'var(--border)' }}>
       <span className="text-xs uppercase tracking-wide" style={{ color: 'var(--text-tertiary)' }}>{label}</span>
-      <span className="text-sm tabular-nums" style={{ color: color ?? (strong ? '#FFFFFF' : 'var(--text-secondary)'), fontWeight: strong || color ? 700 : 500 }}>
+      <span className="text-sm tabular-nums" style={{ color: color ?? (strong ? 'var(--text-primary)' : 'var(--text-secondary)'), fontWeight: strong || color ? 700 : 500 }}>
         {value}
       </span>
     </div>

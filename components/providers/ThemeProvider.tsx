@@ -9,13 +9,17 @@ interface ThemeContextType {
   toggleTheme: () => void
 }
 
-const ThemeContext = createContext<ThemeContextType>({ theme: 'dark', toggleTheme: () => {} })
+// Chave nova: com a identidade do site da Yamaha o padrão passou a ser o claro,
+// e quem tinha "dark" gravado na chave antiga começa no claro uma vez.
+export const THEME_KEY = 'sd-theme-yamaha'
+
+const ThemeContext = createContext<ThemeContextType>({ theme: 'light', toggleTheme: () => {} })
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('dark')
+  const [theme, setTheme] = useState<Theme>('light')
 
   useEffect(() => {
-    const stored = (localStorage.getItem('sd-theme') as Theme) || 'dark'
+    const stored = (localStorage.getItem(THEME_KEY) as Theme) || 'light'
     setTheme(stored)
     document.documentElement.setAttribute('data-theme', stored)
   }, [])
@@ -23,7 +27,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const toggleTheme = () => {
     setTheme(prev => {
       const next = prev === 'dark' ? 'light' : 'dark'
-      localStorage.setItem('sd-theme', next)
+      localStorage.setItem(THEME_KEY, next)
       document.documentElement.setAttribute('data-theme', next)
       return next
     })

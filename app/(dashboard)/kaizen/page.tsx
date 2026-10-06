@@ -188,7 +188,7 @@ function ScoreGauge({ obtido, max, base, pct }: { obtido: number; max: number; b
         {/* obtido */}
         <path d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`} fill="none" stroke={color} strokeWidth={16} strokeLinecap="round"
           strokeDasharray={`${fracObt * circ} ${circ}`} style={{ filter: `drop-shadow(0 0 6px ${color}66)` }} />
-        <text x={cx} y={cy - 18} textAnchor="middle" fill="var(--text-primary)" fontSize={34} fontWeight="800" fontFamily="ui-monospace,monospace">{obtido}</text>
+        <text x={cx} y={cy - 18} textAnchor="middle" fill="var(--text-primary)" fontSize={34} fontWeight="800" fontFamily="var(--font-display)">{obtido}</text>
         <text x={cx} y={cy + 2} textAnchor="middle" fill="var(--chart-axis)" fontSize={11}>de {max} pts possíveis</text>
       </svg>
       <p className="text-xs font-semibold -mt-2" style={{ color }}>

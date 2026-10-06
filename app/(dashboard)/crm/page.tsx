@@ -14,11 +14,12 @@ function fmtK(v: number) {
   return v >= 1000 ? `R$ ${(v / 1000).toFixed(0)}k` : fmtBRL(v)
 }
 
+// Funil em degradê de azul Yamaha: quanto mais perto da venda, mais escuro.
 const ESTAGIO_COR: Record<string, string> = {
-  'Novo': 'var(--accent)',
-  'Em contato': '#A855F7',
-  'Negociação': 'var(--warn)',
-  'Proposta': '#F97316',
+  'Novo': '#8A8AFF',
+  'Em contato': '#5C5CFF',
+  'Negociação': '#2C2CFF',
+  'Proposta': '#1A1AA8',
   'Fechado': 'var(--ok)',
   'Perdido': 'var(--danger)',
 }

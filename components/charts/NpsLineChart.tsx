@@ -42,8 +42,8 @@ export function NpsLineChart({ data }: NpsLineChartProps) {
     <ResponsiveContainer width="100%" height={220}>
       <LineChart data={chartData} margin={{ top: 8, right: 16, left: -16, bottom: 0 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-track)" vertical={false} />
-        <XAxis dataKey="label" tick={{ fontSize: 10, fill: 'var(--chart-axis)', fontFamily: 'ui-monospace,monospace' }} axisLine={false} tickLine={false} />
-        <YAxis domain={[80, 100]} tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={28} />
+        <XAxis dataKey="label" tick={{ fontSize: 10, fill: 'var(--chart-axis)', fontFamily: 'var(--font-display)' }} axisLine={false} tickLine={false} />
+        <YAxis domain={[80, 100]} tick={{ fontSize: 10, fill: 'var(--chart-axis)' }} axisLine={false} tickLine={false} width={36} />
         <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--border)', strokeWidth: 1 }} />
         <Legend wrapperStyle={{ fontSize: 10, color: 'var(--chart-axis)', paddingTop: 8 }} formatter={(v) => v === 'vendas' ? 'NPS Vendas' : 'NPS Pós-Vendas'} />
         <ReferenceLine y={93} stroke="var(--accent)" strokeDasharray="4 3" strokeWidth={1} label={{ value: 'Meta V 93', fill: 'var(--accent)', fontSize: 9, position: 'insideTopRight' }} />
