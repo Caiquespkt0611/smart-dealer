@@ -1,5 +1,7 @@
 import { consorcioData, calcularConsorcio } from '@/lib/consorcio-data'
-import { PiggyBank, Award, ShieldCheck, Users, AlertTriangle, Target } from 'lucide-react'
+import { passosConsorcio, vantagensConsorcio, vendeMais, caminhos, CONSORCIO_CONSULTA } from '@/lib/consorcio-yamaha'
+import ConsorcioKit from '@/components/consorcio/ConsorcioKit'
+import { PiggyBank, Award, ShieldCheck, Users, AlertTriangle, Target, TrendingUp, Route } from 'lucide-react'
 
 export const metadata = { title: 'Consórcio · Smart Dealer' }
 
@@ -27,6 +29,75 @@ export default function ConsorcioPage() {
         <Kpi icon={ShieldCheck} accent={c.retencao >= 88 ? 'var(--ok)' : 'var(--warn)'} label="Retenção da carteira" value={pct(c.retencao)} sub={`${c.canceladasAno} cancelamentos no ano`} />
         <Kpi icon={Award} accent={bq.trimestreAtual.elegivel ? 'var(--ok)' : 'var(--danger)'} label="Bônus Quality (3º tri)" value={fmtBRL(bq.trimestreAtual.bonusEstimado)} sub={bq.trimestreAtual.elegivel ? 'critérios atingidos ✓' : 'em risco'} />
       </div>
+
+      {/* Como funciona */}
+      <div className="card card-pad" data-cons="como-funciona">
+        <div className="flex items-center gap-2 mb-1">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent-bg)' }}>
+            <PiggyBank size={14} style={{ color: 'var(--accent)' }} />
+          </div>
+          <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Consórcio Yamaha: o consórcio da própria fábrica</h2>
+        </div>
+        <p className="text-xs mb-4" style={{ color: 'var(--text-tertiary)' }}>
+          Regras conferidas em {CONSORCIO_CONSULTA} no site oficial e no contrato Série T. Sem juros, sem entrada e sem taxa de adesão.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {passosConsorcio.map((e, i) => (
+            <div key={e.t} className="rounded-xl p-3" style={{ backgroundColor: 'var(--bg-inset)' }}>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold" style={{ backgroundColor: 'var(--accent)', color: '#fff' }}>{i + 1}</span>
+                <span className="text-xs font-bold" style={{ color: 'var(--text-primary)' }}>{e.t}</span>
+              </div>
+              <p className="text-[11px] leading-relaxed" style={{ color: 'var(--text-secondary)' }}>{e.s}</p>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-1.5 mt-3">
+          {vantagensConsorcio.map(v => (
+            <span key={v} className="text-[10.5px] px-2.5 py-1 rounded-full font-medium" style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)' }}>✓ {v}</span>
+          ))}
+        </div>
+      </div>
+
+      {/* Como ajuda a vender mais + qual caminho */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4" data-cons="vende-mais">
+        <div className="card card-pad lg:col-span-3">
+          <div className="flex items-center gap-2 mb-3">
+            <TrendingUp size={15} style={{ color: 'var(--ok)' }} />
+            <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Como o consórcio faz a loja vender mais</h2>
+          </div>
+          <div className="space-y-2.5">
+            {vendeMais.map((v, i) => (
+              <div key={v.t} className="flex gap-2.5">
+                <span className="w-5 h-5 shrink-0 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5" style={{ backgroundColor: 'var(--ok)', color: '#fff' }}>{i + 1}</span>
+                <div className="text-[11.5px] leading-relaxed">
+                  <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>{v.t}</p>
+                  <p style={{ color: 'var(--text-secondary)' }}>{v.s}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="card card-pad lg:col-span-2" data-cons="caminhos">
+          <div className="flex items-center gap-2 mb-3">
+            <Route size={15} style={{ color: 'var(--accent)' }} />
+            <h2 className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>Qual caminho oferecer</h2>
+          </div>
+          <div className="space-y-2">
+            {caminhos.map(c => (
+              <div key={c.oferta} className="rounded-xl p-3" style={{ backgroundColor: c.oferta.startsWith('Consórcio') ? 'var(--accent-bg)' : 'var(--bg-inset)' }}>
+                <p className="text-[11px]" style={{ color: 'var(--text-tertiary)' }}>{c.quando}</p>
+                <p className="text-sm font-bold" style={{ color: c.oferta.startsWith('Consórcio') ? 'var(--accent)' : 'var(--text-primary)' }}>{c.oferta}</p>
+                <p className="text-[11px]" style={{ color: 'var(--text-secondary)' }}>{c.obs}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <ConsorcioKit />
+
+      <h2 className="section-label">Carteira da loja · cenário de demonstração</h2>
 
       {/* Bônus Quality */}
       <div className="card card-pad" style={{ borderLeft: '4px solid var(--ok)' }}>
