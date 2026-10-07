@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const userMsg = `Gere o post para a campanha:
 - Modelo: ${modelo}
 - Objetivo: ${objetivo ?? 'girar estoque parado e atrair leads para anúncio pago'}
-${typeof campanha === 'string' && campanha ? `- Campanha oficial Yamaha em vigor (a arte já é a peça da montadora): ${campanha.slice(0, 200)}. A legenda tem que anunciar essas vantagens exatamente assim, deixar claro que o cliente escolhe uma delas, e fechar com "Consulte condições. Benefícios não cumulativos e válidos enquanto durarem os estoques."` : ''}
+${typeof campanha === 'string' && campanha ? `- Campanha oficial Yamaha em vigor (a arte já é a peça da montadora): ${campanha.slice(0, 200)}. Escreva o nome da campanha exatamente como está aqui, letra por letra (é "Faro", de faro de quem fareja a vantagem, nunca "Farol"). A legenda tem que anunciar essas vantagens exatamente assim, deixar claro que o cliente escolhe uma delas, e fechar com "Consulte condições. Benefícios não cumulativos e válidos enquanto durarem os estoques."` : ''}
 ${estoque ? `- Contexto interno (NÃO citar no post): ${estoque} unidades em estoque, ${cobertura} dias de cobertura.` : ''}
 O post é para tráfego pago no Instagram da concessionária. Foque em atrair quem está pesquisando moto na região.`
 
@@ -50,6 +50,14 @@ O post é para tráfego pago no Instagram da concessionária. Foque em atrair qu
       parsed = JSON.parse(clean)
     } catch {
       parsed = { headline: modelo, legenda: text, hashtags: [], cta: 'Chame no direct!', sugestaoArte: '' }
+    }
+
+    // o nome da campanha oficial não pode sair trocado (a IA escreveu "Farol de Vantagens" em 07/10)
+    if (typeof campanha === 'string' && /Faro de Vantagens/.test(campanha)) {
+      for (const k of ['headline', 'legenda', 'cta'] as const) {
+        if (typeof parsed[k] === 'string') parsed[k] = parsed[k].replace(/Farol de Vantagens/gi, 'Faro de Vantagens')
+      }
+      if (Array.isArray(parsed.hashtags)) parsed.hashtags = parsed.hashtags.map((h: string) => h.replace(/FarolDeVantagens/gi, 'FaroDeVantagens'))
     }
 
     return NextResponse.json({ campanha: parsed })
