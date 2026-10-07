@@ -12,6 +12,7 @@
 // esse cliente sumir nos meses em que ele está pagando: chamar no mês certo.
 
 import { planoLiberacred } from './liberacred-tabela'
+export { nomeModelo } from './liberacred-tabela'
 
 export interface ClienteLiberacred {
   cliente: string             // nome curto, nunca o nome completo
@@ -60,12 +61,8 @@ export const bancoData = {
   recusadosCdcTrimestre: 62,  // jul + ago + set
   ofertadosLiberacred: 31,    // recusados que receberam a proposta do Liberacred
 
-  // Mensagens que o vendedor dispara em 1 clique. Nunca prometer aprovação:
-  // o financiamento depende da proposta do banco quando o cliente fica apto.
-  mensagemOferta: (nome: string, modelo: string, parcelas: number, parcela: string, aptoApos: number) =>
-    `Oi, ${nome}! O financiamento da sua ${modelo} não saiu agora, mas o Banco Yamaha tem um caminho para você: o Liberacred. ` +
-    `Você parcela a entrada em ${parcelas}x de ${parcela}, sem comprovar renda, e com ${aptoApos} parcelas pagas em dia ` +
-    `já pode antecipar o restante e pedir o financiamento. Te mando a simulação?`,
+  // Mensagem do mês em que o cliente fica apto (a da recusa está no kit,
+  // components/banco/LiberacredKit.tsx). Nunca prometer aprovação.
   mensagemApto: (nome: string, modelo: string, pagas: number) =>
     `Parabéns, ${nome}! Você pagou ${pagas} parcelas do Liberacred em dia e já pode antecipar o restante ` +
     `e pedir o financiamento da sua ${modelo}. Vamos marcar a sua visita para montar a proposta?`,
@@ -99,11 +96,6 @@ export const bancoData = {
     { cliente: 'Fernanda Queiroz',  telefone: '(11) 97733-9012', motoAtual: 'Crosser 150',   anoMoto: 2022, parcelasRestantes: 2, dataQuitacao: '2026-10-19', valorUsadoEstimado: 12300, sugestaoUpgrade: 'Lander 250 ABS',       scoreRecompra: 90 },
     { cliente: 'Paulo E. Martins',  telefone: '(11) 99244-5566', motoAtual: 'Fluo 125',      anoMoto: 2024, parcelasRestantes: 4, dataQuitacao: '2026-12-08', valorUsadoEstimado: 10600, sugestaoUpgrade: 'NMAX Connected 160',   scoreRecompra: 79 },
   ] as ContratoQuitando[],
-}
-
-// nome da tabela oficial para a fala do vendedor: NMAX CONNECTED 160 ABS → NMAX Connected 160 ABS
-export function nomeModelo(m: string) {
-  return m.split(' ').map(w => /\d|^(ABS|NMAX|XTZ|YZF|TTR|ZR|DX)$/.test(w) ? w : w[0] + w.slice(1).toLowerCase()).join(' ')
 }
 
 // nome curto para a tela (Fernando de A. Caetano → Fernando C.)

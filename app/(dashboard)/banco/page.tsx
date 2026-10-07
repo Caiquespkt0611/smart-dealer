@@ -1,5 +1,6 @@
 import { bancoData, calcularBanco, nomeModelo, nomeCurto, type SituacaoLiberacred } from '@/lib/banco-data'
 import { liberacredTabela, LIBERACRED_CONSULTA } from '@/lib/liberacred-tabela'
+import LiberacredKit from '@/components/banco/LiberacredKit'
 import {
   Landmark, Wallet, RefreshCcw, Repeat, MessageCircle, BellRing,
   AlertTriangle, Flame, Snowflake, Thermometer, CalendarCheck, FileSignature,
@@ -40,7 +41,6 @@ export default function BancoPage() {
   const ordem: SituacaoLiberacred[] = ['apto', 'atrasada', 'pagando', 'faturado']
   const cart = [...c.cart].sort((a, b) => ordem.indexOf(a.situacao) - ordem.indexOf(b.situacao) || a.mesesParaApto - b.mesesParaApto)
   const exAp = c.aptos[0]
-  const exOf = liberacredTabela.find(m => m.modelo === 'FZ25 FAZER ABS')!.planos.find(p => p.parcelas === 18 && p.entradaPct === 30)!
 
   return (
     <div className="space-y-6 pb-24">
@@ -99,6 +99,8 @@ export default function BancoPage() {
         </p>
       </div>
 
+      <LiberacredKit hoje={d.hoje} />
+
       {/* Carteira + mensagens */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <section className="lg:col-span-2">
@@ -149,11 +151,9 @@ export default function BancoPage() {
         </section>
 
         <section>
-          <h2 className="section-label mb-3">Mensagens em 1 clique</h2>
-          <div className="space-y-3">
-            <Mensagem titulo="Na recusa do CDC" texto={d.mensagemOferta('Antônio', 'FZ25 Fazer ABS', 18, fmtBRL2(exOf.parcela), exOf.aptoApos)} />
-            {exAp && <Mensagem titulo="No mês em que fica apto" destaque texto={d.mensagemApto(exAp.cliente.split(' ')[0], nomeModelo(exAp.modelo), exAp.pagasEmDia)} />}
-          </div>
+          <h2 className="section-label mb-3">Mensagem em 1 clique</h2>
+          {exAp && <Mensagem titulo="No mês em que fica apto" destaque texto={d.mensagemApto(exAp.cliente.split(' ')[0], nomeModelo(exAp.modelo), exAp.pagasEmDia)} />}
+          <p className="text-[11px] mt-2" style={{ color: 'var(--text-tertiary)' }}>O sistema avisa o vendedor no mês em que cada cliente da carteira pode pedir o financiamento.</p>
         </section>
       </div>
 

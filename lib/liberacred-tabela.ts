@@ -165,3 +165,8 @@ export function planoLiberacred(modelo: string, parcelas: number, entradaPct: nu
   const moto = liberacredTabela.find(m => m.modelo === modelo)
   return moto?.planos.find(p => p.parcelas === parcelas && p.entradaPct === entradaPct)
 }
+
+// nome da tabela oficial para a fala do vendedor: NMAX CONNECTED 160 ABS → NMAX Connected 160 ABS
+export function nomeModelo(m: string) {
+  return m.split(' ').map(w => /\d|^(ABS|NMAX|XTZ|YZF|TTR|ZR|DX)$/.test(w) ? w : w[0] + w.slice(1).toLowerCase()).join(' ')
+}
