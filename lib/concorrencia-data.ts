@@ -4,6 +4,14 @@ import { createServerClient } from '@/lib/supabase-server'
 
 export type Movimento = 'NOVO ATAQUE' | 'INTENSIFICOU' | 'TROCOU DE TÁTICA' | 'MANTEVE' | 'RECUOU' | '1ª LEITURA'
 
+export interface PostConcorrente {
+  url: string
+  data: string
+  imagem?: string
+  legenda?: string
+  curtidas?: number | null
+}
+
 export interface Concorrente {
   arroba: string
   nome: string
@@ -21,6 +29,7 @@ export interface Concorrente {
   responderCom: string
   argumento: string
   comoResponder: string[]
+  posts?: PostConcorrente[]
 }
 
 export interface LeituraConcorrencia {

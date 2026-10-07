@@ -4,7 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 
 export type HeroSlide = {
-  img: string
+  img?: string
+  /** foto do modelo (fundo branco, como no site): entra num painel claro à direita no lugar da foto de fundo */
+  produto?: string
   pos?: string
   title: React.ReactNode
   sub: string
@@ -40,9 +42,18 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           style={{ opacity: k === i ? 1 : 0, transition: 'opacity 600ms ease-out' }}
           aria-hidden={k !== i}
         >
-          <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover"
-            style={{ objectPosition: s.pos ?? 'center', transform: k === i ? 'scale(1)' : 'scale(1.03)', transition: 'transform 1200ms ease-out' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(7,6,51,.90) 0%, rgba(7,6,51,.62) 40%, rgba(7,6,51,0) 75%)' }} />
+          {s.produto ? (
+            <div className="absolute inset-y-6 right-24 hidden md:flex w-[42%] items-center justify-center rounded-2xl bg-[#F4F4F5]">
+              <img src={s.produto} alt="" className="max-h-[88%] max-w-[88%] object-contain mix-blend-multiply"
+                style={{ transform: k === i ? 'scale(1)' : 'scale(1.03)', transition: 'transform 1200ms ease-out' }} />
+            </div>
+          ) : s.img && (
+            <>
+              <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover"
+                style={{ objectPosition: s.pos ?? 'center', transform: k === i ? 'scale(1)' : 'scale(1.03)', transition: 'transform 1200ms ease-out' }} />
+              <div className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(7,6,51,.90) 0%, rgba(7,6,51,.62) 40%, rgba(7,6,51,0) 75%)' }} />
+            </>
+          )}
           <div className="absolute inset-0 md:hidden" style={{ background: 'rgba(7,6,51,.45)' }} />
           <div className="relative h-full flex flex-col justify-center px-6 md:px-24 max-w-[760px] text-white"
             style={{ opacity: k === i ? 1 : 0, transform: k === i ? 'none' : 'translateY(8px)', transition: `opacity 280ms ease-out ${k === i ? '320ms' : '0ms'}, transform 280ms ease-out ${k === i ? '320ms' : '0ms'}` }}>

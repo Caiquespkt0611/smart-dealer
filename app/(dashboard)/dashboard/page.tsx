@@ -107,7 +107,8 @@ export default async function DashboardPage({
           href: '/varejo', cta: 'Ver o varejo',
         },
     ...(piorEstoque ? [{
-      img: '/yamaha/hero-r7.webp', pos: '60% center',
+      // a foto é a do modelo do alerta; sem foto dele, a de corrida genérica (nunca outra moto)
+      ...(fotoModelo(piorEstoque.modelo) ? { produto: fotoModelo(piorEstoque.modelo)! } : { img: '/yamaha/hero-racing.jpg', pos: '70% center' }),
       title: <>{piorEstoque.modelo} <span className="text-white/55">com {piorEstoque.cobertura} dias</span></>,
       sub: `${critcos.length > 0 ? `${critcos.length} modelo(s) com cobertura crítica. ` : ''}${piorEstoque.sugestaoCompra > 0 ? `Sugestão de compra: ${piorEstoque.sugestaoCompra} unidades.` : 'Estoque acompanhado modelo a modelo.'}`,
       href: '/estoque', cta: 'Ver o estoque',
