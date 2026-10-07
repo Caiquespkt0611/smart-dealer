@@ -1,21 +1,29 @@
 // ── Banco Yamaha · Oportunidades de Crédito ──────────────────────────────────
 // CENÁRIO DEMONSTRATIVO — reproduz o fluxo dos painéis reais do Banco Yamaha
-// (Oportunidades Liberacred / Aprovados / Quitações) para mostrar como o
-// Smart Dealer transforma as bases em ação de venda. Estrutura espelha os
-// relatórios BASE RECUSADOS CDC e o portal de propostas aprovadas.
+// (Liberacred / Aprovados / Quitações) para mostrar como o Smart Dealer
+// transforma as bases em ação de venda. Os clientes são fictícios; a tabela
+// do Liberacred é a oficial (lib/liberacred-tabela.ts, consultada em 07/10/2026).
 // Quando houver integração oficial, trocar por query mantendo o mesmo shape.
+//
+// Liberacred NÃO é aprovação: é a entrada programada do Banco Yamaha. O cliente
+// recusado no CDC adere sem análise de crédito, junta de 30% a 50% da moto em
+// 6 a 18 parcelas e, com 8 parcelas em dia (planos de 30-35%) ou 6 (40-50%),
+// pode antecipar o resto e pedir o CDC. O valor do Smart Dealer é não deixar
+// esse cliente sumir nos meses em que ele está pagando: chamar no mês certo.
 
-export interface OportunidadeLiberacred {
-  cliente: string
-  telefone: string
-  modelo: string
+import { planoLiberacred } from './liberacred-tabela'
+
+export interface ClienteLiberacred {
+  cliente: string             // nome curto, nunca o nome completo
+  modelo: string              // como está na tabela oficial
   loja: string
   vendedor: string
-  dataRecusa: string          // recusa no CDC convencional
-  valorAprovado: number       // limite pré-aprovado no Liberacred
-  entradaMinima: number
-  parcelaEstimada: number     // 48x referência
-  status: 'novo' | 'contatado' | 'negociando' | 'convertido'
+  adesao: string              // data de adesão ao programa
+  parcelas: number            // prazo do plano
+  entradaPct: number
+  pagasEmDia: number
+  atrasada?: boolean          // perdeu a pontualidade de alguma parcela
+  faturado?: string           // data em que financiou e levou a moto
 }
 
 export interface AprovadoNaoPago {
@@ -45,43 +53,34 @@ export interface ContratoQuitando {
 
 export const bancoData = {
   grupo: 'Nippon Motos',
-  referencia: 'Agosto/2026',
-  fonte: 'Base Recusados CDC + Portal de Propostas Banco Yamaha (Move Brasil)',
+  referencia: 'Outubro/2026',
+  fonte: 'Base Recusados CDC + Liberacred + Portal de Propostas Banco Yamaha',
+  hoje: '2026-10-07',
 
-  // ── Funil Liberacred (recusado não é fim de linha — é segunda chance) ──
-  funil: {
-    recusadosCdc12m: 214,        // recusas CDC do grupo (12 meses)
-    recusadosTrimestre: 62,      // jun + jul + ago
-    elegiveisLiberacred: 23,     // cruzamento com a base Liberacred
-    contatados: 14,
-    convertidos: 5,
-    ticketMedio: 18400,
-  },
-  recusadosPorMes: [
-    { mes: 'Junho', qtd: 21 },
-    { mes: 'Julho', qtd: 27 },
-    { mes: 'Agosto', qtd: 14 },
-  ],
+  recusadosCdcTrimestre: 62,  // jul + ago + set
+  ofertadosLiberacred: 31,    // recusados que receberam a proposta do Liberacred
 
-  // Mensagem-prêmio: o Liberacred comunicado como CONQUISTA, nunca como recusa.
-  mensagemPremio: (nome: string, modelo: string) =>
-    `🏆 Parabéns, ${nome}! Você acaba de ser APROVADO no programa Liberacred do Banco Yamaha. ` +
-    `Sua ${modelo} está garantida com condições especiais: entrada facilitada, parcelas que cabem no bolso ` +
-    `e aprovação já confirmada — sem nova análise. É só escolher a cor e agendar a retirada. ` +
-    `Posso te mandar a simulação agora?`,
+  // Mensagens que o vendedor dispara em 1 clique. Nunca prometer aprovação:
+  // o financiamento depende da proposta do banco quando o cliente fica apto.
+  mensagemOferta: (nome: string, modelo: string, parcelas: number, parcela: string, aptoApos: number) =>
+    `Oi, ${nome}! O financiamento da sua ${modelo} não saiu agora, mas o Banco Yamaha tem um caminho para você: o Liberacred. ` +
+    `Você parcela a entrada em ${parcelas}x de ${parcela}, sem comprovar renda, e com ${aptoApos} parcelas pagas em dia ` +
+    `já pode antecipar o restante e pedir o financiamento. Te mando a simulação?`,
+  mensagemApto: (nome: string, modelo: string, pagas: number) =>
+    `Parabéns, ${nome}! Você pagou ${pagas} parcelas do Liberacred em dia e já pode antecipar o restante ` +
+    `e pedir o financiamento da sua ${modelo}. Vamos marcar a sua visita para montar a proposta?`,
 
-  oportunidades: [
-    { cliente: 'Antonio Carlos J. Oliveira', telefone: '(11) 99109-1590', modelo: 'FZ25 Fazer ABS',        loja: 'Bragança',  vendedor: 'Rafael Lima',    dataRecusa: '2026-08-06', valorAprovado: 19500, entradaMinima: 2900, parcelaEstimada: 612, status: 'novo' },
-    { cliente: 'Camila S. Felix',            telefone: '(11) 98232-4414', modelo: 'FZ15 Fazer Connected',  loja: 'Atibaia',   vendedor: 'Bruna Castro',   dataRecusa: '2026-08-06', valorAprovado: 16800, entradaMinima: 2500, parcelaEstimada: 528, status: 'contatado' },
-    { cliente: 'Carolina Salvador B.',       telefone: '(11) 99214-6280', modelo: 'Fluo ABS Hybrid',       loja: 'Bragança',  vendedor: 'Rafael Lima',    dataRecusa: '2026-08-05', valorAprovado: 15200, entradaMinima: 2200, parcelaEstimada: 478, status: 'negociando' },
-    { cliente: 'Crisneyan A. da Silva',      telefone: '(11) 99738-8293', modelo: 'XTZ 250 Lander ABS',    loja: 'Extrema',   vendedor: 'Diego Nunes',    dataRecusa: '2026-08-04', valorAprovado: 24300, entradaMinima: 3600, parcelaEstimada: 765, status: 'novo' },
-    { cliente: 'Elaine R. Nascimento',       telefone: '(11) 99766-4262', modelo: 'FZ25 Fazer ABS',        loja: 'Amparo',    vendedor: 'Paula Mendes',   dataRecusa: '2026-08-04', valorAprovado: 19500, entradaMinima: 2900, parcelaEstimada: 612, status: 'convertido' },
-    { cliente: 'Elisama da S. Gomes',        telefone: '(11) 99190-5269', modelo: 'FZ15 Fazer Connected',  loja: 'Bragança',  vendedor: 'Marcos Vieira',  dataRecusa: '2026-08-03', valorAprovado: 16800, entradaMinima: 2500, parcelaEstimada: 528, status: 'contatado' },
-    { cliente: 'Leticia M. Elias',           telefone: '(19) 96613-4691', modelo: 'NMAX Connected 160',    loja: 'Amparo',    vendedor: 'Paula Mendes',   dataRecusa: '2026-08-02', valorAprovado: 21700, entradaMinima: 3200, parcelaEstimada: 682, status: 'novo' },
-    { cliente: 'Lucas B. dos Santos',        telefone: '(11) 99115-4980', modelo: 'FZ25 Fazer ABS',        loja: 'Atibaia',   vendedor: 'Bruna Castro',   dataRecusa: '2026-08-01', valorAprovado: 19500, entradaMinima: 2900, parcelaEstimada: 612, status: 'convertido' },
-    { cliente: 'Marcio R. Doval',            telefone: '(19) 99908-6735', modelo: 'Factor 150 ED',         loja: 'Amparo',    vendedor: 'Paula Mendes',   dataRecusa: '2026-07-30', valorAprovado: 14100, entradaMinima: 2000, parcelaEstimada: 445, status: 'negociando' },
-    { cliente: 'Mateus A. da Silva',         telefone: '(11) 99738-8293', modelo: 'XTZ 250 Lander ABS',    loja: 'Bragança',  vendedor: 'Marcos Vieira',  dataRecusa: '2026-07-29', valorAprovado: 24300, entradaMinima: 3600, parcelaEstimada: 765, status: 'contatado' },
-  ] as OportunidadeLiberacred[],
+  carteira: [
+    { cliente: 'Letícia M.', modelo: 'NMAX CONNECTED 160 ABS',     loja: 'Amparo',   vendedor: 'Paula Mendes',  adesao: '2026-02-10', parcelas: 18, entradaPct: 30, pagasEmDia: 8 },
+    { cliente: 'Lucas B.',   modelo: 'FZ25 FAZER ABS',             loja: 'Atibaia',  vendedor: 'Bruna Castro',  adesao: '2026-04-08', parcelas: 12, entradaPct: 40, pagasEmDia: 6 },
+    { cliente: 'Camila S.',  modelo: 'FZ15 FAZER ABS CONNECTED',   loja: 'Atibaia',  vendedor: 'Bruna Castro',  adesao: '2026-03-15', parcelas: 18, entradaPct: 30, pagasEmDia: 7 },
+    { cliente: 'Márcio R.',  modelo: 'FACTOR 150 DX',              loja: 'Amparo',   vendedor: 'Paula Mendes',  adesao: '2026-05-05', parcelas: 18, entradaPct: 40, pagasEmDia: 5 },
+    { cliente: 'Jonas A.',   modelo: 'XTZ 250 LANDER ABS CONNECTED', loja: 'Extrema', vendedor: 'Diego Nunes',  adesao: '2026-06-02', parcelas: 18, entradaPct: 50, pagasEmDia: 4 },
+    { cliente: 'Elaine R.',  modelo: 'FLUO ABS HYBRID CONNECTED',  loja: 'Bragança', vendedor: 'Rafael Lima',   adesao: '2026-04-20', parcelas: 12, entradaPct: 30, pagasEmDia: 4, atrasada: true },
+    { cliente: 'Antônio C.', modelo: 'FZ25 FAZER ABS',             loja: 'Bragança', vendedor: 'Rafael Lima',   adesao: '2026-08-12', parcelas: 18, entradaPct: 30, pagasEmDia: 2 },
+    { cliente: 'Mateus A.',  modelo: 'XTZ 150 CROSSER S ABS',      loja: 'Bragança', vendedor: 'Marcos Vieira', adesao: '2026-09-05', parcelas: 12, entradaPct: 40, pagasEmDia: 1 },
+    { cliente: 'Bianca F.',  modelo: 'ZR HYBRID CONNECTED',        loja: 'Extrema',  vendedor: 'Diego Nunes',   adesao: '2026-01-14', parcelas: 18, entradaPct: 30, pagasEmDia: 8, faturado: '2026-09-18' },
+  ] as ClienteLiberacred[],
 
   // ── Aprovados e não pagos (a venda que já estava ganha) ──
   aprovadosNaoPagos: [
@@ -102,15 +101,50 @@ export const bancoData = {
   ] as ContratoQuitando[],
 }
 
+// nome da tabela oficial para a fala do vendedor: NMAX CONNECTED 160 ABS → NMAX Connected 160 ABS
+export function nomeModelo(m: string) {
+  return m.split(' ').map(w => /\d|^(ABS|NMAX|XTZ|YZF|TTR|ZR|DX)$/.test(w) ? w : w[0] + w.slice(1).toLowerCase()).join(' ')
+}
+
+// nome curto para a tela (Fernando de A. Caetano → Fernando C.)
+export function nomeCurto(n: string) {
+  const p = n.trim().split(/\s+/)
+  return p.length < 2 || /^[A-ZÀ-Ú]\.$/.test(p[p.length - 1]) ? n : `${p[0]} ${p[p.length - 1][0]}.`
+}
+
+const somaMeses = (iso: string, n: number) => {
+  const [a, m] = iso.split('-').map(Number)
+  const t = a * 12 + (m - 1) + n
+  return `${Math.floor(t / 12)}-${String((t % 12) + 1).padStart(2, '0')}`
+}
+
+export type SituacaoLiberacred = 'apto' | 'pagando' | 'atrasada' | 'faturado'
+
+export function carteiraLiberacred() {
+  const d = bancoData
+  const mesHoje = d.hoje.slice(0, 7)
+  return d.carteira.map(c => {
+    const plano = planoLiberacred(c.modelo, c.parcelas, c.entradaPct)!
+    const situacao: SituacaoLiberacred = c.faturado ? 'faturado' : c.atrasada ? 'atrasada' : c.pagasEmDia >= plano.aptoApos ? 'apto' : 'pagando'
+    // a 1ª parcela vence no mês da adesão; fica apto quando paga a de número aptoApos
+    const aptoEm = somaMeses(c.adesao, plano.aptoApos - 1)
+    const juntado = Math.round((plano.acumulado / c.parcelas) * c.pagasEmDia)
+    return { ...c, plano, situacao, aptoEm, juntado, mesesParaApto: Math.max(0, (Number(aptoEm.slice(0, 4)) * 12 + Number(aptoEm.slice(5))) - (Number(mesHoje.slice(0, 4)) * 12 + Number(mesHoje.slice(5)))) }
+  })
+}
+
 export function calcularBanco() {
   const d = bancoData
-  const ops = d.oportunidades
-  const convertidos = ops.filter(o => o.status === 'convertido')
-  const emJogo = ops.filter(o => o.status !== 'convertido')
-  const receitaRecuperada = convertidos.reduce((s, o) => s + o.valorAprovado, 0)
-  const receitaEmJogo = emJogo.reduce((s, o) => s + o.valorAprovado, 0)
+  const cart = carteiraLiberacred()
+  const ativos = cart.filter(c => c.situacao !== 'faturado')
+  const aptos = cart.filter(c => c.situacao === 'apto')
+  const proximos = cart.filter(c => c.situacao === 'pagando' && c.mesesParaApto <= 2)
+  const entradaJuntada = ativos.reduce((s, c) => s + c.juntado, 0)
   const naoPagos = d.aprovadosNaoPagos.reduce((s, a) => s + a.valorFinanciado, 0)
-  const recompra = d.quitandoContrato.length
-  const taxaResgate = Math.round((d.funil.convertidos / d.funil.contatados) * 100)
-  return { convertidos: convertidos.length, receitaRecuperada, receitaEmJogo, naoPagos, recompra, taxaResgate }
+  return {
+    cart, ativos: ativos.length, aptos, proximos, entradaJuntada, naoPagos,
+    faturados: cart.filter(c => c.situacao === 'faturado').length,
+    adesao: Math.round((d.carteira.length / d.ofertadosLiberacred) * 100),
+    recompra: d.quitandoContrato.length,
+  }
 }
