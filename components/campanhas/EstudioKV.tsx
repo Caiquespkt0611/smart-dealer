@@ -9,6 +9,13 @@ export interface ModeloVitrine {
   estoqueTotal: number
   cobertura: number
   encalhado: boolean
+  /** arte oficial da campanha Yamaha em vigor; quando existe, é ela que vai para o post */
+  arte?: string
+}
+
+export interface CampanhaVigente {
+  nome: string
+  beneficios: string
 }
 
 type Layout = 'vitrine' | 'noite' | 'pista'
@@ -164,7 +171,7 @@ function nomeLoja(loja: string) {
   return loja === 'Grupo Nippon' ? 'Nippon Motos' : `Nippon Motos ${loja}`
 }
 
-export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: string }) {
+export function EstudioKV({ modelos, loja, campanha }: { modelos: ModeloVitrine[]; loja: string; campanha?: CampanhaVigente }) {
   const [sel, setSel] = useState(modelos[0]?.modelo ?? '')
   const [layout, setLayout] = useState<Layout>('vitrine')
   const [titulo, setTitulo] = useState(FRASE_PADRAO)
@@ -178,13 +185,14 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
   const cvRef = useRef<HTMLCanvasElement>(null)
 
   const atual = modelos.find(m => m.modelo === sel)
+  const oficial = atual?.arte
   const arte: Arte = useMemo(() => ({ layout, modelo: sel, titulo, condicao, chamada, loja: nomeLoja(loja) }), [layout, sel, titulo, condicao, chamada, loja])
 
   // trocou a moto: legenda e frase da IA eram da moto anterior
   useEffect(() => { setLegenda(''); setTitulo(FRASE_PADRAO); setErro('') }, [sel])
 
   useEffect(() => {
-    if (cvRef.current && atual) desenha(cvRef.current, arte, atual.foto).catch(() => {})
+    if (cvRef.current && atual && !atual.arte) desenha(cvRef.current, arte, atual.foto).catch(() => {})
   }, [arte, atual])
 
   async function gerarLegenda() {
@@ -194,7 +202,10 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
       const r = await fetch('/api/campanha', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ modelo: sel, objetivo: 'girar o estoque e atrair leads pelo direct', estoque: atual.estoqueTotal, cobertura: atual.cobertura }),
+        body: JSON.stringify({
+          modelo: sel, objetivo: 'girar o estoque e atrair leads pelo direct', estoque: atual.estoqueTotal, cobertura: atual.cobertura,
+          campanha: oficial && campanha ? `${campanha.nome}: ${campanha.beneficios}` : undefined,
+        }),
       })
       const j = await r.json()
       if (!j.campanha) throw new Error(j.error)
@@ -207,11 +218,16 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
     setGerando(false)
   }
 
-  function arquivo(): Promise<File | null> {
+  async function arquivo(): Promise<File | null> {
+    const nome = `campanha-${sel.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+    if (oficial) {
+      const b = await fetch(oficial).then(r => r.blob()).catch(() => null)
+      return b ? new File([b], `${nome}.jpg`, { type: b.type || 'image/jpeg' }) : null
+    }
     return new Promise(ok => {
       const cv = cvRef.current
       if (!cv) return ok(null)
-      cv.toBlob(b => ok(b ? new File([b], `campanha-${sel.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.png`, { type: 'image/png' }) : null), 'image/png')
+      cv.toBlob(b => ok(b ? new File([b], `${nome}.png`, { type: 'image/png' }) : null), 'image/png')
     })
   }
 
@@ -273,6 +289,19 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
       {/* 2. a arte */}
       <section className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(0,420px)] gap-8 items-start">
         <div className="space-y-6">
+          {oficial ? (
+            <div>
+              <h2 className="yh-title text-[clamp(28px,3vw,40px)]">A arte da <span className="yh-mute">campanha</span></h2>
+              <p className="mt-2 text-[15px]" style={{ color: 'var(--text-secondary)' }}>
+                Peça oficial da Yamaha{campanha ? `, campanha ${campanha.nome}` : ''}. Vai para o post do jeito que a montadora entregou.
+              </p>
+              {campanha && (
+                <p className="mt-3 inline-block rounded-full px-4 py-2 text-[14px] font-semibold" style={{ background: 'var(--bg-elevated)', color: 'var(--text-primary)' }}>
+                  {campanha.beneficios}
+                </p>
+              )}
+            </div>
+          ) : (<>
           <h2 className="yh-title text-[clamp(28px,3vw,40px)]">Monte a <span className="yh-mute">arte</span></h2>
 
           <div>
@@ -306,6 +335,7 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
               <input value={chamada} onChange={e => setChamada(e.target.value)} maxLength={22} className={campo} style={estiloCampo} />
             </label>
           </div>
+          </>)}
 
           <div className="rounded-xl p-5" style={{ background: 'var(--bg-elevated)' }}>
             <div className="flex flex-wrap items-center justify-between gap-3">
@@ -328,14 +358,17 @@ export function EstudioKV({ modelos, loja }: { modelos: ModeloVitrine[]; loja: s
               ? <textarea value={legenda} onChange={e => setLegenda(e.target.value)} rows={7}
                   className="mt-4 w-full rounded-xl p-4 text-[14px] leading-relaxed outline-none border resize-y"
                   style={{ background: 'var(--bg-main)', borderColor: 'var(--border)', color: 'var(--text-primary)' }} />
-              : <p className="mt-3 text-sm" style={{ color: 'var(--text-tertiary)' }}>A IA escreve a legenda no padrão Yamaha, com chamada para o direct e as hashtags, e ainda sugere a frase da arte.</p>}
+              : <p className="mt-3 text-sm" style={{ color: 'var(--text-tertiary)' }}>{oficial ? 'A IA escreve a legenda com as vantagens da campanha, chamada para o direct e as hashtags.' : 'A IA escreve a legenda no padrão Yamaha, com chamada para o direct e as hashtags, e ainda sugere a frase da arte.'}</p>}
             {erro && <p className="mt-2 text-sm" style={{ color: 'var(--danger)' }}>{erro}</p>}
           </div>
         </div>
 
         {/* prévia */}
         <div className="lg:sticky lg:top-6 space-y-4">
-          <canvas ref={cvRef} width={W} height={H} className="w-full h-auto rounded-xl border" style={{ borderColor: 'var(--border)' }} aria-label="Prévia da arte" />
+          {oficial
+            // eslint-disable-next-line @next/next/no-img-element
+            ? <img src={oficial} alt={`Arte oficial ${sel}`} width={W} height={H} className="w-full h-auto rounded-xl border" style={{ borderColor: 'var(--border)' }} />
+            : <canvas ref={cvRef} width={W} height={H} className="w-full h-auto rounded-xl border" style={{ borderColor: 'var(--border)' }} aria-label="Prévia da arte" />}
           <div className="grid grid-cols-[1fr_auto] gap-2">
             <button onClick={postar} className="h-12 rounded-full font-semibold text-[15px] inline-flex items-center justify-center gap-2 text-white"
               style={{ background: 'var(--yamaha-blue)' }}>

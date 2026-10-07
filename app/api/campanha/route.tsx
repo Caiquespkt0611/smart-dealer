@@ -24,7 +24,7 @@ Responda SOMENTE com um JSON válido (sem markdown, sem comentários) neste form
 
 export async function POST(req: NextRequest) {
   try {
-    const { modelo, objetivo, estoque, cobertura } = await req.json()
+    const { modelo, objetivo, estoque, cobertura, campanha } = await req.json()
     if (!modelo || typeof modelo !== 'string') {
       return NextResponse.json({ error: 'Modelo inválido.' }, { status: 400 })
     }
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
     const userMsg = `Gere o post para a campanha:
 - Modelo: ${modelo}
 - Objetivo: ${objetivo ?? 'girar estoque parado e atrair leads para anúncio pago'}
+${typeof campanha === 'string' && campanha ? `- Campanha oficial Yamaha em vigor (a arte já é a peça da montadora): ${campanha.slice(0, 200)}. A legenda tem que anunciar essas vantagens exatamente assim, deixar claro que o cliente escolhe uma delas, e fechar com "Consulte condições. Benefícios não cumulativos e válidos enquanto durarem os estoques."` : ''}
 ${estoque ? `- Contexto interno (NÃO citar no post): ${estoque} unidades em estoque, ${cobertura} dias de cobertura.` : ''}
 O post é para tráfego pago no Instagram da concessionária. Foque em atrair quem está pesquisando moto na região.`
 

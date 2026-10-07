@@ -2,12 +2,22 @@ export const dynamic = 'force-dynamic'
 
 import { getEstoqueCompleto } from '@/lib/data'
 import { fotoModelo } from '@/components/layout/nav'
-import { EstudioKV, type ModeloVitrine } from '@/components/campanhas/EstudioKV'
+import { EstudioKV, type ModeloVitrine, type CampanhaVigente } from '@/components/campanhas/EstudioKV'
 
 export const metadata = { title: 'Campanhas · Smart Dealer' }
 
+// Campanha da Yamaha em vigor. O post só sai com moto que tem a arte oficial dela.
+const CAMPANHA: CampanhaVigente = {
+  nome: 'Faro de Vantagens',
+  beneficios: 'Emplacamento grátis ou bônus de R$ 1.000 ou taxa zero',
+}
+const ARTES: Record<string, string> = {
+  '/yamaha/m-lander.png': '/campanhas/faro-lander.jpg',
+  '/yamaha/m-fz25.png': '/campanhas/faro-fz25.jpg',
+}
+
 // Usada quando o estoque não responde: a vitrine não fica vazia
-const RESERVA = ['FAZER FZ15 ABS', 'FACTOR 150 DX', 'CROSSER 150 Z ABS', 'NMAX', 'FLUO ABS', 'LANDER 250 ABS']
+const RESERVA = ['LANDER 250 ABS', 'FAZER 250 ABS']
 
 export default async function CampanhasPage({
   searchParams,
@@ -26,7 +36,7 @@ export default async function CampanhasPage({
     : RESERVA.map(modelo => ({ modelo, estoqueTotal: 0, cobertura: 0, giroMensal: 0 }))
   for (const e of base) {
     const foto = fotoModelo(e.modelo)
-    if (!foto || vistos.has(foto)) continue
+    if (!foto || !ARTES[foto] || vistos.has(foto)) continue
     vistos.add(foto)
     modelos.push({
       modelo: e.modelo,
@@ -34,7 +44,14 @@ export default async function CampanhasPage({
       estoqueTotal: e.estoqueTotal,
       cobertura: Math.round(e.cobertura),
       encalhado: e.cobertura >= 45 && e.cobertura < 900,
+      arte: ARTES[foto],
     })
+  }
+  for (const modelo of RESERVA) {
+    const foto = fotoModelo(modelo)!
+    if (vistos.has(foto)) continue
+    vistos.add(foto)
+    modelos.push({ modelo, foto, estoqueTotal: 0, cobertura: 0, encalhado: false, arte: ARTES[foto] })
   }
 
   return (
@@ -42,10 +59,10 @@ export default async function CampanhasPage({
       <div>
         <h1>Campanha <span className="text-[var(--text-tertiary)]">no Instagram</span></h1>
         <p className="text-slate-600">
-          Escolha a moto, monte a arte no padrão da Yamaha e poste. A IA escreve a legenda.
+          Campanha {CAMPANHA.nome} em vigor: escolha a moto, a arte oficial já está pronta e a IA escreve a legenda.
         </p>
       </div>
-      <EstudioKV modelos={modelos.slice(0, 12)} loja={loja} />
+      <EstudioKV modelos={modelos} loja={loja} campanha={CAMPANHA} />
     </div>
   )
 }

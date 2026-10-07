@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, ShoppingCart, Package, Users, Star, Wrench, PieChart, Award,
   GraduationCap, Megaphone, Contact, CalendarClock, BookOpen, Activity, Percent,
-  Wallet, Ticket, MessageCircle, Landmark, Shield, PiggyBank, ClipboardList, Truck, QrCode,
+  Wallet, Ticket, MessageCircle, Landmark, Shield, PiggyBank, ClipboardList, Truck, QrCode, Radar,
 } from 'lucide-react'
 
 export type NavItem = {
@@ -20,6 +20,7 @@ export const navItems: NavItem[] = [
   { href: '/k2',           label: 'K2 · Absorção',      icon: Percent,         roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Pós-vendas paga a operação?' },
   { href: '/credito',      label: 'Linha de Crédito',   icon: Wallet,          roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Semáforo e simulador de pedido' },
   { href: '/vouchers',     label: 'Campanhas Yamaha',   icon: Ticket,          roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Quanto a campanha vai pagar' },
+  { href: '/concorrencia', label: 'Concorrência',       icon: Radar,           roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'O que os rivais anunciam e como responder' },
   { href: '/market-share', label: 'Market Share',       icon: PieChart,        roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Yamaha contra a concorrência' },
   { href: '/kaizen',       label: 'Kaizen',             icon: Award,           roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: '22 indicadores rumo à nota máxima' },
   { href: '/treinamento',  label: 'Treinamento',        icon: GraduationCap,   roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Certificações por loja' },

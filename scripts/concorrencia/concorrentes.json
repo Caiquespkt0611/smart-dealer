@@ -1,0 +1,14 @@
+{
+  "grupo": "NIPPON MOTOS",
+  "lojas": ["Bragança Paulista", "Atibaia", "Amparo", "Extrema"],
+  "concorrentes": [
+    { "arroba": "tsuji.motos.honda",       "nome": "Tsuji Motos",          "cidade": "Atibaia",           "marca": "Honda" },
+    { "arroba": "rfmotos_oficial",         "nome": "RF Motos",             "cidade": "Amparo",            "marca": "Haojue / Suzuki" },
+    { "arroba": "shineray.atibaia",        "nome": "Shineray Atibaia",     "cidade": "Atibaia",           "marca": "Shineray" },
+    { "arroba": "honda.bragmoto",          "nome": "Brag Moto",            "cidade": "Bragança Paulista", "marca": "Honda" },
+    { "arroba": "hondamotobrisa",          "nome": "Moto Brisa",           "cidade": "Amparo",            "marca": "Honda" },
+    { "arroba": "shinerayoficial_extrema", "nome": "VR Motos (Shineray)",  "cidade": "Extrema",           "marca": "Shineray" },
+    { "arroba": "innovationatibaia",       "nome": "Innovation Atibaia",   "cidade": "Atibaia",           "marca": "Elétricos" },
+    { "arroba": "motosbragancasuzuki",     "nome": "Motos Bragança",       "cidade": "Bragança Paulista", "marca": "Suzuki" }
+  ]
+}
