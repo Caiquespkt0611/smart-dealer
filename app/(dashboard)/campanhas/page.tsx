@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic'
 import { getEstoqueCompleto } from '@/lib/data'
 import { fotoModelo } from '@/components/layout/nav'
 import { EstudioKV, type ModeloVitrine, type CampanhaVigente } from '@/components/campanhas/EstudioKV'
+import { condicaoFaro, textoCondicao } from '@/lib/condicoes-faro'
 
 export const metadata = { title: 'Campanhas · Smart Dealer' }
 
@@ -28,11 +29,29 @@ export default async function CampanhasPage({
   let estoque: Awaited<ReturnType<typeof getEstoqueCompleto>> = []
   try { estoque = await getEstoqueCompleto(loja) } catch { estoque = [] }
 
-  // uma moto por foto, as mais paradas primeiro
+  // 1. as motos com mais unidades no estoque, sem arte oficial: a arte sai na hora com a condição da circular
   const vistos = new Set<string>()
+  const giro: ModeloVitrine[] = []
+  for (const e of [...estoque].sort((a, b) => b.estoqueTotal - a.estoqueTotal)) {
+    const foto = fotoModelo(e.modelo)
+    const cond = condicaoFaro(e.modelo)
+    if (!foto || ARTES[foto] || !cond || vistos.has(foto)) continue
+    vistos.add(foto)
+    giro.push({
+      modelo: e.modelo,
+      foto,
+      estoqueTotal: e.estoqueTotal,
+      cobertura: Math.round(e.cobertura),
+      encalhado: e.cobertura >= 45 && e.cobertura < 900,
+      condicao: textoCondicao(cond),
+    })
+    if (giro.length === 4) break
+  }
+
+  // 2. as que têm a arte oficial da campanha, uma moto por foto
   const modelos: ModeloVitrine[] = []
   const base = estoque.length
-    ? [...estoque].sort((a, b) => b.cobertura - a.cobertura)
+    ? [...estoque].sort((a, b) => b.estoqueTotal - a.estoqueTotal)
     : RESERVA.map(modelo => ({ modelo, estoqueTotal: 0, cobertura: 0, giroMensal: 0 }))
   for (const e of base) {
     const foto = fotoModelo(e.modelo)
@@ -59,10 +78,10 @@ export default async function CampanhasPage({
       <div>
         <h1>Campanha <span className="text-[var(--text-tertiary)]">no Instagram</span></h1>
         <p className="text-slate-600">
-          Campanha {CAMPANHA.nome} em vigor: escolha a moto, a arte oficial já está pronta e a IA escreve a legenda.
+          Campanha {CAMPANHA.nome} em vigor. As motos com mais estoque ganham a arte na hora, com a condição da circular; a IA escreve a legenda.
         </p>
       </div>
-      <EstudioKV modelos={modelos} loja={loja} campanha={CAMPANHA} />
+      <EstudioKV modelos={[...giro, ...modelos]} loja={loja} campanha={CAMPANHA} />
     </div>
   )
 }

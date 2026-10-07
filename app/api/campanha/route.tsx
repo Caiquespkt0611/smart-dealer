@@ -24,7 +24,7 @@ Responda SOMENTE com um JSON válido (sem markdown, sem comentários) neste form
 
 export async function POST(req: NextRequest) {
   try {
-    const { modelo, objetivo, estoque, cobertura, campanha } = await req.json()
+    const { modelo, objetivo, estoque, cobertura, campanha, condicao } = await req.json()
     if (!modelo || typeof modelo !== 'string') {
       return NextResponse.json({ error: 'Modelo inválido.' }, { status: 400 })
     }
@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
 - Modelo: ${modelo}
 - Objetivo: ${objetivo ?? 'girar estoque parado e atrair leads para anúncio pago'}
 ${typeof campanha === 'string' && campanha ? `- Campanha oficial Yamaha em vigor (a arte já é a peça da montadora): ${campanha.slice(0, 200)}. Escreva o nome da campanha exatamente como está aqui, letra por letra (é "Faro", de faro de quem fareja a vantagem, nunca "Farol"). A legenda tem que anunciar essas vantagens exatamente assim, deixar claro que o cliente escolhe uma delas, e fechar com "Consulte condições. Benefícios não cumulativos e válidos enquanto durarem os estoques."` : ''}
+${typeof condicao === 'string' && condicao ? `- Campanha Faro de Vantagens (Yamaha), condição oficial do Banco Yamaha para este modelo: ${condicao.slice(0, 300)} Anuncie essa condição com os números exatamente como estão, sem inventar outro valor, e feche a legenda com "Condição Banco Yamaha válida até 31/10/2026, sujeita a análise de crédito." O nome da campanha é "Faro de Vantagens" (Faro, nunca Farol).` : ''}
 ${estoque ? `- Contexto interno (NÃO citar no post): ${estoque} unidades em estoque, ${cobertura} dias de cobertura.` : ''}
 O post é para tráfego pago no Instagram da concessionária. Foque em atrair quem está pesquisando moto na região.`
 
@@ -53,7 +54,7 @@ O post é para tráfego pago no Instagram da concessionária. Foque em atrair qu
     }
 
     // o nome da campanha oficial não pode sair trocado (a IA escreveu "Farol de Vantagens" em 07/10)
-    if (typeof campanha === 'string' && /Faro de Vantagens/.test(campanha)) {
+    if ((typeof campanha === 'string' && /Faro de Vantagens/.test(campanha)) || (typeof condicao === 'string' && condicao)) {
       for (const k of ['headline', 'legenda', 'cta'] as const) {
         if (typeof parsed[k] === 'string') parsed[k] = parsed[k].replace(/Farol de Vantagens/gi, 'Faro de Vantagens')
       }
