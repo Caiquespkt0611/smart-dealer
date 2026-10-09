@@ -1,6 +1,5 @@
 import { getDashboardData, getVendasHistorico } from '@/lib/data'
 import { AlertaBanner } from '@/components/dashboard/AlertaBanner'
-import { ChatWidget } from '@/components/dashboard/ChatWidget'
 import { MetaRing } from '@/components/charts/MetaRing'
 import { VendasHistChart } from '@/components/charts/VendasHistChart'
 import { HeroCarousel, type HeroSlide } from '@/components/dashboard/HeroCarousel'
@@ -408,7 +407,6 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <ChatWidget />
     </div>
   )
 }

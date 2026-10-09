@@ -5,6 +5,7 @@ import { treinamentoData } from '@/lib/treinamento-data'
 import { getDashboardData, getEstoqueCompleto } from '@/lib/data'
 import { getShareData, type ShareData } from '@/lib/dados-vivos'
 import { circularesContexto } from '@/lib/circulares-data'
+import { clienteInsatisfeito, clienteInsatisfeitoContexto } from '@/lib/cliente-insatisfeito'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
@@ -88,8 +89,10 @@ ${buildShareContext(share)}
 ${buildKaizenContext()}
 ${buildTreinoContext()}
 ${circularesContexto}
+${clienteInsatisfeitoContexto()}
 
 Responda de forma direta e prática. Use no máximo 3 parágrafos curtos.
+Texto puro: sem markdown (nada de asterisco, #, tabela) e sem emoji. Lista só com hífen ou número.
 Quando perguntarem "o que posso melhorar", priorize por impacto: market share em segmentos de alto volume, pontos do Kaizen na mesa e pendências de treinamento.
 Use apenas os dados acima. Nunca invente dados que não estão aqui.
 Se não souber algo, diga que precisa verificar.`
@@ -105,7 +108,7 @@ export async function POST(req: NextRequest) {
 
     const response = await client.messages.create({
       model: 'claude-sonnet-4-6',
-      max_tokens: 512,
+      max_tokens: 900,
       system: await buildSystemPrompt(),
       messages: [{ role: 'user', content: message }],
     })
@@ -113,7 +116,13 @@ export async function POST(req: NextRequest) {
     const text =
       response.content[0].type === 'text' ? response.content[0].text : ''
 
-    return NextResponse.json({ message: text })
+    // Quando a resposta fala do cliente insatisfeito, o widget mostra o cartão com WhatsApp e ligação.
+    const c = clienteInsatisfeito
+    const contato = text.includes(c.nome.split(' ')[0])
+      ? { nome: c.nome, telefone: c.telefone, loja: c.loja, moto: c.moto, nota: c.nota, whatsapp: `https://wa.me/${c.whatsapp}?text=${encodeURIComponent(c.mensagem)}`, tel: `tel:+${c.whatsapp}` }
+      : null
+
+    return NextResponse.json({ message: text, contato })
   } catch (err) {
     console.error('Chat API error:', err)
     return NextResponse.json(

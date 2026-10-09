@@ -2,6 +2,7 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { YamahaHeader } from './YamahaHeader'
 import { Suspense } from 'react'
+import { ChatWidget } from '@/components/dashboard/ChatWidget'
 
 function DashboardShellInner({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -23,6 +24,7 @@ function DashboardShellInner({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+      <ChatWidget />
     </div>
   )
 }
