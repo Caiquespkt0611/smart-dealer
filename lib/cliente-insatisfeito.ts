@@ -10,7 +10,7 @@ export const clienteInsatisfeito = {
   compra: '12/09/2026',
   nota: 2,
   pesquisa: 'NPS Pós-vendas de 05/10/2026',
-  problema: 'Levou a moto na revisão de 1.000 km em 02/10. A moto ficou 3 dias na oficina esperando um sensor e ninguém avisou. Foi trabalhar de Uber nesses dias.',
+  problema: 'Levou a moto na revisão de 1.000 km em 02/10. A moto ficou 3 dias na oficina esperando um sensor e ninguém avisou. Sem a moto, pagou corrida de aplicativo para ir e voltar do trabalho nesses 3 dias.',
   comentario: '"Comprei moto zero e fiquei 3 dias a pé sem ninguém me ligar. Não indico."',
   risco: 'Detrator recente pesa no NPS Pós-vendas (meta 87) e no Kaizen; cliente de 1ª revisão que sai insatisfeito tende a não voltar na 2ª.',
   solucao: [
