@@ -23,6 +23,10 @@ function DashboardShellInner({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-[1600px] px-4 md:px-10 py-8">
           {children}
         </div>
+        <footer className="mx-auto max-w-[1600px] px-4 md:px-10 pb-8 pt-2 text-[12px] text-[var(--yh-text-secondary,#6b7280)] flex flex-wrap gap-2 justify-between border-t border-black/5">
+          <span>Smart Dealer · Yamahaway 2026</span>
+          <span>Desenvolvido por <strong className="font-medium">Caique Gonçalves de Oliveira</strong></span>
+        </footer>
       </main>
       <ChatWidget />
     </div>

@@ -154,6 +154,7 @@ export default function LoginPage() {
       <footer className="bg-[#070633] text-white/70 text-[13px]">
         <div className="mx-auto max-w-[1600px] px-4 md:px-10 py-6 flex flex-wrap gap-3 justify-between">
           <span>Smart Dealer · Yamahaway 2026</span>
+          <span>Desenvolvido por <strong className="font-medium text-white/90">Caique Gonçalves de Oliveira</strong></span>
           <span>Conexão segura</span>
         </div>
       </footer>
