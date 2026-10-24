@@ -1,7 +1,8 @@
 // Ingestão automática: a planilha DADOS_DE_EMPLACAMENTO.xlsx mora no Supabase
 // Storage (bucket dados-sistema). A cada acesso o sistema confere se o arquivo
 // mudou (etag/updated_at); se mudou, reprocessa e atualiza banco + agregados.
-// O concessionário sempre abre o sistema já atualizado — ninguém faz upload em tela.
+// O concessionário sempre abre o sistema já atualizado. A tela /dados deixa
+// baixar a planilha, atualizar e subir de volta (substitui a do bucket).
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { parseWorkbook, VERSAO_PARSER, type DadosImportados } from '@/lib/importar-dados'
 import { BUCKET_DADOS } from '@/lib/dados-vivos'
@@ -74,7 +75,7 @@ export async function aplicarDados(dados: DadosImportados, versaoFonte: string) 
 }
 
 /** Etag/versão atual da planilha no bucket (null se não existe). */
-async function versaoPlanilha(sb: SupabaseClient): Promise<string | null> {
+export async function versaoPlanilha(sb: SupabaseClient): Promise<string | null> {
   const { data, error } = await sb.storage.from(BUCKET_DADOS).list('', { search: ARQUIVO_PLANILHA })
   if (error || !data) return null
   const f = data.find(x => x.name === ARQUIVO_PLANILHA)
@@ -100,20 +101,7 @@ export async function garantirDadosAtualizados(): Promise<void> {
 
   checkEmAndamento = (async () => {
     try {
-      const sb = serviceClient()
-      const versao = await versaoPlanilha(sb)
-      if (!versao) return // planilha ainda não publicada — segue com o que há
-
-      const { data: refBlob } = await sb.storage.from(BUCKET_DADOS).download('referencia.json')
-      const refAtual = refBlob ? JSON.parse(await refBlob.text()) as { versaoFonte?: string; versaoParser?: number } : null
-      if (refAtual?.versaoFonte === versao && refAtual?.versaoParser === VERSAO_PARSER) return // já processada
-
-      const { data: arquivo, error } = await sb.storage.from(BUCKET_DADOS).download(ARQUIVO_PLANILHA)
-      if (error || !arquivo) return
-      const dados = parseWorkbook(await arquivo.arrayBuffer())
-      await aplicarDados(dados, versao)
-      console.log(`[ingestao] planilha reprocessada (versão ${versao}): ` +
-        `${dados.resumo.linhasVarejo} vendas, ${dados.resumo.linhasEstoque} estoque, mercado ${dados.resumo.mercadoTotal}`)
+      await processarSeMudou(serviceClient())
     } catch (e) {
       console.error('[ingestao] falha ao atualizar dados:', e)
     } finally {
@@ -122,4 +110,22 @@ export async function garantirDadosAtualizados(): Promise<void> {
     }
   })()
   return checkEmAndamento
+}
+
+/** Reprocessa a planilha do bucket se ela mudou. Lança erro (usado direto pelo upload). */
+export async function processarSeMudou(sb: SupabaseClient = serviceClient()): Promise<void> {
+  const versao = await versaoPlanilha(sb)
+  if (!versao) return // planilha ainda não publicada — segue com o que há
+
+  const { data: refBlob } = await sb.storage.from(BUCKET_DADOS).download('referencia.json')
+  const refAtual = refBlob ? JSON.parse(await refBlob.text()) as { versaoFonte?: string; versaoParser?: number } : null
+  if (refAtual?.versaoFonte === versao && refAtual?.versaoParser === VERSAO_PARSER) return // já processada
+
+  const { data: arquivo, error } = await sb.storage.from(BUCKET_DADOS).download(ARQUIVO_PLANILHA)
+  if (error || !arquivo) throw new Error(`download da planilha: ${error?.message ?? 'sem dados'}`)
+  const dados = parseWorkbook(await arquivo.arrayBuffer())
+  await aplicarDados(dados, versao)
+  ultimoCheck = Date.now()
+  console.log(`[ingestao] planilha reprocessada (versão ${versao}): ` +
+    `${dados.resumo.linhasVarejo} vendas, ${dados.resumo.linhasEstoque} estoque, mercado ${dados.resumo.mercadoTotal}`)
 }

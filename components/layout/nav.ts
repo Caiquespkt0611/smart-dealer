@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, ShoppingCart, Package, Users, Star, Wrench, PieChart, Award,
   GraduationCap, Megaphone, Contact, CalendarClock, BookOpen, Activity, Percent,
-  Wallet, Ticket, MessageCircle, Landmark, Shield, PiggyBank, ClipboardList, Truck, QrCode, Radar,
+  Wallet, Ticket, MessageCircle, Landmark, Shield, PiggyBank, ClipboardList, Truck, QrCode, Radar, FileSpreadsheet,
 } from 'lucide-react'
 
 export type NavItem = {
@@ -15,6 +15,7 @@ export type NavItem = {
 
 export const navItems: NavItem[] = [
   { href: '/dashboard',    label: 'Dashboard',          icon: LayoutDashboard, roles: ['TITULAR', 'GERENTE', 'MECANICO', 'CONSULTOR'], group: 'Visão Geral',  hint: 'O mês da loja numa tela' },
+  { href: '/dados',        label: 'Atualizar Dados',    icon: FileSpreadsheet, roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Visão Geral',  hint: 'Baixar e enviar a planilha de emplacamento' },
   { href: '/varejo',       label: 'Varejo',             icon: ShoppingCart,    roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Visão Geral',  hint: 'Projeção e modelo a modelo' },
   { href: '/performance',  label: 'Performance + PDCA', icon: Activity,        roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Mercado × share e plano de ação' },
   { href: '/k2',           label: 'K2 · Absorção',      icon: Percent,         roles: ['TITULAR', 'GERENTE', 'CONSULTOR'],             group: 'Inteligência', hint: 'Pós-vendas paga a operação?' },
