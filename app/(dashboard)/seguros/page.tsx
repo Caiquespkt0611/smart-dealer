@@ -27,7 +27,7 @@ export default function SegurosPage() {
 
       {/* KPIs julho (números do painel oficial) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Kpi icon={Bike} accent="var(--accent)" label="Motos × Seguros (Jul)" value={`${c.jul.motos} × ${c.jul.seguros}`} sub={`${c.jul.cotacoes} cotações emitidas`} />
+        <Kpi icon={Bike} accent="var(--accent)" label="Motos × Seguros (Set)" value={`${c.jul.motos} × ${c.jul.seguros}`} sub={`${c.jul.cotacoes} cotações emitidas`} />
         <Kpi icon={Shield} accent={c.penetracao >= d.metaPenetracao ? 'var(--ok)' : 'var(--warn)'} label="Penetração" value={pct(c.penetracao)} sub={`meta ${d.metaPenetracao}% das motos com seguro`} />
         <Kpi icon={ShieldCheck} accent="var(--ok)" label="Oferta" value={pct(c.oferta)} sub="cotações ÷ motos — acima de 100% é oferta ativa" />
         <Kpi icon={TrendingUp} accent="var(--warn)" label="Conversão" value={pct(c.conversao)} sub="seguros fechados ÷ cotações" />
@@ -78,7 +78,7 @@ export default function SegurosPage() {
 
         {/* Ranking vendedores */}
         <div className="card card-pad">
-          <h2 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Ranking por vendedor (julho)</h2>
+          <h2 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Ranking por vendedor (setembro)</h2>
           <div className="space-y-3">
             {[...d.vendedores].sort((a, b) => (b.seguros / b.motos) - (a.seguros / a.motos)).map((v, i) => {
               const pen = (v.seguros / v.motos) * 100
@@ -107,7 +107,7 @@ export default function SegurosPage() {
 
       {/* Fila: vendas sem seguro */}
       <section>
-        <h2 className="section-label mb-3">Vendas de agosto sem seguro — fila de oferta do dia</h2>
+        <h2 className="section-label mb-3">Vendas de outubro sem seguro — fila de oferta do dia</h2>
         <div className="card overflow-x-auto">
           <table className="w-full text-xs">
             <thead>

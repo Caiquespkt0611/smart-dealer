@@ -47,9 +47,9 @@ export interface PlacarDia {
 
 export const atendimentoData = {
   projetado: true,
-  referencia: 'Relatório de ontem — quarta-feira, 06/08/2026',
+  referencia: 'Relatório de ontem — quinta-feira, 08/10/2026',
   preparadoPara: 'Gerente de vendas · Nippon Motos',
-  fonte: 'Formato: conversas de WhatsApp (Evolution) com áudios transcritos · comparado à média de um dia normal da semana (30/07–05/08)',
+  fonte: 'Formato: conversas de WhatsApp (Evolution) com áudios transcritos · comparado à média de um dia normal da semana (01/10–07/10)',
 
   linhas: { ativas: 4, total: 6, offline: ['Bárbara Cunha', 'Diego Castellani'] },
 
@@ -77,45 +77,45 @@ export const atendimentoData = {
   ] as VendedorDia[],
 
   placarSemana: [
-    { dia: 'Seg 03/08', leads: 112, semResposta: 21, tempoMedioMin: 8, followUpPct: 23, qualificouPct: 34, tentouVenderPct: 42 },
-    { dia: 'Ter 04/08', leads: 105, semResposta: 18, tempoMedioMin: 7, followUpPct: 26, qualificouPct: 36, tentouVenderPct: 45 },
-    { dia: 'Qua 05/08', leads: 98,  semResposta: 24, tempoMedioMin: 10, followUpPct: 18, qualificouPct: 31, tentouVenderPct: 40 },
-    { dia: 'Qui 06/08', leads: 120, semResposta: 26, tempoMedioMin: 9, followUpPct: 21, qualificouPct: 37, tentouVenderPct: 44 },
+    { dia: 'Seg 05/10', leads: 112, semResposta: 21, tempoMedioMin: 8, followUpPct: 23, qualificouPct: 34, tentouVenderPct: 42 },
+    { dia: 'Ter 06/10', leads: 105, semResposta: 18, tempoMedioMin: 7, followUpPct: 26, qualificouPct: 36, tentouVenderPct: 45 },
+    { dia: 'Qua 07/10', leads: 98,  semResposta: 24, tempoMedioMin: 10, followUpPct: 18, qualificouPct: 31, tentouVenderPct: 40 },
+    { dia: 'Qui 08/10', leads: 120, semResposta: 26, tempoMedioMin: 9, followUpPct: 21, qualificouPct: 37, tentouVenderPct: 44 },
   ] as PlacarDia[],
 
   leadsQuentes: [
     {
-      vendedor: 'Gisele Medeiros', cliente: 'Renan', telefone: '+5511987001122', ultimoContato: '06/08 19h42',
+      vendedor: 'Gisele Medeiros', cliente: 'Renan', telefone: '+5511987001122', ultimoContato: '08/10 19h42',
       ultimaMensagem: 'Fechando em 36x fica quanto a parcela da Fazer?',
       motivos: ['proposta em aberto', 'já qualificado', 'perguntou parcela e ficou sem resposta'],
     },
     {
-      vendedor: 'Gisele Medeiros', cliente: 'Patrícia M.', telefone: '+5511986223344', ultimoContato: '06/08 18h10',
+      vendedor: 'Gisele Medeiros', cliente: 'Patrícia M.', telefone: '+5511986223344', ultimoContato: '08/10 18h10',
       ultimaMensagem: 'Consigo trazer minha Biz na troca?',
       motivos: ['proposta em aberto', 'usada na troca — avaliar'],
     },
     {
-      vendedor: 'Jadson Conceição', cliente: 'Rodrigo', telefone: '+5511985445566', ultimoContato: '06/08 17h55',
+      vendedor: 'Jadson Conceição', cliente: 'Rodrigo', telefone: '+5511985445566', ultimoContato: '08/10 17h55',
       ultimaMensagem: 'Meu nome tá restrito, tem como fazer mesmo assim?',
       motivos: ['já qualificado', 'restrição — sem consórcio oferecido'],
     },
     {
-      vendedor: 'Jadson Conceição', cliente: 'Ana Paula', telefone: '+5511984667788', ultimoContato: '06/08 16h30',
+      vendedor: 'Jadson Conceição', cliente: 'Ana Paula', telefone: '+5511984667788', ultimoContato: '08/10 16h30',
       ultimaMensagem: 'Vocês têm a NMAX na cor cinza?',
       motivos: ['proposta em aberto', 'pediu disponibilidade de cor'],
     },
     {
-      vendedor: 'Marcos Oliveira', cliente: 'Cléber', telefone: '+5511983889900', ultimoContato: '06/08 15h48',
+      vendedor: 'Marcos Oliveira', cliente: 'Cléber', telefone: '+5511983889900', ultimoContato: '08/10 15h48',
       ultimaMensagem: 'Manda a simulação com entrada de 3 mil',
       motivos: ['proposta em aberto', 'já qualificado', 'pediu simulação e não recebeu'],
     },
     {
-      vendedor: 'Marcos Oliveira', cliente: 'Josi', telefone: '+5511982001133', ultimoContato: '06/08 14h05',
+      vendedor: 'Marcos Oliveira', cliente: 'Josi', telefone: '+5511982001133', ultimoContato: '08/10 14h05',
       ultimaMensagem: 'Vou pensar e te falo',
-      motivos: ['esfriando — retomar com condição de agosto'],
+      motivos: ['esfriando — retomar com condição de outubro'],
     },
     {
-      vendedor: 'Wagner Pinho', cliente: 'Douglas', telefone: '+5511981224455', ultimoContato: '06/08 19h20',
+      vendedor: 'Wagner Pinho', cliente: 'Douglas', telefone: '+5511981224455', ultimoContato: '08/10 19h20',
       ultimaMensagem: 'A taxa zero vale até quando?',
       motivos: ['proposta em aberto', 'já qualificado', 'campanha com prazo — urgência real'],
     },

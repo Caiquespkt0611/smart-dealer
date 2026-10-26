@@ -5,6 +5,7 @@
 // Fonte da receita: VendaMensal (banco). Regras: PDFs em _NOVAS MELHORIAS.
 import { createServerClient } from '@/lib/supabase-server'
 import { getReferencia } from '@/lib/dados-vivos'
+import { nomeMesTela } from '@/lib/referencia'
 
 export interface CampanhaVoucher {
   circular: string
@@ -46,7 +47,6 @@ export interface VouchersAnalise {
   regras: string[]
 }
 
-const MESES_PT = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 export async function getVouchersAnalise(): Promise<VouchersAnalise> {
   const ref = await getReferencia()
@@ -80,16 +80,16 @@ export async function getVouchersAnalise(): Promise<VouchersAnalise> {
   })
 
   return {
-    mesFechadoNome: MESES_PT[ref.mesFechado],
-    mesCorrenteNome: MESES_PT[ref.mesCorrente],
+    mesFechadoNome: nomeMesTela(ref.mesFechado),
+    mesCorrenteNome: nomeMesTela(ref.mesCorrente),
     modelos,
     totalMesFechado: modelos.reduce((s, m) => s + m.recebivelMesFechado, 0),
     totalProjetado: modelos.reduce((s, m) => s + m.recebivelProjetado, 0),
     regras: [
-      'Ressarcimento por chassi emitido dentro do período da campanha (01–31/08), comprovado pelo XML da NF de venda com o desconto aplicado.',
-      'XML deve chegar à Yamaha até 04/09 · pagamento do ressarcimento até 20/09.',
+      'Ressarcimento por chassi emitido dentro do período da campanha (01–31/10), comprovado pelo XML da NF de venda com o desconto aplicado.',
+      'XML deve chegar à Yamaha até 04/11 · pagamento do ressarcimento até 20/11.',
       'Não cumulativo com taxas subsidiadas nem com o voucher da campanha nacional (MTC-CIR 075-26) — um benefício por venda. Os valores abaixo assumem o bônus aplicado em todas as vendas do modelo (teto do recebível).',
-      'Campanhas equivalentes estavam vigentes em julho — o realizado de julho entra como recebível estimado do mês fechado.',
+      'Campanhas equivalentes estavam vigentes em setembro — o realizado de setembro entra como recebível estimado do mês fechado.',
     ],
   }
 }

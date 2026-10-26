@@ -3,11 +3,12 @@
 // gerentes. Este módulo codifica as regras da circular; os números do grupo
 // vêm do banco (vendas/carta) via getDashboardData.
 import { getDashboardData } from '@/lib/data'
+import { nomeMesTela } from '@/lib/referencia'
 
 export const CAMPANHA = {
   circular: 'CA-MTC-080-26',
   nome: 'Campeões de Vendas',
-  periodo: 'Julho a Setembro/2026',
+  periodo: 'Setembro a Novembro/2026',
   meses: [7, 8, 9],
   ano: 2026,
 } as const
@@ -53,7 +54,6 @@ export interface CampanhaAnalise {
   cenarios: Array<{ rotulo: string; condicao: string; total: number }>
 }
 
-const MESES_NOME = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 /** Aplica o escalonamento da circular a um resultado fechado. */
 function apurarMes(meta: number, resultado: number): { premio: number; regra: string; faixa: string; referencia: number; gerentes: number } {
@@ -78,7 +78,7 @@ export async function getCampanhaAnalise(): Promise<CampanhaAnalise> {
 
   const meses: ApuracaoMes[] = []
   for (const mes of CAMPANHA.meses) {
-    const nomeMes = MESES_NOME[mes]
+    const nomeMes = nomeMesTela(mes)
     if (mes < d.mesCorrente) {
       // mês fechado — resultado veio do banco (fechamentoAnterior é o mês fechado imediatamente anterior)
       const resultado = mes === d.mesFechado ? d.fechamentoAnterior : null

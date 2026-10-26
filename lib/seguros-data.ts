@@ -13,19 +13,19 @@ export interface MesSeguros {
 
 export const segurosData = {
   grupo: 'Nippon Motos',
-  referencia: 'Julho/2026 (fechado) · Agosto em curso',
+  referencia: 'Setembro/2026 (fechado) · Outubro em curso',
   consultor: 'Eduardo (Yamaha Seguros)',
   metaPenetracao: 45,      // % de motos vendidas saindo com seguro
   metaOferta: 100,         // toda venda recebe cotação
 
   serie: [
-    { mes: 'Jan', motos: 96,  cotacoes: 71,  seguros: 21 },
-    { mes: 'Fev', motos: 88,  cotacoes: 68,  seguros: 19 },
-    { mes: 'Mar', motos: 118, cotacoes: 95,  seguros: 30 },
-    { mes: 'Abr', motos: 102, cotacoes: 89,  seguros: 28 },
-    { mes: 'Mai', motos: 105, cotacoes: 98,  seguros: 31 },
-    { mes: 'Jun', motos: 98,  cotacoes: 101, seguros: 33 },
-    { mes: 'Jul', motos: 110, cotacoes: 116, seguros: 37 },   // painel oficial: 33,6% penetração · 105,5% oferta · 31,9% conversão
+    { mes: 'Mar', motos: 96,  cotacoes: 71,  seguros: 21 },
+    { mes: 'Abr', motos: 88,  cotacoes: 68,  seguros: 19 },
+    { mes: 'Mai', motos: 118, cotacoes: 95,  seguros: 30 },
+    { mes: 'Jun', motos: 102, cotacoes: 89,  seguros: 28 },
+    { mes: 'Jul', motos: 105, cotacoes: 98,  seguros: 31 },
+    { mes: 'Ago', motos: 98,  cotacoes: 101, seguros: 33 },
+    { mes: 'Set', motos: 110, cotacoes: 116, seguros: 37 },   // painel oficial: 33,6% penetração · 105,5% oferta · 31,9% conversão
   ] as MesSeguros[],
 
   // ── Frota circulante: todo cliente rodando sem seguro é renovação perdida ──
@@ -46,7 +46,7 @@ export const segurosData = {
     { nome: 'Diego Nunes',   loja: 'Extrema',  motos: 12, cotacoes: 12, seguros: 2 },
   ],
 
-  // Vendas de agosto que saíram SEM seguro — a fila de trabalho do dia
+  // Vendas de outubro que saíram SEM seguro — a fila de trabalho do dia
   semSeguro: [
     { cliente: 'Elaine R. Nascimento', modelo: 'FZ25 Fazer ABS',       loja: 'Amparo',   diasDaCompra: 9,  cotacao: 1180 },
     { cliente: 'Lucas B. dos Santos',  modelo: 'FZ25 Fazer ABS',       loja: 'Atibaia',  diasDaCompra: 12, cotacao: 1180 },

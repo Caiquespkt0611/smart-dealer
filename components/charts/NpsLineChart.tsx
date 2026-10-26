@@ -4,6 +4,7 @@ import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid, ReferenceLine, Legend,
 } from 'recharts'
+import { mesAnoTela } from '@/lib/referencia'
 
 interface NpsDataPoint {
   referencia: string
@@ -33,8 +34,7 @@ function CustomTooltip({ active, payload, label }: any) {
 export function NpsLineChart({ data }: NpsLineChartProps) {
   const shortLabel = (ref: string) => {
     const [ano, mes] = ref.split('/')
-    const meses = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-    return `${meses[parseInt(mes)]}/${ano.slice(2)}`
+    return mesAnoTela(parseInt(mes), parseInt(ano))
   }
   const chartData = data.map(d => ({ ...d, label: shortLabel(d.referencia) }))
 

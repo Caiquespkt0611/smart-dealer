@@ -42,7 +42,7 @@ export default async function PerformancePage() {
           </p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {/* arquivos oficiais do Performance Concessionário — gerados pelo motor do PC com a planilha de 19/08 */}
+          {/* arquivos oficiais do Performance Concessionário — gerados pelo motor do PC com a planilha de 19/10 */}
           <a href="/arquivos/PDCA_NIPPON-MOTOS_19-08-2026.xlsx" download
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-all hover:opacity-90 active:scale-95"
             style={{ backgroundColor: 'var(--ok-bg)', color: 'var(--ok)', border: '1px solid var(--ok-border)' }}>

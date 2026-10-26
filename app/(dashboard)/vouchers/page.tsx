@@ -32,17 +32,17 @@ export default async function VouchersPage() {
         <Hero label="Recebível já apurado" valor={fmtBRL(jaGarantido)} sub={`Campeões ${fmtBRL(c.garantido)} + vouchers de ${vch.mesFechadoNome.toLowerCase()} ${fmtBRL(vch.totalMesFechado)}`} cor="var(--ok)" icone={Wallet} />
         <Hero label={`Vouchers — projeção ${vch.mesCorrenteNome.toLowerCase()}`} valor={fmtBRL(vch.totalProjetado)} sub="no ritmo dos últimos 3 meses" cor="var(--accent)" icone={Bike} />
         <Hero label="Recuperável no trimestre" valor={fmtBRL(c.recuperavel)} sub="Campeões: meta acumulada em 100%" cor="var(--warn)" icone={RotateCcw} />
-        <Hero label="Potencial total do período" valor={fmtBRL(potencialMes)} sub="Campeões em 110% + vouchers jul/ago" cor="var(--text-primary)" icone={Trophy} />
+        <Hero label="Potencial total do período" valor={fmtBRL(potencialMes)} sub="Campeões em 110% + vouchers set/out" cor="var(--text-primary)" icone={Trophy} />
       </div>
 
       {/* ══════════ FONTE 1 · CAMPANHAS DE INCENTIVO POR MODELO ══════════ */}
       <section>
         <div className="flex items-center gap-2 mb-1">
           <Bike size={14} style={{ color: 'var(--accent)' }} />
-          <h2 className="section-label">Fonte 1 · Incentivo por modelo (circulares de 31/07 · vigência 01–31/08)</h2>
+          <h2 className="section-label">Fonte 1 · Incentivo por modelo (circulares de 30/09 · vigência 01–31/10)</h2>
         </div>
         <p className="text-[11px] mb-3" style={{ color: 'var(--text-tertiary)' }}>
-          A Yamaha ressarce a concessionária por chassi emitido com o bônus aplicado. Campanhas equivalentes valeram em julho.
+          A Yamaha ressarce a concessionária por chassi emitido com o bônus aplicado. Campanhas equivalentes valeram em setembro.
         </p>
         <div className="card overflow-hidden">
           <div className="overflow-x-auto">
@@ -167,7 +167,7 @@ export default async function VouchersPage() {
 
       {/* ── CENÁRIOS ── */}
       <section>
-        <h2 className="section-label mb-3">Cenários — o que está em jogo até setembro</h2>
+        <h2 className="section-label mb-3">Cenários — o que está em jogo até novembro</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {c.cenarios.map((cen, i) => (
             <div key={cen.rotulo} className="card card-pad" style={i === 2 ? { border: '1px solid var(--ok-border)' } : undefined}>
@@ -195,7 +195,7 @@ export default async function VouchersPage() {
           <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>Se o resultado alcançar faixa superior à da meta, o prêmio sobe de faixa (ex.: vender 401+ paga como faixa B).</li>
           <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>Mês perdido é recuperável ao fechar a meta acumulada do trimestre em 100% (sem parcial).</li>
           <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>Gerentes: R$ 30/moto ao superar 100% da carta · R$ 50/moto acima de 110% — rateio a critério do titular.</li>
-          <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>Cartas de setembro ainda não informadas entram como estimativa (igual à carta atual) até a circular chegar.</li>
+          <li className="flex gap-2"><span style={{ color: 'var(--accent)' }}>•</span>Cartas de novembro ainda não informadas entram como estimativa (igual à carta atual) até a circular chegar.</li>
         </ul>
       </div>
     </div>

@@ -155,7 +155,7 @@ export default function PesquisaPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div className="card card-pad" style={{ borderLeft: '4px solid var(--ok)' }}>
           <h2 className="text-sm font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Antes × depois do Smart Dealer</h2>
-          <p className="text-[11px] mb-3" style={{ color: 'var(--text-tertiary)' }}>Clientes atendidos jan–mai (antes) × jun–ago (depois do piloto)</p>
+          <p className="text-[11px] mb-3" style={{ color: 'var(--text-tertiary)' }}>Clientes atendidos jan–mai (antes) × jun–out (depois do piloto)</p>
           <div className="grid grid-cols-3 gap-4">
             <Duplo label="Satisfação" antes={`${d.comparativo.antes.satisfacao.toFixed(1).replace('.', ',')}`} depois={`${d.comparativo.depois.satisfacao.toFixed(1).replace('.', ',')}`} />
             <Duplo label="≤10 min" antes={`${d.comparativo.antes.respondidoEm10min}%`} depois={`${d.comparativo.depois.respondidoEm10min}%`} />

@@ -1,5 +1,6 @@
 import { createServerClient } from '@/lib/supabase-server'
 import { getReferencia, getCalendario, nomeMes } from '@/lib/dados-vivos'
+import { mesAnoTela } from '@/lib/referencia'
 import { garantirDadosAtualizados } from '@/lib/ingestao'
 import type { Referencia } from '@/lib/importar-dados'
 
@@ -416,7 +417,6 @@ export async function getNPSHistorico() {
   return data ?? []
 }
 
-const MESES_ABREV = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
 
 export async function getVendasHistorico(loja: string) {
   const sb = createServerClient()
@@ -439,7 +439,7 @@ export async function getVendasHistorico(loja: string) {
       cur.total += v.quantidade
     } else {
       totMap.set(key, {
-        label: `${MESES_ABREV[v.mes]}/${String(v.ano).slice(2)}`,
+        label: mesAnoTela(v.mes, v.ano),
         total: v.quantidade,
         mes: v.mes,
         ano: v.ano,

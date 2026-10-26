@@ -1,4 +1,5 @@
 import { getDashboardData, getVendasHistorico } from '@/lib/data'
+import { mesAnoTela } from '@/lib/referencia'
 import { AlertaBanner } from '@/components/dashboard/AlertaBanner'
 import { MetaRing } from '@/components/charts/MetaRing'
 import { VendasHistChart } from '@/components/charts/VendasHistChart'
@@ -16,8 +17,7 @@ function fmtBRL(v: number) {
 // '2026/07' → 'Jul/26'
 function fmtRef(ref: string) {
   const [ano, mes] = ref.split('/')
-  const nomes = ['', 'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
-  return mes ? `${nomes[Number(mes)]}/${ano.slice(2)}` : ref
+  return mes ? mesAnoTela(Number(mes), Number(ano)) : ref
 }
 
 type Status = 'OK' | 'ATENCAO' | 'CRITICO'

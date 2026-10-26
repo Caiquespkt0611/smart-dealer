@@ -4,13 +4,12 @@
 import { createClient } from '@supabase/supabase-js'
 import { shareData as shareEstatico } from '@/lib/share-data'
 import { workingDays as calendarioEstatico } from '@/lib/calendario-data'
-import { REF as REF_ESTATICA } from '@/lib/referencia'
+import { REF as REF_ESTATICA, nomeMesTela, abrevTextoTela } from '@/lib/referencia'
 import type { Referencia } from '@/lib/importar-dados'
 
 export const BUCKET_DADOS = 'dados-sistema'
 
-const MESES_PT = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
-export const nomeMes = (m: number) => MESES_PT[m] ?? ''
+export const nomeMes = (m: number) => nomeMesTela(m)
 
 function storageClient() {
   return createClient(
@@ -72,6 +71,11 @@ export interface ShareData {
 }
 
 export async function getShareData(): Promise<ShareData> {
-  const share = await lerJson<ShareData>('share.json')
-  return share ?? (shareEstatico as unknown as ShareData)
+  const share = await lerJson<ShareData>('share.json') ?? (shareEstatico as unknown as ShareData)
+  // rótulos de mês gravados como texto também vão para a tela deslocados
+  return {
+    ...share,
+    referencia: share.referencia.replace(/[A-Z][a-zç]{2}/g, abrevTextoTela),
+    trend: share.trend.map(t => ({ ...t, mes: abrevTextoTela(t.mes) })),
+  }
 }

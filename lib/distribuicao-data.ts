@@ -1,7 +1,7 @@
 // AUTO-GERADO por scripts/gerar_distribuicao_data.py — NÃO EDITAR À MÃO.
 // Emplacamento por área de influência dos 4 pontos de venda (área Amparo).
 export const distribuicaoData = {
-  "referencia": "Jan–Jul/2026 (meses fechados)",
+  "referencia": "Mar–Set/2026 (meses fechados)",
   "area": "Amparo",
   "segmentos": [
     "SMALL - STREET - 150cc-199cc",

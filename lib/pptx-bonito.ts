@@ -4,6 +4,7 @@
 // Excel e o escritor do arquivo). O conteúdo dos slides do Smart Dealer mora em
 // lib/deck-performance.ts — aqui são só os primitivos, mantidos fiéis ao original.
 import { zipar } from '@/lib/xlsx-bonito'
+import { abrevMesTela } from '@/lib/referencia'
 
 /* helpers numéricos/rotulares que no projeto original moram no app.js */
 const MESES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
@@ -383,7 +384,7 @@ function destaque(sl, o){
 }
 
 /* barras de coluna com a linha da média */
-function barrasMeses(sl, {x,y,w,h, serie, meses, destaqueMes, media, status}){
+function barrasMeses(sl, {x,y,w,h, serie, meses, destaqueMes, media, status, deslocar = false}){
   const max = Math.max(...meses.map(m => serie[m-1]||0), media||0) * 1.15 || 1;
   /* calha à direita só para o rótulo da média: quando o último mês fica perto
      dela, os dois números caem no mesmo ponto e um come o outro */
@@ -400,7 +401,7 @@ function barrasMeses(sl, {x,y,w,h, serie, meses, destaqueMes, media, status}){
                fill: ult ? (CST[status]||C.s1) : 'C9D6E8'});
     texto(sl, {x:cx-10, y:yBase-alt-15, w:larg+20, txt:fmt(v), sz:10, b:ult,
                algn:'ctr', cor: ult ? (CST[status]||C.s1) : C.ink2});
-    texto(sl, {x:cx-10, y:yBase+4, w:larg+20, txt:MESES[m-1], sz:9, algn:'ctr',
+    texto(sl, {x:cx-10, y:yBase+4, w:larg+20, txt: deslocar ? abrevMesTela(m) : MESES[m-1], sz:9, algn:'ctr',
                cor: ult ? C.ink : C.muted, b:ult});
   });
   if (media > 0){

@@ -16,7 +16,7 @@ export interface RevisaoNivel {
 
 export const revisoesData = {
   grupo: 'Nippon Motos',
-  referencia: 'Agosto/2026 (dia 20) · YTD Jan–Ago',
+  referencia: 'Outubro/2026 (dia 20) · YTD Mar–Out',
   fonte: 'Formato Periodic Inspection Yamaha — dados de demonstração',
 
   niveis: [

@@ -105,7 +105,7 @@ export function montarDeckSmartDealer(dd: DeckDados) {
       if (mes >= 1) { serie[mes - 1] = t.total; mesesGraf.push(mes) }
     })
     texto(sl, { x: MG, y: y + 12, w: COL, txt: 'Mercado da área, mês a mês (un)', sz: 10, b: true, cor: C.ink2, esp: .6 })
-    y = barrasMeses(sl, { x: MG, y: y + 30, w: COL, h: 120, serie, meses: mesesGraf.slice(-6), destaqueMes: a.share.ultimoMesFechado, media: a.mercadoBase, status: stShare })
+    y = barrasMeses(sl, { x: MG, y: y + 30, w: COL, h: 120, serie, meses: mesesGraf.slice(-6), destaqueMes: a.share.ultimoMesFechado, media: a.mercadoBase, status: stShare, deslocar: true })
     destaque(sl, { x: MG, y: y + 6, w: COL, status: stShare, rot: 'O VEREDITO', txt: a.veredito, hMax: 84 })
     rodape(sl, rodapeBase)
     sl.notas = ['A decomposição fecha exata: variação real = efeito mercado + efeito share. É ela que separa "o mercado caiu" de "perdemos disputa".']

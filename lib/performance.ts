@@ -12,8 +12,8 @@
 import { getDashboardData, type DashboardData } from '@/lib/data'
 import { getShareData, type ShareData } from '@/lib/dados-vivos'
 import { garantirDadosAtualizados } from '@/lib/ingestao'
+import { nomeMesTela, abrevMesTela } from '@/lib/referencia'
 
-const MESES_LONGO = ['', 'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
 
 export interface SegmentoAnalise {
   segmento: string
@@ -98,7 +98,7 @@ export async function getPerformanceAnalise(): Promise<PerformanceAnalise> {
 
   const mesesBase = baseIdxs.map(i => mesFechado - (atualIdx - i))
   const baseNome = mesesBase.length
-    ? `média ${MESES_LONGO[mesesBase[0]].slice(0, 3)}–${MESES_LONGO[mesesBase[mesesBase.length - 1]].slice(0, 3)}`
+    ? `média ${abrevMesTela(mesesBase[0])}–${abrevMesTela(mesesBase[mesesBase.length - 1])}`
     : 'sem base'
 
   // ── Decomposição território (bandeira Yamaha na área) ──────────────────────
@@ -195,7 +195,7 @@ export async function getPerformanceAnalise(): Promise<PerformanceAnalise> {
 
   return {
     dash, share, baseNome,
-    mesFechadoNome: MESES_LONGO[mesFechado],
+    mesFechadoNome: nomeMesTela(mesFechado),
     mercadoAtual, mercadoBase: r1(mercadoBase),
     shareAtual: r1(shareAtual), shareBase: r1(shareBase),
     varReal: r1(varReal), efeitoMercado: r1(efeitoMercado), efeitoShare: r1(efeitoShare),

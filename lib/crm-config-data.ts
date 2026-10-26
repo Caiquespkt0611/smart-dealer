@@ -6,7 +6,7 @@
 
 export const crmConfigData = {
   grupo: 'Nippon Motos',
-  atualizadoEm: '18/08/2026',
+  atualizadoEm: '18/10/2026',
 
   // ── Hierarquia de cobrança ──
   hierarquia: {
@@ -33,7 +33,7 @@ export const crmConfigData = {
     { minuto: '15 min',      quem: 'Gerente',    acao: 'Escalonamento: André recebe o lead não atendido no WhatsApp' },
     { minuto: '2 h',         quem: 'Sistema',    acao: 'Redistribuição automática para o próximo vendedor do rodízio' },
     { minuto: 'D+1',         quem: 'Vendedor',   acao: 'Follow-up obrigatório (roteiro do Playbook)' },
-    { minuto: 'D+3',         quem: 'Vendedor',   acao: '2º follow-up — oferta da campanha vigente (circular ago/26)' },
+    { minuto: 'D+3',         quem: 'Vendedor',   acao: '2º follow-up — oferta da campanha vigente (circular out/26)' },
     { minuto: 'D+7',         quem: 'Gerente',    acao: 'Revisão do lead em aberto na reunião diária' },
     { minuto: 'D+15',        quem: 'Sistema',    acao: 'Lead esfriou — entra na régua de nutrição mensal' },
   ],

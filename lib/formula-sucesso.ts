@@ -26,7 +26,7 @@ export const formulaDiagnostico: CriterioFormula[] = [
       {
         item: 'Análises externas foram devidamente realizadas',
         status: 'temos',
-        onde: 'Mercado real de emplacamento (5.346 motos Jan–Jul nas áreas da Nippon), 13 áreas da regional mapeadas, dados da Receita/BrasilAPI. Telas Market Share e Performance.',
+        onde: 'Mercado real de emplacamento (5.346 motos Mar–Set nas áreas da Nippon), 13 áreas da regional mapeadas, dados da Receita/BrasilAPI. Telas Market Share e Performance.',
         fazer: 'Levar 2 prints (Market Share e Performance) e citar as fontes na fala: base de emplacamento Yamaha + Receita Federal.',
       },
       {
@@ -62,14 +62,14 @@ export const formulaDiagnostico: CriterioFormula[] = [
       {
         item: 'O objetivo do trabalho é mensurável',
         status: 'temos',
-        onde: '3 metas públicas declaradas: (1) carta ≥100% em setembro; (2) absorção 65% até dezembro (hoje 49,4%); (3) lead atendido em ≤10 min (hoje 81% dentro do SLA). Todas medidas ao vivo no sistema.',
+        onde: '3 metas públicas declaradas: (1) carta ≥100% em novembro; (2) absorção 65% até dezembro (hoje 49,4%); (3) lead atendido em ≤10 min (hoje 81% dentro do SLA). Todas medidas ao vivo no sistema.',
         fazer: 'Repetir as 3 metas em todo material da 2ª banca — slide fixo logo após o objetivo.',
       },
       {
         item: 'O objetivo foi atingido no prazo',
         status: 'parcial',
         onde: 'As entregas aconteceram (6 módulos em produção), mas sem cronograma formal apresentado.',
-        fazer: 'Slide de linha do tempo com datas REAIS das entregas (jun: dashboard/NPS; 21/06: inteligência; 22/06: pós-vendas/CRM/campanhas; ago: performance+PDCA, K2, crédito, campanha). O histórico existe — é só mostrar.',
+        fazer: 'Slide de linha do tempo com datas REAIS das entregas (jun: dashboard/NPS; 21/06: inteligência; 22/06: pós-vendas/CRM/campanhas; out: performance+PDCA, K2, crédito, campanha). O histórico existe — é só mostrar.',
       },
       {
         item: 'Os KPIs estão alinhados com os objetivos',
@@ -87,7 +87,7 @@ export const formulaDiagnostico: CriterioFormula[] = [
         item: 'O objetivo está relacionado aos resultados',
         status: 'parcial',
         onde: 'Resultados do piloto já existem: R$ 7.500 garantidos na campanha, absorção 30%→49%, mercado decomposto.',
-        fazer: 'Consolidar num slide "o que o piloto já produziu" com 3 números — e prometer a leitura de setembro (fechamento da campanha) na banca seguinte.',
+        fazer: 'Consolidar num slide "o que o piloto já produziu" com 3 números — e prometer a leitura de novembro (fechamento da campanha) na banca seguinte.',
       },
     ],
   },
@@ -177,7 +177,7 @@ export const formulaDiagnostico: CriterioFormula[] = [
         item: 'O trabalho gerou grandes receitas',
         status: 'parcial',
         onde: 'R$ 7.500 garantidos + até R$ 100 mil em jogo na campanha; gap de absorção quantificado (~R$ 41 mil/mês de MC).',
-        fazer: 'Consolidar em UM número-manchete: "potencial de R$ 400 mil/ano só em prêmios de campanha + R$ 490 mil/ano fechando o gap do K2". Fechamento de setembro vira a prova.',
+        fazer: 'Consolidar em UM número-manchete: "potencial de R$ 400 mil/ano só em prêmios de campanha + R$ 490 mil/ano fechando o gap do K2". Fechamento de novembro vira a prova.',
       },
     ],
   },
@@ -239,7 +239,7 @@ export const materiaisProntos = {
     fecha: 'Planejamento · "objetivo claro e definido" + "mensurável"',
     texto: 'Aumentar o atingimento de carta e a absorção do pós-vendas da Nippon Motos usando decisão guiada por dados — medido por três metas públicas.',
     metas: [
-      'Carta: fechar setembro em ≥100% da Carta Varejo (hoje: julho fechou em 90%).',
+      'Carta: fechar novembro em ≥100% da Carta Varejo (hoje: setembro fechou em 90%).',
       'Pós-vendas: taxa de absorção K2 em 65% até dezembro (hoje: 49,4% — gap de ~R$ 41 mil/mês de MC).',
       'Cliente: 100% dos leads respondidos em ≤10 minutos (hoje: 45 min de tempo médio).',
     ],

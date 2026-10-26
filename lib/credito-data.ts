@@ -4,7 +4,7 @@
 // dados agregados; sem chassi, NF, datas, histórico ou extrato (a base não tem).
 
 export const creditoData = {
-  referencia: 'Posição da base do sistema · Ago/2026',
+  referencia: 'Posição da base do sistema · Out/2026',
   grupo: 'NIPPON MOTOS',
   limite: 3_200_000.00,
   consumo: [

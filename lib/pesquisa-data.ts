@@ -6,7 +6,7 @@
 
 export const pesquisaData = {
   titulo: 'Pesquisa Voz do Cliente — Nippon Motos',
-  periodo: '28/07 a 14/08/2026',
+  periodo: '28/09 a 14/10/2026',
   metodologia: 'Formulário via WhatsApp (link após atendimento) + entrevista presencial na entrega da moto e na sala de espera da revisão',
   convidados: 61,
   respostas: 32,
@@ -71,7 +71,7 @@ export const pesquisaData = {
     { nome: 'D. Silva · Atibaia',    comprou: false, fala: 'Faltou me mostrar um plano B quando a entrada não fechou. Um consórcio, alguma coisa.' },
   ],
 
-  // ── Antes × depois do Smart Dealer (clientes atendidos jan–mai × jun–ago) ──
+  // ── Antes × depois do Smart Dealer (clientes atendidos jan–mai × jun–out) ──
   comparativo: {
     antes:  { satisfacao: 3.6, respondidoEm10min: 22, recontato: 18 },
     depois: { satisfacao: 4.5, respondidoEm10min: 81, recontato: 74 },
